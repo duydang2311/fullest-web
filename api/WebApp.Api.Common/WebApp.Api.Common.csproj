@@ -7,8 +7,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" />
-    <PackageReference Include="FluentValidation" />
-    <PackageReference Include="O9d.AspNet.FluentValidation" />
+    <PackageReference Include="FastEndpoints" />
+    <PackageReference Include="OneOf" />
     <PackageReference Include="Sqids" />
     <PackageReference Include="Geralt" />
   </ItemGroup>

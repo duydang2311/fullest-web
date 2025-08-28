@@ -1,27 +1,36 @@
+using FastEndpoints;
 using FluentValidation;
+using Slugify;
+using WebApp.Api;
 using WebApp.Api.Middlewares;
+using WebApp.Api.Security;
 using WebApp.Api.Serialization;
-using WebApp.Api.Users.V1;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDataGroup().AddProjectionGroup().AddCodecsGroup().AddHashingGroup();
+builder.Services.AddSingleton<ISlugHelper, SlugHelper>();
 
-builder.Services.AddProblemDetails();
-builder.Services.AddEndpointsApiExplorer();
-builder
-    .Services.AddApiVersioning(options =>
+builder.Services.AddProblemDetails(a =>
+{
+    a.CustomizeProblemDetails = context =>
     {
-        options.ReportApiVersions = true;
-    })
-    .EnableApiVersionBinding();
+        context.ProblemDetails.Instance ??=
+            $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+        context.ProblemDetails.Extensions.TryAdd("traceId", context.HttpContext.TraceIdentifier);
+    };
+});
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
+builder.Services.AddHybridCache();
+builder
+    .Services.AddAuthentication()
+    .AddScheme<SessionAuthSchemeOptions, SessionAuthSchemeHandler>("Session", null);
+builder.Services.AddAuthorization();
 
 builder.Services.AddExceptionHandler<JsonExceptionHandler>();
 builder.Services.ConfigureOptions<ConfigureJsonOptions>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUser.RequestValidator>(
-    ServiceLifetime.Singleton
-);
+builder.Services.AddFastEndpoints(FastEndpointsConfiguration.ConfigureDiscovery);
 
 var app = builder.Build();
 
@@ -36,6 +45,14 @@ app.UseStatusCodePages();
 
 app.UseHttpsRedirection();
 
-app.MapUserApiV1();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseFastEndpoints(options =>
+{
+    FastEndpointsConfiguration.ConfigureFastEndpoints(app, options);
+});
+
+ValidatorOptions.Global.LanguageManager.Enabled = false;
 
 app.Run();

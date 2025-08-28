@@ -1,126 +1,64 @@
-using Microsoft.AspNetCore.Mvc;
+using System.Collections.Immutable;
+using FastEndpoints;
 
 namespace WebApp.Api.Common.Http;
 
-public sealed class Problem
+public sealed record Problem : IResult
 {
-    private string? type;
-    private int? statusCode;
-    private string? title;
-    private string? detail;
-    private string? instance;
-    private List<string>? codes;
-    private Dictionary<string, List<string>>? errors;
+    private ImmutableList<ProblemError>? errors;
 
-    private List<string> Codes => codes ??= [];
-    private Dictionary<string, List<string>> Errors =>
-        errors ??= new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+    public int? Status { get; init; }
+    public string? Detail { get; init; }
+    public string? Instance { get; init; }
+    public string? TraceId { get; init; }
+    public IReadOnlyCollection<ProblemError>? Errors => errors;
+
+    public Problem() { }
+
+    public Problem(IEnumerable<ProblemError> errors)
+    {
+        this.errors = [.. errors];
+    }
+
+    public static Problem FromStatus(int status)
+    {
+        return new Problem { Status = status };
+    }
 
     public static Problem FromDetail(string detail)
     {
-        return new Problem { detail = detail };
-    }
-
-    public static Problem FromCodes(params List<string> codes)
-    {
-        return new Problem { codes = codes };
+        return new Problem { Detail = detail };
     }
 
     public static Problem FromError(string field, string code)
     {
-        return new Problem
+        return new Problem { errors = [new() { Field = field, Code = code }] };
+    }
+
+    public static Problem FromError(string code)
+    {
+        return FromError("$", code);
+    }
+
+    public Problem Error(string field, string error)
+    {
+        return this with
         {
-            errors = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
+            errors = errors is null
+                ? [new ProblemError() { Field = field, Code = error }]
+                : errors.Add(new ProblemError() { Field = field, Code = error }),
+        };
+    }
+
+    public Task ExecuteAsync(HttpContext httpContext)
+    {
+        return httpContext.Response.SendAsync(
+            this with
             {
-                {
-                    field,
-                    new List<string> { code }
-                },
+                TraceId = TraceId ?? httpContext.TraceIdentifier,
+                Instance = Instance ?? $"{httpContext.Request.Method} {httpContext.Request.Path}",
             },
-        };
-    }
-
-    public Problem Type(string type)
-    {
-        this.type = type;
-        return this;
-    }
-
-    public Problem StatusCode(int statusCode)
-    {
-        this.statusCode = statusCode;
-        return this;
-    }
-
-    public Problem Title(string title)
-    {
-        this.title = title;
-        return this;
-    }
-
-    public Problem Instance(string instance)
-    {
-        this.instance = instance;
-        return this;
-    }
-
-    public Problem Code(string code)
-    {
-        Codes.Add(code);
-        return this;
-    }
-
-    public Problem Error(string key, string error)
-    {
-        if (errors is null)
-        {
-            errors = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
-            {
-                { key, [error] },
-            };
-            return this;
-        }
-        if (!errors.TryGetValue(key, out var errorList))
-        {
-            errors[key] = [error];
-        }
-        else
-        {
-            errorList.Add(error);
-        }
-        return this;
-    }
-
-    public ProblemDetails Build()
-    {
-        return new ProblemDetails
-        {
-            Type = type,
-            Title = title,
-            Status = statusCode,
-            Detail = detail,
-            Instance = instance,
-            Extensions = BuildExtensions(codes, errors),
-        };
-    }
-
-    private static Dictionary<string, object?> BuildExtensions(
-        List<string>? codes,
-        Dictionary<string, List<string>>? errors
-    )
-    {
-        var extensions = new Dictionary<string, object?>(StringComparer.Ordinal);
-
-        if (codes != null && codes.Count > 0)
-        {
-            extensions["codes"] = codes;
-        }
-
-        if (errors != null && errors.Count > 0)
-        {
-            extensions["errors"] = errors;
-        }
-
-        return extensions;
+            Status ?? httpContext.Response.StatusCode
+        );
     }
 }

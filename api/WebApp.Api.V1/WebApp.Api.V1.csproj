@@ -6,11 +6,11 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Http" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WebApp.Common\WebApp.Common.csproj" />
     <ProjectReference Include="..\WebApp.Api.Common\WebApp.Api.Common.csproj" />
     <ProjectReference Include="..\WebApp.Infrastructure\WebApp.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" />
+    <PackageReference Include="Slugify.Core" />
   </ItemGroup>
 </Project>

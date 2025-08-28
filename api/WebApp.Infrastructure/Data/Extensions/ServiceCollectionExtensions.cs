@@ -5,7 +5,7 @@ using WebApp.Infrastructure.Data;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDataGroup(this IServiceCollection services)
     {

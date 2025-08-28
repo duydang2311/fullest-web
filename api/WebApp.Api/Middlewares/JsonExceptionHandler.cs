@@ -1,11 +1,10 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using WebApp.Api.Common.Http;
 
 namespace WebApp.Api.Middlewares;
 
-public class JsonExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
+public class JsonExceptionHandler : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
@@ -13,39 +12,31 @@ public class JsonExceptionHandler(IProblemDetailsService problemDetailsService) 
         CancellationToken cancellationToken
     )
     {
-        if (
-            exception.InnerException is not JsonException jsonException
-            || jsonException.Path is null
-        )
+        if (httpContext.Response.HasStarted)
         {
             return false;
         }
 
-        ValidationProblemDetails problemDetails;
-        if (jsonException.Path.Equals("$", StringComparison.Ordinal))
+        JsonException? jsonException = exception switch
         {
-            problemDetails = new ValidationProblemDetails
-            {
-                Extensions = { { "codes", ErrorCodes.Json } },
-            };
-        }
-        else
+            JsonException e => e,
+            { InnerException: JsonException inner } => inner,
+            _ => null,
+        };
+        if (jsonException?.Path is null)
         {
-            var dotIndex = jsonException.Path.IndexOf('.', StringComparison.Ordinal);
-            var path = dotIndex == -1 ? jsonException.Path : jsonException.Path[(dotIndex + 1)..];
-            problemDetails = new ValidationProblemDetails(
-                new Dictionary<string, string[]>() { { path, new[] { ErrorCodes.Json } } }
-            );
+            return false;
         }
 
-        var context = new ProblemDetailsContext
-        {
-            HttpContext = httpContext,
-            ProblemDetails = problemDetails,
-            Exception = exception,
-        };
+        var dotIndex = jsonException.Path.IndexOf('.', StringComparison.Ordinal);
+        var path = dotIndex == -1 ? jsonException.Path : jsonException.Path[(dotIndex + 1)..];
 
         httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-        return await problemDetailsService.TryWriteAsync(context);
+        httpContext.Response.ContentType = "application/problem+json";
+        await httpContext.Response.WriteAsJsonAsync(
+            Problem.FromError(path, ErrorCodes.Json),
+            cancellationToken: cancellationToken
+        );
+        return true;
     }
 }

@@ -6,8 +6,6 @@
     <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Http" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,7 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebApp.Api.Common\WebApp.Api.Common.csproj" />
-    <ProjectReference Include="..\WebApp.Api.Users\WebApp.Api.Users.csproj" />
+    <ProjectReference Include="..\WebApp.Api.V1\WebApp.Api.V1.csproj" />
     <ProjectReference Include="..\WebApp.Infrastructure\WebApp.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

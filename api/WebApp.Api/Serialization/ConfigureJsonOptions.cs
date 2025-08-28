@@ -11,7 +11,8 @@ namespace WebApp.Api.Serialization;
 
 public class ConfigureJsonOptions(
     INumberEncoder numberEncoder,
-    IProjectionService projectionService
+    IProjectionService projectionService,
+    IHttpContextAccessor httpContextAccessor
 ) : IConfigureOptions<JsonOptions>
 {
     public void Configure(JsonOptions options)
@@ -20,8 +21,9 @@ public class ConfigureJsonOptions(
         options.SerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
         options.SerializerOptions.Converters.Add(new UserIdJsonConverter(numberEncoder));
         options.SerializerOptions.Converters.Add(
-            new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower, true)
+            new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower)
         );
         options.SerializerOptions.Converters.Add(new ProjectableJsonConverter(projectionService));
+        options.SerializerOptions.Converters.Add(new ProblemJsonConverter(httpContextAccessor));
     }
 }
