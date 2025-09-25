@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="OneOf" />
     <PackageReference Include="NodaTime" />
   </ItemGroup>
 </Project>

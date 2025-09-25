@@ -5,10 +5,10 @@ using FluentValidation;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using OneOf;
 using WebApp.Api.Common.Codecs;
 using WebApp.Api.Common.Hashing;
 using WebApp.Api.Common.Http;
+using WebApp.Domain.Common;
 using WebApp.Domain.Constants;
 using WebApp.Domain.Entities;
 using WebApp.Infrastructure.Data;
@@ -57,12 +57,11 @@ public sealed class Endpoint(
             {
                 var created = await CreateGoogleAuthAsync(Guard.Against.Null(req.GoogleIdToken))
                     .ConfigureAwait(false);
-
-                if (created.TryPickT0(out var badRequest, out var googleAuth))
+                if (created.IsFailed)
                 {
-                    return badRequest;
+                    return created.Error;
                 }
-                auth = googleAuth;
+                auth = created.Value;
                 break;
             }
             default:
@@ -85,7 +84,7 @@ public sealed class Endpoint(
         );
     }
 
-    private static async Task<OneOf<BadRequest<Problem>, UserAuthGoogle>> CreateGoogleAuthAsync(
+    private static async Task<Attempt<UserAuthGoogle, BadRequest<Problem>>> CreateGoogleAuthAsync(
         string googleIdToken
     )
     {
