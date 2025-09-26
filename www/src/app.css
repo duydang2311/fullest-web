@@ -1,1 +1,76 @@
 @import 'tailwindcss';
+@import './lib/stylesheets/c-button.css' layer(components);
+
+@theme {
+	--color-base: oklch(97% 0.005 55.38);
+	--color-base-light: oklch(99% 0.005 55.38);
+	--color-base-dark: oklch(95% 0.005 55.38);
+	--color-base-hover: oklch(95% 0.005 55.38);
+	--color-base-active: oklch(92% 0.005 55.38);
+	--color-base-selected: oklch(90% 0.005 55.38);
+	--color-base-border: oklch(93% 0.005 55.38);
+	--color-base-border-light: oklch(95% 0.005 55.38);
+	--color-base-border-dark: oklch(91% 0.005 55.38);
+	--color-base-fg: oklch(30% 0.005 55.38);
+	--color-base-fg-dim: oklch(50% 0.005 55.38);
+	--color-base-fg-muted: oklch(70% 0.005 55.38);
+
+	--color-primary: oklch(55.36% 0.1358 55.59);
+	--color-primary-hover: oklch(58.36% 0.1358 55.59);
+	--color-primary-active: oklch(52.36% 0.1358 55.59);
+	--color-primary-border: oklch(52.36% 0.1358 55.59);
+	--color-primary-fg: oklch(100% 0.005 55.59);
+
+	--text-h1: 2.027rem;
+	--text-h2: 1.802rem;
+	--text-h3: 1.602rem;
+	--text-h4: 1.424rem;
+	--text-h5: 1.266rem;
+	--text-h6: 1.125rem;
+	--text-body: 1rem;
+	--text-sm: 0.889rem;
+
+	--default-font-family: Geist, system-ui;
+}
+
+@layer base {
+	:root {
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--color-base-fg);
+	}
+
+	body {
+		font-size: var(--text-body);
+	}
+
+	h1 {
+		font-size: var(--text-h1);
+	}
+	h2 {
+		font-size: var(--text-h2);
+	}
+	h3 {
+		font-size: var(--text-h3);
+	}
+	h4 {
+		font-size: var(--text-h4);
+	}
+	h5 {
+		font-size: var(--text-h5);
+	}
+	h6 {
+		font-size: var(--text-h6);
+	}
+	small {
+		font-size: var(--text-sm);
+	}
+}
+
+@utility ring-focus-primary {
+	@apply ring ring-primary ring-offset-1 ring-offset-base;
+}
+
+@utility ring-focus-base-fg-muted {
+	@apply ring ring-base-fg-muted ring-offset-1 ring-offset-base;
+}

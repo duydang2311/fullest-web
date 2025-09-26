@@ -1,0 +1,65 @@
+.c-button {
+	--_text: inherit;
+	--_bg: transparent;
+	--_bg-hover: transparent;
+	--_bg-active: transparent;
+	--_border: transparent;
+}
+
+.c-button--base {
+	--_text: var(--color-base-fg);
+
+	&:where(.c-button--filled) {
+		--_bg: var(--color-base-light);
+		--_bg-hover: var(--color-base-hover);
+		--_bg-active: var(--color-base-active);
+	}
+
+	&:where(.c-button--outlined) {
+		--_border: var(--color-base-border);
+	}
+
+	&:where(:focus-visible) {
+		@apply ring-focus-base-fg-muted;
+	}
+}
+
+.c-button--primary {
+	--_text: var(--color-primary);
+
+	&:where(.c-button--filled) {
+		--_text: var(--color-primary-fg);
+		--_bg: var(--color-primary);
+		--_bg-hover: var(--color-primary-hover);
+		--_bg-active: var(--color-primary-active);
+	}
+
+	&:where(.c-button--outlined) {
+		--_border: var(--color-primary-border);
+	}
+
+	&:where(:focus-visible) {
+		@apply ring-focus-primary;
+	}
+}
+
+.c-button {
+	padding: --spacing(2) --spacing(4);
+	border-radius: var(--radius-xl);
+	border: 1px solid var(--_border);
+	background-color: var(--_bg);
+	color: var(--_text);
+	@apply transition;
+
+	&:where(:hover) {
+		background-color: var(--_bg-hover);
+	}
+
+	&:where(:active) {
+		background-color: var(--_bg-active);
+	}
+
+	&:where(:focus-visible) {
+		outline: none;
+	}
+}

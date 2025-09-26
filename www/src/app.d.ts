@@ -2,6 +2,7 @@
 
 import type { Cache } from '$lib/services/cache';
 import type { HttpClient } from '$lib/services/http_client';
+import 'unplugin-icons/types/svelte';
 
 // for information about these interfaces
 declare global {
@@ -26,5 +27,4 @@ declare global {
 	}
 }
 
-export { };
-
+export {};
