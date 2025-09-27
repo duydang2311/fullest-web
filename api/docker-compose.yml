@@ -9,6 +9,18 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+  
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: api
+    ports:
+      - "8080:8080"
+      - "443:443"
+    environment:
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    restart: unless-stopped
 
 volumes:
   db_data:
