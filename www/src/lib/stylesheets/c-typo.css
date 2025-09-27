@@ -1,0 +1,5 @@
+.c-label {
+	display: block;
+	font-size: var(--text-sm);
+	color: var(--color-base-fg-dim);
+}

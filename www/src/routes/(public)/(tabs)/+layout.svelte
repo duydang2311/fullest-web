@@ -41,10 +41,7 @@
 	});
 </script>
 
-<div class="mt-8">
-	<p class="text-base-fg-muted font-bold">FULLEST</p>
-</div>
-<div class="mt-8">
+<div>
 	{#if tabs.value === '/sign-in'}
 		<h1 class="font-bold capitalize">Sign in</h1>
 		<p class="text-base-fg-dim">Fill in your credentials or sign in with other accounts.</p>
@@ -77,7 +74,7 @@
 			</button>
 		{/each}
 	</div>
-	<div {...tabs.getContentProps({ value: tabs.value! })} class="relative mt-4 flex-1 pb-16">
+	<div {...tabs.getContentProps({ value: tabs.value! })} class="relative mt-4 flex-1">
 		{@render children()}
 	</div>
 </div>

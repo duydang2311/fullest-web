@@ -1,0 +1,30 @@
+.c-input {
+	--_text: inherit;
+	--_bg: transparent;
+	--_border: transparent;
+}
+
+.c-input {
+	--_text: var(--color-base-fg);
+	--_bg: var(--color-base-light);
+	--_border: var(--color-base-border);
+}
+
+.c-input {
+	width: 100%;
+	padding: --spacing(2) --spacing(3);
+	border-radius: var(--radius-xl);
+	border: 1px solid var(--_border);
+	background-color: var(--_bg);
+	color: var(--_text);
+	@apply transition;
+
+	&:where(::placeholder) {
+		color: var(--color-base-fg-muted);
+	}
+
+	&:where(:focus-visible) {
+		outline: none;
+		@apply ring-focus-base-fg-muted;
+	}
+}

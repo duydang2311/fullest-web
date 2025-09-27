@@ -16,3 +16,15 @@ export const button = ({
 		outlined && 'c-button--outlined'
 	);
 };
+
+export const input = () => {
+	return 'c-input';
+};
+
+export const label = () => {
+	return 'c-label';
+};
+
+export const field = () => {
+	return 'c-field';
+};

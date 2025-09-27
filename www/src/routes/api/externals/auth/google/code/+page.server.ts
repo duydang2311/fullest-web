@@ -10,7 +10,7 @@ import {
 	MismatchOAuthStateError,
 	MissingGoogleAuthorizationCodeError,
 	MissingOAuthStateError,
-	ValidationError
+	ValidationError,
 } from '$lib/utils/errors';
 import { jsonify, parseHttpProblem } from '$lib/utils/http';
 import { problemDetailsValidator } from '$lib/utils/problem';

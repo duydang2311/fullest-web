@@ -1,29 +1,29 @@
 <script lang="ts">
 	import { Google } from '~/lib/components/icons';
-	import { button } from '~/lib/utils/styles';
+	import { button, field, input, label } from '~/lib/utils/styles';
 </script>
 
 <div class="flex h-full flex-col justify-between gap-8">
 	<form>
 		<fieldset class="space-y-4">
-			<div>
-				<label for="email" class="text-base-fg-dim block">Email address</label>
+			<div class={field()}>
+				<label for="email" class={label()}>Email address</label>
 				<input
 					id="email"
 					name="email"
 					type="email"
 					placeholder="Enter email address"
-					class="bg-base-light border-base-border focus-visible:ring-focus-primary placeholder:text-base-fg-muted w-full rounded-xl border px-3 py-2 transition focus-visible:outline-none"
+					class={input()}
 				/>
 			</div>
-			<div>
-				<label for="password" class="text-base-fg-dim block">Password</label>
+			<div class={field()}>
+				<label for="password" class={label()}>Password</label>
 				<input
 					id="password"
 					name="password"
 					type="password"
 					placeholder="Enter password"
-					class="bg-base-light border-base-border placeholder:text-base-fg-muted focus-visible:ring-focus-primary w-full rounded-xl border px-3 py-2 transition focus-visible:outline-none"
+					class={input()}
 				/>
 			</div>
 			<button

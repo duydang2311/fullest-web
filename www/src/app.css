@@ -1,5 +1,9 @@
 @import 'tailwindcss';
+
 @import './lib/stylesheets/c-button.css' layer(components);
+@import './lib/stylesheets/c-input.css' layer(components);
+@import './lib/stylesheets/c-typo.css' layer(components);
+@import './lib/stylesheets/c-field.css' layer(components);
 
 @theme {
 	--color-base: oklch(97% 0.005 55.59);
