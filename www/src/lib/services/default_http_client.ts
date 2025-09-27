@@ -1,8 +1,9 @@
 import { mapFetchException } from '$lib/utils/errors';
 import { trimEnd, trimStart } from '$lib/utils/string';
 import { attempt } from '@duydang2311/attempt';
-import type { HttpClient, HttpRequestOptions } from './http_client';
 import { isPlainObject } from 'is-what';
+import type { HttpClient, HttpRequestOptions } from './http_client';
+import { withQueryParams } from '../utils/url';
 
 export interface CreateDefaultHttpClientOptions {
 	fetcher: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
@@ -19,17 +20,23 @@ export class DefaultHttpClient implements HttpClient {
 	}
 
 	public async fetchRaw(url: string, options?: HttpRequestOptions) {
-		let headers = this.#mergeHeaders(this.#options.headers, options?.headers);
-		if (options?.body && (isPlainObject(options.body) || Array.isArray(options.body))) {
-			options.body = JSON.stringify(options.body);
+		const { query, ...opts } = options ?? {};
+		let headers = this.#mergeHeaders(this.#options.headers, opts?.headers);
+		if (opts?.body && (isPlainObject(opts.body) || Array.isArray(opts.body))) {
+			opts.body = JSON.stringify(opts.body);
 			if (headers == null) {
 				headers = { 'Content-Type': 'application/json' };
 			} else if (headers['Content-Type'] == null) {
 				headers['Content-Type'] = 'application/json';
 			}
 		}
-		return this.#options.fetcher(this.#normalizeUrl(url), {
-			...options,
+
+		url = this.#normalizeUrl(url);
+		if (query) {
+			url = withQueryParams(url, query);
+		}
+		return this.#options.fetcher(url, {
+			...opts,
 			headers,
 		} as RequestInit);
 	}
