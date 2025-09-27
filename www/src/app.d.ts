@@ -16,6 +16,7 @@ declare global {
 		interface Locals {
 			http: HttpClient;
 			cache: Cache;
+			session?: { userId: string };
 		}
 		// interface PageData {}
 		// interface PageState {}

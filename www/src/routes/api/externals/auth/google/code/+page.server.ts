@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private';
+import { CacheKey } from '$lib/utils/cache';
 import {
 	enrich,
 	enrichStep,
@@ -9,7 +10,7 @@ import {
 	MismatchOAuthStateError,
 	MissingGoogleAuthorizationCodeError,
 	MissingOAuthStateError,
-	ValidationError,
+	ValidationError
 } from '$lib/utils/errors';
 import { jsonify, parseHttpProblem } from '$lib/utils/http';
 import { problemDetailsValidator } from '$lib/utils/problem';
@@ -18,7 +19,6 @@ import pipe from '@bitty/pipe';
 import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { CacheKey } from '$lib/utils/cache';
 
 export const load: PageServerLoad = async ({ cookies, url }) => {
 	const oauthState = cookies.get('oauth_state');
@@ -112,6 +112,17 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
 		return error(created.error.status, ValidationError.from(created.error));
 	}
 
+	const parsedCreatedResponse = await jsonify(() => created.data.json<{ token: string }>());
+	if (parsedCreatedResponse.failed) {
+		return error(500, enrichStep('parse_create_session_response')(parsedCreatedResponse.error));
+	}
+	cookies.set('session_token', parsedCreatedResponse.data.token, {
+		path: '/',
+		maxAge: 60 * 60 * 24 * 7,
+		httpOnly: true,
+		secure: true,
+		sameSite: 'lax',
+	});
 	return redirect(303, '/');
 };
 
