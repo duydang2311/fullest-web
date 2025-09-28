@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import '@fontsource-variable/geist';
+	import '@fontsource-variable/manrope';
 	import '@fontsource-variable/geist-mono';
 	import favicon from '$lib/assets/favicon.svg';
 
