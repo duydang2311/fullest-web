@@ -1,5 +1,4 @@
-export { default as GitHubDark } from '~icons/custom/github-dark';
-export { default as GitHubLight } from '~icons/custom/github-light';
+export { default as GitHub } from '~icons/custom/github';
 export { default as Google } from '~icons/custom/google';
 export { default as Logo } from '~icons/custom/logo';
 export { default as ChartColumnOutline } from '~icons/lucide/chart-column';

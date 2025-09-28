@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { GitHubDark, GitHubLight, GlobeOutline } from '~/lib/components/icons';
+	import { GitHub, GlobeOutline } from '~/lib/components/icons';
 	import LogoType from '~/lib/components/LogoType.svelte';
 	import { button } from '~/lib/utils/styles';
 </script>
@@ -22,8 +22,7 @@
 			rel="noopener noreferrer"
 			class="{button({ filled: true, outlined: true })} inline-block"
 		>
-			<GitHubLight class="dark:hidden" />
-			<GitHubDark class="not-dark:hidden" />
+			<GitHub />
 		</a>
 	</div>
 	<p class="text-base-fg-muted mt-12">© 2025 Dang Quoc Duy, Inc. All rights reserved.</p>
