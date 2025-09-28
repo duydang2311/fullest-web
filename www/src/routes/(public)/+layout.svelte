@@ -2,6 +2,7 @@
 	import Bg from '~/lib/assets/images/login_bg.jpeg';
 	import { Logo } from '~/lib/components/icons';
 	import type { LayoutProps } from './$types';
+	import LogoType from '~/lib/components/LogoType.svelte';
 
 	const { children }: LayoutProps = $props();
 </script>
@@ -29,10 +30,7 @@
 				></path>
 			</svg>
 			<div class="relative flex flex-1 flex-col">
-				<div class="mb-8 flex items-center gap-1">
-					<Logo />
-					<p class="text-base-fg-muted font-bold">FULLEST</p>
-				</div>
+				<LogoType class="mb-8" />
 				{@render children()}
 			</div>
 		</div>
