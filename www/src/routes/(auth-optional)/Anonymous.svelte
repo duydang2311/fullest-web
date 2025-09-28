@@ -3,6 +3,7 @@
 	import { button } from '~/lib/utils/styles';
 	import FeaturesSection from './FeaturesSection.svelte';
 	import Footer from './Footer.svelte';
+	import ScrollingText from './ScrollingText.svelte';
 </script>
 
 <header class="mb-8 p-4">
@@ -30,7 +31,10 @@
 			<h1
 				class="text-base-fg-strong text-[size:clamp(var(--text-h1)+1rem,calc(var(--text-h1)+2.5vw),6rem)] text-balance font-bold leading-none tracking-tighter"
 			>
-				Task management<br />built for transparency
+				<div>Task management</div>
+				<div class="mt-2 flex items-center justify-center gap-2">
+					built for <ScrollingText />
+				</div>
 			</h1>
 			<p class="mt-4">
 				Work openly, build accountability, and create a portfolio of progress that reflects every

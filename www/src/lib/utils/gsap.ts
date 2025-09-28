@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import { gsap as __gsap } from 'gsap';
+import { createGSAPTransition } from '@duydang2311/svutils';
 
 export const gsap = {
 	...__gsap,
@@ -9,3 +10,5 @@ export const gsap = {
 		}
 	},
 };
+
+export const tsap = createGSAPTransition(gsap);
