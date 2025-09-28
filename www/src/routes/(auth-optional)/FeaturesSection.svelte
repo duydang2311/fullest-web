@@ -57,7 +57,7 @@
 
 <section
 	id="features"
-	class="bg-base text-base-fg relative mt-[calc(100vw*0.08)] min-h-screen p-8"
+	class="bg-base text-base-fg relative min-h-screen p-8"
 	data-theme="accent"
 >
 	<!-- https://www.fffuel.co/sssurf/ -->
@@ -67,7 +67,7 @@
 		xmlns:xlink="http://www.w3.org/1999/xlink"
 		viewBox="0 0 2400 800"
 		opacity="1"
-		class="absolute inset-x-0 top-1 -z-10 -translate-y-full text-base"
+		class="absolute inset-x-0 top-1 -z-10 -translate-y-3/4 text-base"
 	>
 		<defs>
 			<linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="sssurf-grad">
