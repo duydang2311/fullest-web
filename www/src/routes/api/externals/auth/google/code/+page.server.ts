@@ -105,6 +105,7 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
 		return redirect(303, '/sign-up/complete');
 	}
 
+	console.log('created', created);
 	if (created.failed) {
 		if (isError(created.error)) {
 			return error(500, created.error);

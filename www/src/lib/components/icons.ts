@@ -1,1 +1,13 @@
+export { default as GitHubDark } from '~icons/custom/github-dark';
+export { default as GitHubLight } from '~icons/custom/github-light';
 export { default as Google } from '~icons/custom/google';
+export { default as Logo } from '~icons/custom/logo';
+export { default as ChartColumnOutline } from '~icons/lucide/chart-column';
+export { default as ExternalLinkOutline } from '~icons/lucide/external-link';
+export { default as EyeOutline } from '~icons/lucide/eye';
+export { default as GlobeOutline } from '~icons/lucide/globe';
+export { default as MessageSquareOutline } from '~icons/lucide/message-square';
+export { default as ShieldOutline } from '~icons/lucide/shield';
+export { default as StarOutline } from '~icons/lucide/star';
+export { default as UsersOutline } from '~icons/lucide/users';
+export { default as ZapOutline } from '~icons/lucide/zap';

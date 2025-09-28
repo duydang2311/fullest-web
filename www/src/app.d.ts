@@ -7,6 +7,9 @@ import 'unplugin-icons/types/svelte';
 // for information about these interfaces
 declare global {
 	type MaybePromise<T> = T | Promise<T>;
+	type EitherOr<A, B> =
+		| (A & { [K in Exclude<keyof B, keyof A>]?: never })
+		| (B & { [K in Exclude<keyof A, keyof B>]?: never });
 
 	namespace App {
 		interface Error {

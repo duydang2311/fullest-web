@@ -15,6 +15,11 @@
 		--_bg-active: var(--color-base-active);
 	}
 
+	&:where(.c-button--ghost) {
+		--_bg-hover: var(--color-base-hover);
+		--_bg-active: var(--color-base-active);
+	}
+
 	&:where(.c-button--outlined) {
 		--_border: var(--color-base-border);
 	}
@@ -32,6 +37,11 @@
 		--_bg: var(--color-primary);
 		--_bg-hover: var(--color-primary-hover);
 		--_bg-active: var(--color-primary-active);
+	}
+
+	&:where(.c-button--ghost) {
+		--_bg-hover: color-mix(in oklch, var(--color-primary-hover) 10%, transparent);
+		--_bg-active: color-mix(in oklch, var(--color-primary-active) 15%, transparent);
 	}
 
 	&:where(.c-button--outlined) {

@@ -5,6 +5,9 @@
 @import './lib/stylesheets/c-typo.css' layer(components);
 @import './lib/stylesheets/c-field.css' layer(components);
 
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
+
 @theme {
 	--color-base: oklch(97% 0.005 55.59);
 	--color-base-light: oklch(99% 0.005 55.59);
@@ -13,9 +16,11 @@
 	--color-base-active: oklch(92% 0.005 55.59);
 	--color-base-selected: oklch(90% 0.005 55.59);
 	--color-base-border: oklch(93% 0.005 55.59);
-	--color-base-border-light: oklch(95% 0.005 55.59);
-	--color-base-border-dark: oklch(91% 0.005 55.59);
+	--color-base-border-strong: oklch(91% 0.005 55.59);
+	--color-base-border-weak: oklch(95% 0.005 55.59);
 	--color-base-fg: oklch(30% 0.005 55.59);
+	--color-base-fg-weak: oklch(36% 0.005 55.59);
+	--color-base-fg-strong: oklch(24% 0.005 55.59);
 	--color-base-fg-dim: oklch(50% 0.005 55.59);
 	--color-base-fg-muted: oklch(70% 0.005 55.59);
 
@@ -38,14 +43,60 @@
 }
 
 @layer base {
+	[data-theme='dark'],
+	[data-theme='dark'] * {
+		--color-base: oklch(16% 0.005 55.59);
+		--color-base-light: oklch(20% 0.005 55.59);
+		--color-base-dark: oklch(12% 0.005 55.59);
+		--color-base-hover: oklch(24% 0.005 55.59);
+		--color-base-active: oklch(20% 0.005 55.59);
+		--color-base-selected: oklch(20% 0.005 55.59);
+		--color-base-border: oklch(22% 0.005 55.59);
+		--color-base-border-strong: oklch(24% 0.005 55.59);
+		--color-base-border-weak: oklch(20% 0.005 55.59);
+		--color-base-fg: oklch(80% 0.005 55.59);
+		--color-base-fg-strong: oklch(92% 0.005 55.59);
+		--color-base-fg-weak: oklch(72% 0.005 55.59);
+		--color-base-fg-dim: oklch(68% 0.005 55.59);
+		--color-base-fg-muted: oklch(60% 0.005 55.59);
+
+		--color-primary: oklch(59.72% 0.1468 55.55);
+		--color-primary-hover: oklch(63.72% 0.1468 55.55);
+		--color-primary-active: oklch(55.72% 0.1468 55.55);
+		--color-primary-border: oklch(55.72% 0.1468 55.55);
+		--color-primary-fg: oklch(3% 0.005 55.59);
+	}
+
+	[data-theme='accent'],
+	[data-theme='accent'] * {
+		--color-base: oklch(28.27% 0.0286 68.85);
+		--color-base-light: oklch(32.27% 0.0286 68.85);
+		--color-base-dark: oklch(24.27% 0.0286 68.85);
+		--color-base-hover: oklch(34.27% 0.0286 68.85);
+		--color-base-active: oklch(32.27% 0.0286 68.85);
+		--color-base-selected: oklch(32.27% 0.0286 68.85);
+		--color-base-border: oklch(34.27% 0.0286 68.85);
+		--color-base-border-strong: oklch(38.27% 0.0286 68.85);
+		--color-base-border-weak: oklch(32.27% 0.0286 68.85);
+		--color-base-fg: oklch(82.22% 0.02 68.85);
+		--color-base-fg-strong: oklch(92.22% 0.02 68.85);
+		--color-base-fg-weak: oklch(72.22% 0.02 68.85);
+		--color-base-fg-dim: oklch(64.22% 0.02 68.85);
+		--color-base-fg-muted: oklch(56.22% 0.02 68.85);
+	}
+}
+
+@layer base {
 	:root {
 		font-size: 14px;
 		font-weight: 500;
 		color: var(--color-base-fg);
+		line-height: 1.5;
 	}
 
 	body {
 		font-size: var(--text-body);
+		background-color: var(--color-base);
 	}
 
 	h1 {
