@@ -17,7 +17,7 @@
 </script>
 
 <div
-	class="bg-primary/15 text-primary ml-0.5 p-2"
+	class="bg-primary/15 text-primary ml-0.5 px-2"
 	{@attach (node) => {
 		return untrack(() => {
 			const interval = setInterval(() => {
@@ -32,20 +32,20 @@
 				child.textContent = oldContent;
 				tl.set(node, { width: oldWidth, overflow: 'hidden' })
 					.to(child, {
-						opacity: 0,
-						duration: 0.4,
-						yPercent: 40,
+						duration: 0.2,
+						yPercent: 100,
 						ease: 'circ.inOut',
 						onComplete: () => {
 							child.textContent = texts[index];
 						},
 					})
 					.set(child, {
+						opacity: 0,
 						yPercent: -40,
 					})
 					.to(node, {
-						borderRadius: '0.5rem',
-						scale: 0.9,
+						borderRadius: '1rem',
+						scale: 0.96,
 						duration: 0.4,
 						ease: 'circ.inOut',
 					})
@@ -57,7 +57,7 @@
 							clearProps: 'width',
 							duration: 0.4,
 						},
-						'0.4'
+						'0.2'
 					)
 					.to(
 						child,
@@ -67,17 +67,21 @@
 							duration: 0.4,
 							ease: 'circ.inOut',
 						},
-						'0.6'
+						'0.4'
 					)
-					.to(node, { borderRadius: 0, duration: 0.2, scale: 1, ease: 'circ.out' }, '0.8')
-					.set(node, { clearProps: 'overflow,borderRadius,scale' });
+					.to(
+						node,
+						{ borderRadius: 0, duration: 0.2, rotate: 0, scale: 1, ease: 'circ.out' },
+						'0.8'
+					)
+					.set(node, { clearProps: 'overflow,borderRadius,scale,rotate' });
 			}, 3000);
 
 			return () => clearInterval(interval);
 		});
 	}}
 >
-	<span class="inline-block">
+	<span class="inline-block leading-normal">
 		{texts[index]}
 	</span>
 </div>
