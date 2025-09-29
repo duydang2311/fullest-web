@@ -5,6 +5,7 @@ export { default as ChartColumnOutline } from '~icons/lucide/chart-column';
 export { default as ExternalLinkOutline } from '~icons/lucide/external-link';
 export { default as EyeOutline } from '~icons/lucide/eye';
 export { default as GlobeOutline } from '~icons/lucide/globe';
+export { default as MenuOutline } from '~icons/lucide/menu';
 export { default as MessageSquareOutline } from '~icons/lucide/message-square';
 export { default as ShieldOutline } from '~icons/lucide/shield';
 export { default as StarOutline } from '~icons/lucide/star';

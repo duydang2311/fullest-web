@@ -98,7 +98,7 @@
 			Powerful features designed to streamline your workflow and boost productivity.
 		</p>
 	</div>
-	<div class="container mx-auto mt-8 grid grid-cols-[repeat(auto-fit,minmax(24rem,1fr))] gap-4">
+	<div class="max-w-container-xl mx-auto mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
 		{#each features as feature (feature.title)}
 			<div
 				class="border-base-border hover:border-base-border-strong rounded-2xl border px-4 py-6 transition hover:shadow-sm"

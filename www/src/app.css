@@ -24,6 +24,9 @@
 	--color-base-fg-dim: oklch(50% 0.005 55.59);
 	--color-base-fg-muted: oklch(70% 0.005 55.59);
 
+
+	--spacing-container-xl: 1536px;
+
 	--color-primary: oklch(55.36% 0.1358 55.59);
 	--color-primary-hover: oklch(58.36% 0.1358 55.59);
 	--color-primary-active: oklch(52.36% 0.1358 55.59);

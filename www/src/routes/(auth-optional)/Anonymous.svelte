@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { ExternalLinkOutline, Logo } from '~/lib/components/icons';
+	import { Logo } from '~/lib/components/icons';
 	import { button } from '~/lib/utils/styles';
 	import FeaturesSection from './FeaturesSection.svelte';
 	import Footer from './Footer.svelte';
+	import HeaderActions from './HeaderActions.svelte';
 	import ScrollingText from './ScrollingText.svelte';
 </script>
 
@@ -18,10 +19,7 @@
 			<div class="flex items-center gap-2">
 				<a href="#features" class={button({ variant: 'base', ghost: true })}>Features</a>
 			</div>
-			<div class="flex items-center gap-2">
-				<a href="/sign-in" class={button({ variant: 'base', ghost: true })}> Sign in </a>
-				<a href="/sign-up" class={button({ variant: 'primary', ghost: true })}> Sign up </a>
-			</div>
+			<HeaderActions />
 		</nav>
 	</div>
 </header>
@@ -29,10 +27,10 @@
 	<section class="min-h-[calc(100vh-2rem-4rem-2rem)] p-8">
 		<div class="text-center">
 			<h1
-				class="text-base-fg-strong text-[size:clamp(var(--text-h1)+1rem,calc(var(--text-h1)+2.5vw),6rem)] text-balance font-bold leading-none tracking-tighter"
+				class="text-base-fg-strong text-[size:clamp(var(--text-h1),calc(var(--text-h1)+2.5vw),6rem)] text-balance font-bold leading-none tracking-tighter"
 			>
 				<div>Task management</div>
-				<div class="mt-2 flex items-center justify-center gap-2">
+				<div class="mt-2 flex flex-wrap items-center justify-center gap-2">
 					built for <ScrollingText />
 				</div>
 			</h1>
@@ -68,10 +66,9 @@
 						variant: 'primary',
 						filled: true,
 						outlined: true,
-					})} flex items-center gap-2 rounded-full px-8"
+					})} rounded-full px-8"
 				>
-					<ExternalLinkOutline />
-					<span>Start for free</span>
+					Get started
 				</a>
 			</div>
 		</div>
