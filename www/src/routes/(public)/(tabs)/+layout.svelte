@@ -18,6 +18,7 @@
 		onValueChange: async (details) => {
 			await goto(details.value, {
 				keepFocus: true,
+				replaceState: true,
 			});
 		},
 	});
