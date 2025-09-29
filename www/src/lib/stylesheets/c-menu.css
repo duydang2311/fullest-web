@@ -1,0 +1,6 @@
+.c-menu--content {
+	background-color: var(--color-base-light);
+	border-radius: var(--radius-xl);
+	padding: --spacing(1);
+	@apply shadow-xs;
+}

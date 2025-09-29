@@ -4,6 +4,7 @@
 @import './lib/stylesheets/c-input.css' layer(components);
 @import './lib/stylesheets/c-typo.css' layer(components);
 @import './lib/stylesheets/c-field.css' layer(components);
+@import './lib/stylesheets/c-menu.css' layer(components);
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 @custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
@@ -24,8 +25,11 @@
 	--color-base-fg-dim: oklch(50% 0.005 55.59);
 	--color-base-fg-muted: oklch(70% 0.005 55.59);
 
-
 	--spacing-container-xl: 1536px;
+	--spacing-avatar-sm: 32px;
+	--spacing-avatar-md: 64px;
+	--spacing-avatar-lg: 128px;
+	--spacing-avatar-lg: 256px;
 
 	--color-primary: oklch(55.36% 0.1358 55.59);
 	--color-primary-hover: oklch(58.36% 0.1358 55.59);
