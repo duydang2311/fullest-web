@@ -8,6 +8,7 @@ public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
 {
     public void Configure(EntityTypeBuilder<Project> builder)
     {
+        builder.ToTable("projects");
         builder.Property(a => a.CreatedTime).HasDefaultValueSql("now()");
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("ProjectHiLoSequence");
         builder.Property(a => a.CreatorId);

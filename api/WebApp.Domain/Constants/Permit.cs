@@ -1,0 +1,9 @@
+namespace WebApp.Domain.Constants;
+
+public static class Permit
+{
+    public const string CreateTask = "task:create";
+    public const string ReadTask = "task:read";
+    public const string UpdateTask = "task:update";
+    public const string DeleteTask = "task:delete";
+}

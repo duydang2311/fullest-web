@@ -8,6 +8,7 @@ public sealed class ProjectMemberConfiguration : IEntityTypeConfiguration<Projec
 {
     public void Configure(EntityTypeBuilder<ProjectMember> builder)
     {
+        builder.ToTable("project_members");
         builder.Property(a => a.CreatedTime).HasDefaultValueSql("now()");
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("ProjectMemberHiLoSequence");
         builder.Property(a => a.ProjectId);

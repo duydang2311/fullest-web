@@ -9,6 +9,7 @@ public sealed class UserAuthConfiguration : IEntityTypeConfiguration<UserAuth>
 {
     public void Configure(EntityTypeBuilder<UserAuth> builder)
     {
+        builder.ToTable("user_auths");
         builder.UseTphMappingStrategy();
         builder
             .HasDiscriminator(a => a.Provider)

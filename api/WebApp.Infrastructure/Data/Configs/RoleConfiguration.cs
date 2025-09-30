@@ -8,6 +8,7 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
 {
     public void Configure(EntityTypeBuilder<Role> builder)
     {
+        builder.ToTable("roles");
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("RoleHiLoSequence");
         builder.Property(a => a.Name);
 

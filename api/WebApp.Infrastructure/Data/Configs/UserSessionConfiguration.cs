@@ -8,6 +8,7 @@ public sealed class UserSessionConfiguration : IEntityTypeConfiguration<UserSess
 {
     public void Configure(EntityTypeBuilder<UserSession> builder)
     {
+        builder.ToTable("user_sessions");
         builder.Property(a => a.CreatedTime).HasDefaultValueSql("now()");
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("UserSessionHiLoSequence");
         builder.Property(a => a.UserId).ValueGeneratedNever();

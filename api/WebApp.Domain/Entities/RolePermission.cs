@@ -2,8 +2,8 @@ namespace WebApp.Domain.Entities;
 
 public sealed record RolePermission
 {
-    public long Id { get; init; }
     public RoleId RoleId { get; init; }
     public Role Role { get; init; } = null!;
-    public string Permission { get; init; } = null!;
+    public PermissionId PermissionId { get; init; }
+    public Permission Permission { get; init; } = null!;
 }

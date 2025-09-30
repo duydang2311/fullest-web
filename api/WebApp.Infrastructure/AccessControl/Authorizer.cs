@@ -45,7 +45,7 @@ public sealed class Authorizer(HybridCache cache, AppDbContext db) : IAuthorizer
                 var (db, userId, projectId) = state;
                 return await db
                     .ProjectMembers.Where(a => a.UserId == userId && a.ProjectId == projectId)
-                    .SelectMany(a => a.Role.Permissions.Select(b => b.Permission))
+                    .SelectMany(a => a.Role.RolePermissions.Select(b => b.Permission.Name))
                     .ToHashSetAsync(StringComparer.OrdinalIgnoreCase, ct)
                     .ConfigureAwait(false);
             },

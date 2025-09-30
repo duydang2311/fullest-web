@@ -8,6 +8,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.ToTable("users");
         builder.Property(a => a.CreatedTime).HasDefaultValueSql("now()");
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("UserHiLoSequence");
         builder.Property(a => a.Name);
