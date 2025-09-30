@@ -18,7 +18,8 @@ namespace WebApp.Api.V1.Users.Create;
 public sealed class Endpoint(
     AppDbContext db,
     IPasswordHasher passwordHasher,
-    INumberEncoder numberEncoder
+    INumberEncoder numberEncoder,
+    LinkGenerator linkGenerator
 ) : Endpoint<Request, Results<Conflict<Problem>, BadRequest<Problem>, Created<Response>>>
 {
     public override void Configure()
@@ -79,7 +80,11 @@ public sealed class Endpoint(
             return TypedResults.Conflict(Problem.FromError(nameof(user.Name), ErrorCodes.Conflict));
         }
         return TypedResults.Created(
-            $"/api/users/{numberEncoder.Encode(user.Id.Value)}",
+            linkGenerator.GetUriByName(
+                HttpContext,
+                IEndpoint.GetName<GetById.Endpoint>(),
+                new { UserId = numberEncoder.Encode(user.Id.Value) }
+            ),
             new Response(user.Id)
         );
     }
