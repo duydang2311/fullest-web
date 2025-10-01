@@ -7,11 +7,8 @@ using WebApp.Domain.Entities;
 
 namespace WebApp.Api.V1.Projects.Create;
 
-public sealed record Request
+public sealed record Request(string? Name, string? Identifier)
 {
-    public string? Name { get; init; }
-    public string? Identifier { get; init; }
-
     public string? NormalizedIdentifier => Identifier?.Trim().ToLowerInvariant();
 
     [FromClaim(ClaimTypes.NameIdentifier)]
@@ -22,12 +19,12 @@ public sealed partial class RequestValidator : AbstractValidator<Request>
 {
     public RequestValidator()
     {
-        RuleFor(x => x.Name)
+        RuleFor(a => a.Name)
             .NotEmpty()
             .WithErrorCode(ErrorCodes.Required)
             .MaximumLength(100)
             .WithErrorCode(ErrorCodes.MaxLength);
-        RuleFor(x => x.NormalizedIdentifier)
+        RuleFor(a => a.NormalizedIdentifier)
             .NotEmpty()
             .WithErrorCode(ErrorCodes.Required)
             .Matches(IdentifierPattern())

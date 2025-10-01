@@ -13,7 +13,8 @@ public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("ProjectHiLoSequence");
         builder.Property(a => a.CreatorId);
         builder.Property(a => a.Name);
-        builder.Property(a => a.Identifier).HasMaxLength(32);
+        builder.Property(a => a.Identifier);
+        builder.Property(a => a.Description);
         builder.Property(a => a.DeletedTime);
 
         builder.HasIndex(a => new { a.CreatorId, a.Identifier }).IsUnique();

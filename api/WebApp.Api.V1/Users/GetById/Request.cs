@@ -1,11 +1,10 @@
 using FluentValidation;
 using WebApp.Api.Common.Http;
-using WebApp.Api.Common.Projection;
 using WebApp.Domain.Entities;
 
 namespace WebApp.Api.V1.Users.GetById;
 
-public sealed record Request(UserId UserId, string? Fields) : IProjectableRequest;
+public sealed record Request(UserId UserId, string? Fields);
 
 public sealed class RequestValidator : AbstractValidator<Request>
 {
