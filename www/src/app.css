@@ -16,20 +16,14 @@
 	--color-base-hover: oklch(95% 0.005 55.59);
 	--color-base-active: oklch(92% 0.005 55.59);
 	--color-base-selected: oklch(90% 0.005 55.59);
-	--color-base-border: oklch(93% 0.005 55.59);
-	--color-base-border-strong: oklch(91% 0.005 55.59);
-	--color-base-border-weak: oklch(95% 0.005 55.59);
+	--color-base-border: oklch(90% 0.005 55.59);
+	--color-base-border-strong: oklch(86% 0.005 55.59);
+	--color-base-border-weak: oklch(94% 0.005 55.59);
 	--color-base-fg: oklch(30% 0.005 55.59);
 	--color-base-fg-weak: oklch(36% 0.005 55.59);
 	--color-base-fg-strong: oklch(24% 0.005 55.59);
 	--color-base-fg-dim: oklch(50% 0.005 55.59);
 	--color-base-fg-muted: oklch(70% 0.005 55.59);
-
-	--spacing-container-xl: 1536px;
-	--spacing-avatar-sm: 32px;
-	--spacing-avatar-md: 64px;
-	--spacing-avatar-lg: 128px;
-	--spacing-avatar-lg: 256px;
 
 	--color-primary: oklch(55.36% 0.1358 55.59);
 	--color-primary-hover: oklch(58.36% 0.1358 55.59);
@@ -37,14 +31,29 @@
 	--color-primary-border: oklch(52.36% 0.1358 55.59);
 	--color-primary-fg: oklch(100% 0.005 55.59);
 
-	--text-h1: 2.027rem;
-	--text-h2: 1.802rem;
-	--text-h3: 1.602rem;
-	--text-h4: 1.424rem;
-	--text-h5: 1.266rem;
-	--text-h6: 1.125rem;
-	--text-body: 1rem;
-	--text-sm: 0.889rem;
+	--color-negative: oklch(54.76% 0.2242 29.3);
+	--color-negative-fg: oklch(96% 0.005 29.3);
+
+	--color-positive: oklch(50.49% 0.1717 142.5);
+	--color-positive-fg: oklch(96% 0.005 142.5);
+
+	--spacing-container-xl: 1536px;
+	--spacing-container-lg: 1024px;
+	--spacing-container-md: 768px;
+	--spacing-container-sm: 640px;
+	--spacing-avatar-sm: 32px;
+	--spacing-avatar-md: 64px;
+	--spacing-avatar-lg: 128px;
+	--spacing-avatar-lg: 256px;
+
+	--text-display-lg: 3.5rem;
+	--text-display-md: 3rem;
+	--text-title-md: 2.5rem;
+	--text-title-sm: 1.5rem;
+	--text-title-xs: 1.25rem;
+	--text-body-md: 1rem;
+	--text-body-sm: 0.875rem;
+	--text-body-xs: 0.75rem;
 
 	--default-font-family: 'Manrope Variable', system-ui;
 }
@@ -99,33 +108,16 @@
 		font-weight: 500;
 		color: var(--color-base-fg);
 		line-height: 1.5;
+		overflow-wrap: anywhere;
 	}
 
 	body {
-		font-size: var(--text-body);
+		font-size: var(--text-body-md);
 		background-color: var(--color-base);
 	}
 
-	h1 {
-		font-size: var(--text-h1);
-	}
-	h2 {
-		font-size: var(--text-h2);
-	}
-	h3 {
-		font-size: var(--text-h3);
-	}
-	h4 {
-		font-size: var(--text-h4);
-	}
-	h5 {
-		font-size: var(--text-h5);
-	}
-	h6 {
-		font-size: var(--text-h6);
-	}
 	small {
-		font-size: var(--text-sm);
+		font-size: var(--text-body-sm);
 	}
 }
 

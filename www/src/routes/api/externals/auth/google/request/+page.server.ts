@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 		});
 	});
 	const created = await attempt.async(() => createOAuthState)((e) => e as Error);
-	if (created.failed) {
+	if (!created.ok) {
 		return error(500, InternalServerError(created.error.message));
 	}
 

@@ -1,11 +1,15 @@
 export { default as GitHub } from '~icons/custom/github';
 export { default as Google } from '~icons/custom/google';
 export { default as Logo } from '~icons/custom/logo';
+export { default as ProjectOutline } from '~icons/heroicons/cube';
+export { default as Project } from '~icons/heroicons/cube-16-solid';
 export { default as ChartColumnOutline } from '~icons/lucide/chart-column';
 export { default as ChevronDownOutline } from '~icons/lucide/chevron-down';
+export { default as TaskOutline } from '~icons/lucide/circle-dot';
 export { default as ExternalLinkOutline } from '~icons/lucide/external-link';
 export { default as EyeOutline } from '~icons/lucide/eye';
 export { default as GlobeOutline } from '~icons/lucide/globe';
+export { default as LogOutOutline } from '~icons/lucide/log-out';
 export { default as MenuOutline } from '~icons/lucide/menu';
 export { default as MessageSquareOutline } from '~icons/lucide/message-square';
 export { default as PlusOutline } from '~icons/lucide/plus';

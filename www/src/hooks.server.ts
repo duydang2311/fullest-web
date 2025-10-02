@@ -32,9 +32,9 @@ export const handle: Handle = ({ event, resolve }) => {
 	}
 
 	let sessionToken: string | null = null;
-	let sessionRequired = false;
-	if (routeId.includes('(auth)')) {
-		sessionRequired = true;
+	let isPrivateRoute = false;
+	if (routeId.includes('(private)')) {
+		isPrivateRoute = true;
 		sessionToken = event.cookies.get('session_token') ?? null;
 		if (!sessionToken) {
 			return redirect(303, '/sign-in');
@@ -57,12 +57,12 @@ export const handle: Handle = ({ event, resolve }) => {
 		return event.locals.http
 			.get(`/sessions/${sessionToken}`, {
 				query: {
-					fields: 'UserId',
+					fields: 'User.Id,User.Name',
 					test: 'abc',
 				},
 			})
 			.then(async (fetchedSession) => {
-				if ((fetchedSession.failed || !fetchedSession.data.ok) && sessionRequired) {
+				if ((!fetchedSession.ok || !fetchedSession.data.ok) && isPrivateRoute) {
 					event.cookies.delete('session_token', {
 						path: '/',
 						httpOnly: true,
@@ -73,9 +73,12 @@ export const handle: Handle = ({ event, resolve }) => {
 				}
 
 				if (fetchedSession.ok) {
-					const parsed = await jsonify(() => fetchedSession.data.json<{ userId: string }>());
-					if (parsed.failed) {
-						if (sessionRequired) {
+					const parsed = await jsonify(() =>
+						fetchedSession.data.json<{ user: { id: string; name: string } }>()
+					);
+					console.log(parsed);
+					if (!parsed.ok) {
+						if (isPrivateRoute) {
 							// TODO: handle parsed.error
 							return redirect(303, '/sign-in');
 						}

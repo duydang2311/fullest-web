@@ -43,7 +43,7 @@ export class DefaultHttpClient implements HttpClient {
 
 	public async fetch(url: string, options?: HttpRequestOptions) {
 		const fetched = await attempt.async(() => this.fetchRaw(url, options))(mapFetchException);
-		if (fetched.failed) {
+		if (!fetched.ok) {
 			return attempt.fail(fetched.error);
 		}
 		return attempt.ok(fetched.data);

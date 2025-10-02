@@ -28,13 +28,11 @@
 	<div use:portal {...menuApi.getPositionerProps()}>
 		<ul {...menuApi.getContentProps()} class="{menu({ part: 'content' })} flex flex-col gap-1">
 			{#each [{ href: '/sign-in', label: 'Sign in' }, { href: '/sign-up', label: 'Sign up' }] as item (item.href)}
-				<li {...menuApi.getItemProps({ value: item.href })} class="group">
+				<li>
 					<a
+						{...menuApi.getItemProps({ value: item.href })}
 						href={item.href}
-						class="{button({
-							variant: 'base',
-							ghost: true,
-						})} group-[[data-highlighted]]:bg-base-active block"
+						class={menu({ part: 'item' })}
 					>
 						{item.label}
 					</a>

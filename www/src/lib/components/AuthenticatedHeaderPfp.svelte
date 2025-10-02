@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { portal } from '@zag-js/svelte';
 	import { createMenu } from '~/lib/components/builders.svelte';
+	import { LogOutOutline } from '~/lib/components/icons';
 	import { button, menu } from '~/lib/utils/styles';
 
 	const id = $props.id();
@@ -21,16 +22,19 @@
 	</button>
 	<div use:portal {...menuApi.getPositionerProps()}>
 		<ul {...menuApi.getContentProps()} class="{menu({ part: 'content' })} flex flex-col gap-1">
-			{#each [{ href: '/sign-out', label: 'Log out' }] as item (item.href)}
-				<li {...menuApi.getItemProps({ value: item.href })} class="group">
+			{#each [{ icon: LogOutOutline, href: '/sign-out', label: 'Log out' }] as item (item.href)}
+				<li>
 					<a
+						{...menuApi.getItemProps({ value: item.href })}
 						href={item.href}
-						class="{button({
-							variant: 'base',
-							ghost: true,
-						})} group-[[data-highlighted]]:bg-base-active block"
+						class="{menu({
+							part: 'item',
+						})} flex items-center gap-4"
 					>
-						{item.label}
+						<item.icon />
+						<span>
+							{item.label}
+						</span>
 					</a>
 				</li>
 			{/each}

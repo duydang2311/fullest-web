@@ -54,7 +54,7 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 		})
 	)(pipe(mapFetchException, enrich({ step: 'exchange_token' })));
-	if (exchanged.failed) {
+	if (!exchanged.ok) {
 		return error(500, exchanged.error);
 	}
 
@@ -71,13 +71,13 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
 			id_token: string;
 		}>()
 	);
-	if (parsed.failed) {
+	if (!parsed.ok) {
 		return error(500, enrichStep('parse_google_response')(parsed.error));
 	}
 
 	const created = await createSession(parsed.data.id_token);
 	if (
-		created.failed &&
+		!created.ok &&
 		problemDetailsValidator.check(created.error) &&
 		created.error.errors?.some(
 			(a) =>
@@ -105,8 +105,7 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
 		return redirect(303, '/sign-up/complete');
 	}
 
-	console.log('created', created);
-	if (created.failed) {
+	if (!created.ok) {
 		if (isError(created.error)) {
 			return error(500, created.error);
 		}
@@ -114,7 +113,7 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
 	}
 
 	const parsedCreatedResponse = await jsonify(() => created.data.json<{ token: string }>());
-	if (parsedCreatedResponse.failed) {
+	if (!parsedCreatedResponse.ok) {
 		return error(500, enrichStep('parse_create_session_response')(parsedCreatedResponse.error));
 	}
 	cookies.set('session_token', parsedCreatedResponse.data.token, {
@@ -135,16 +134,20 @@ const createSession = async (googleIdToken: string) => {
 			googleIdToken,
 		},
 	});
-	if (created.failed) {
+	if (!created.ok) {
 		return attempt.fail(enrichStep('create_session')(created.error));
 	}
 
 	if (!created.data.ok) {
-		const parsed = await parseHttpProblem(created.data);
-		if (parsed.failed) {
-			return attempt.fail(enrichStep('parse_create_session_http_problem')(parsed.error));
+		const parsedJson = await jsonify(() => created.data.json());
+		if (!parsedJson.ok) {
+			return attempt.fail(enrichStep('parse_response_json')(parsedJson.error));
 		}
-		return attempt.fail(parsed.data);
+		const parsedProblem = parseHttpProblem(parsedJson.data);
+		if (!parsedProblem.ok) {
+			return attempt.fail(enrichStep('parse_problem')(GenericError(parsedJson.data)));
+		}
+		return attempt.fail(parsedProblem.data);
 	}
 	return created;
 };

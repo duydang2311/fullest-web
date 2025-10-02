@@ -1,6 +1,37 @@
 .c-menu--content {
 	background-color: var(--color-base-light);
-	border-radius: var(--radius-xl);
+	border-radius: var(--radius-lg);
+	border: 1px solid var(--color-base-border);
 	padding: --spacing(1);
 	@apply shadow-xs;
+
+	&:where(:focus-visible) {
+		outline: none;
+	}
+}
+
+.c-menu--item {
+	--_text: var(--color-base-fg-dim);
+	--_text-highlighted: var(--color-base-fg-strong);
+	--_bg: var(--color-base-light);
+	--_bg-hover: var(--color-base-hover);
+	--_bg-active: var(--color-base-active);
+}
+
+.c-menu--item {
+	display: block;
+	color: var(--_text);
+	background-color: var(--_bg);
+	padding: --spacing(2) --spacing(4);
+	border-radius: var(--radius-md);
+	@apply transition duration-75;
+
+	&:where([data-highlighted]) {
+		color: var(--_text-highlighted);
+		background-color: var(--_bg-active);
+	}
+
+	&:where(:active) {
+		background-color: var(--_bg-active);
+	}
 }

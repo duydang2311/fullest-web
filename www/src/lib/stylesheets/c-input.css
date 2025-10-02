@@ -13,7 +13,7 @@
 .c-input {
 	width: 100%;
 	padding: --spacing(2) --spacing(3);
-	border-radius: var(--radius-xl);
+	border-radius: var(--radius-lg);
 	border: 1px solid var(--_border);
 	background-color: var(--_bg);
 	color: var(--_text);

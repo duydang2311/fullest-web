@@ -16,7 +16,7 @@ export const actions: Actions = {
 
 		const formData = await request.formData();
 		const formParsed = validator.parse(decode(formData));
-		if (formParsed.failed) {
+		if (!formParsed.ok) {
 			return fail(400, formParsed.error);
 		}
 
@@ -27,7 +27,7 @@ export const actions: Actions = {
 		}
 
 		const dataParsed = completeSessionDataValidator.parse(data);
-		if (dataParsed.failed) {
+		if (!dataParsed.ok) {
 			return fail(400, dataParsed.error);
 		}
 
@@ -40,12 +40,12 @@ export const actions: Actions = {
 						googleIdToken: dataParsed.data.idToken,
 					},
 				});
-				if (created.failed) {
+				if (!created.ok) {
 					return error(500, created.error);
 				}
 				if (!created.data.ok) {
 					const problemParsed = await parseHttpProblem(created.data);
-					if (problemParsed.failed) {
+					if (!problemParsed.ok) {
 						return error(500, problemParsed.error);
 					}
 					return fail(created.data.status, ValidationError.from(problemParsed.data));
@@ -57,12 +57,12 @@ export const actions: Actions = {
 						googleIdToken: dataParsed.data.idToken,
 					},
 				});
-				if (sessionCreated.failed) {
+				if (!sessionCreated.ok) {
 					return error(500, sessionCreated.error);
 				}
 				if (!sessionCreated.data.ok) {
 					const problemParsed = await parseHttpProblem(sessionCreated.data);
-					if (problemParsed.failed) {
+					if (!problemParsed.ok) {
 						return error(500, problemParsed.error);
 					}
 					return fail(sessionCreated.data.status, ValidationError.from(problemParsed.data));
@@ -73,7 +73,7 @@ export const actions: Actions = {
 						token: string;
 					}>()
 				);
-				if (jsonified.failed) {
+				if (!jsonified.ok) {
 					return error(500, jsonified.error);
 				}
 

@@ -44,10 +44,10 @@
 
 <div>
 	{#if tabs.value === '/sign-in'}
-		<h1 class="font-bold capitalize">Sign in</h1>
+		<h1 class="text-title-md font-bold capitalize">Sign in</h1>
 		<p class="text-base-fg-dim">Fill in your credentials or sign in with other accounts.</p>
 	{:else if tabs.value === '/sign-up'}
-		<h1 class="font-bold capitalize">Sign up</h1>
+		<h1 class="text-title-md font-bold capitalize">Sign up</h1>
 		<p class="text-base-fg-dim">Create a new account or sign up with other accounts.</p>
 	{/if}
 </div>

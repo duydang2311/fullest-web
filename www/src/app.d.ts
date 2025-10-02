@@ -19,7 +19,7 @@ declare global {
 		interface Locals {
 			http: HttpClient;
 			cache: Cache;
-			session?: { userId: string };
+			session?: { user: { id: string; name: string } };
 		}
 		// interface PageData {}
 		// interface PageState {}
