@@ -9,7 +9,7 @@ public sealed record Project : ISoftDelete
     public User Creator { get; init; } = null!;
     public ProjectId Id { get; init; }
     public string Name { get; init; } = null!;
-    public string Description { get; init; } = null!;
+    public string? Description { get; init; }
     public string Identifier { get; init; } = null!;
     public Instant? DeletedTime { get; init; }
     public ICollection<ProjectMember> ProjectMembers { get; init; } = null!;
