@@ -60,6 +60,7 @@ public sealed class ProjectionService : IProjectionService
         JsonSerializerOptions options
     )
     {
+        var namingPolicy = options.PropertyNamingPolicy ?? JsonNamingPolicy.CamelCase;
         writer.WriteStartObject();
         var queue =
             new Queue<(
@@ -72,7 +73,7 @@ public sealed class ProjectionService : IProjectionService
         {
             if (item.ObjectFieldName is not null)
             {
-                writer.WritePropertyName(item.ObjectFieldName);
+                writer.WritePropertyName(namingPolicy.ConvertName(item.ObjectFieldName));
                 writer.WriteStartObject();
             }
             if (item.Instance is null)
@@ -86,12 +87,12 @@ public sealed class ProjectionService : IProjectionService
                     static a => new TypeProjection(a)
                 );
                 var property = projection.Properties.GetValueOrDefault(field);
-                var fieldValue = property?.Getter(instance);
+                var fieldValue = property?.Getter(item.Instance);
                 if (value is not IDictionary<string, object?> innerTree)
                 {
                     if (property is not null)
                     {
-                        writer.WritePropertyName(field);
+                        writer.WritePropertyName(namingPolicy.ConvertName(field));
                         JsonSerializer.Serialize(writer, fieldValue, options);
                     }
                     continue;
