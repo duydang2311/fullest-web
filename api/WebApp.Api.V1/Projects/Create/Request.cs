@@ -22,6 +22,8 @@ public sealed partial class RequestValidator : AbstractValidator<Request>
         RuleFor(a => a.Name)
             .NotEmpty()
             .WithErrorCode(ErrorCodes.Required)
+            .Matches(NamePattern())
+            .WithErrorCode(ErrorCodes.Invalid)
             .MaximumLength(100)
             .WithErrorCode(ErrorCodes.MaxLength);
         RuleFor(a => a.NormalizedIdentifier)
@@ -32,6 +34,9 @@ public sealed partial class RequestValidator : AbstractValidator<Request>
             .MaximumLength(50)
             .WithErrorCode(ErrorCodes.MaxLength);
     }
+
+    [GeneratedRegex("^[a-zA-Z0-9-_]+$")]
+    private static partial Regex NamePattern();
 
     [GeneratedRegex("^[a-zA-Z0-9-_]+$")]
     private static partial Regex IdentifierPattern();
