@@ -53,7 +53,7 @@ public sealed class Endpoint(
                 IEndpoint.GetName<GetOne.ById.Endpoint>(),
                 new { ProjectId = numberEncoder.Encode(project.Id.Value) }
             ),
-            new Response { ProjectId = project.Id }
+            new Response(project.Id, project.Identifier)
         );
     }
 }
