@@ -108,7 +108,6 @@
 		font-weight: 500;
 		color: var(--color-base-fg);
 		line-height: 1.5;
-		overflow-wrap: anywhere;
 	}
 
 	body {

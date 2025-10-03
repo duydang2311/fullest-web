@@ -37,7 +37,7 @@
 							<label for="name" class="c-label">Project name *</label>
 							<input id="name" name="name" type="text" class={input()} bind:value={name} required />
 							{#if identifier}
-								<p class="c-help-text">
+								<p class="c-help-text wrap-anywhere">
 									Project will be created at: <strong
 										>{page.url.origin}/{data.username}/{identifier}</strong
 									>.
