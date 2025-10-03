@@ -22,6 +22,7 @@ public sealed class AppDbContext : DbContext, IDesignTimeDbContextFactory<AppDbC
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<Permission> Permissions => Set<Permission>();
+    public DbSet<Namespace> Namespaces => Set<Namespace>();
 
     public AppDbContext CreateDbContext(string[] args)
     {
@@ -64,9 +65,11 @@ public sealed class AppDbContext : DbContext, IDesignTimeDbContextFactory<AppDbC
         configurationBuilder
             .Properties<ProjectMemberId>()
             .HaveConversion<EntityIdConverter<ProjectMemberId, long>>();
-        configurationBuilder.Properties<RoleId>().HaveConversion<EntityIdConverter<RoleId, long>>();
         configurationBuilder
             .Properties<PermissionId>()
             .HaveConversion<EntityIdConverter<PermissionId, long>>();
+        configurationBuilder
+            .Properties<NamespaceId>()
+            .HaveConversion<EntityIdConverter<NamespaceId, long>>();
     }
 }

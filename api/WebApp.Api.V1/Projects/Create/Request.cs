@@ -35,7 +35,7 @@ public sealed partial class RequestValidator : AbstractValidator<Request>
             .WithErrorCode(ErrorCodes.MaxLength);
     }
 
-    [GeneratedRegex("^[a-zA-Z0-9-_]+$")]
+    [GeneratedRegex("^[a-zA-Z0-9-_\\s]+$")]
     private static partial Regex NamePattern();
 
     [GeneratedRegex("^[a-zA-Z0-9-_]+$")]

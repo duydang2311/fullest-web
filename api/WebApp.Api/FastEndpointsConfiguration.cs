@@ -39,7 +39,26 @@ public static class FastEndpointsConfiguration
             };
         };
 
-        config.Binding.ValueParserFor<UserId>(values =>
+        config.Binding.ValueParserForEntityId<UserId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<ProjectId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<PermissionId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<UserSessionId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<RoleId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<UserAuthId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<ProjectMemberId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<NamespaceId>(numberEncoder);
+    }
+}
+
+public static class BindingOptionsExtensions
+{
+    public static void ValueParserForEntityId<T>(
+        this BindingOptions options,
+        INumberEncoder numberEncoder
+    )
+        where T : IEntityId<long>, new()
+    {
+        options.ValueParserFor<T>(values =>
         {
             var value = values.FirstOrDefault();
             if (
@@ -49,7 +68,7 @@ public static class FastEndpointsConfiguration
             {
                 return new ParseResult(false, null);
             }
-            return new ParseResult(true, new UserId(decodedValue));
+            return new ParseResult(true, new T { Value = decodedValue });
         });
     }
 }

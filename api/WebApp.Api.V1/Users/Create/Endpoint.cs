@@ -70,7 +70,8 @@ public sealed class Endpoint(
         }
 
         var user = new User { Name = req.Name, Auths = [auth] };
-        await db.AddAsync(user, ct).ConfigureAwait(false);
+        var ns = new Namespace { Kind = NamespaceKind.User, User = user };
+        await db.AddRangeAsync([user, ns], ct).ConfigureAwait(false);
         try
         {
             await db.SaveChangesAsync(ct).ConfigureAwait(false);

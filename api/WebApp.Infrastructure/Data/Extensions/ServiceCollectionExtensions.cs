@@ -1,6 +1,7 @@
 using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using WebApp.Domain.Entities;
 using WebApp.Infrastructure.Data;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,11 @@ public static partial class ServiceCollectionExtensions
         builder
             .UseNpgsql(
                 dataOptions.ConnectionString,
-                options => options.UseNodaTime().MigrationsAssembly(dataOptions.MigrationsAssembly)
+                options =>
+                    options
+                        .UseNodaTime()
+                        .MigrationsAssembly(dataOptions.MigrationsAssembly)
+                        .MapEnum<NamespaceKind>("namespace_kind")
             )
             .EnableDetailedErrors()
             .EnableSensitiveDataLogging()

@@ -10,4 +10,5 @@ public static class ErrorCodes
     public const string Json = "ERR_JSON";
     public const string NotFound = "ERR_NOT_FOUND";
     public const string UserNotFound = "ERR_USER_NOT_FOUND";
+    public const string NamespaceNotFound = "ERR_NAMESPACE_NOT_FOUND";
 }

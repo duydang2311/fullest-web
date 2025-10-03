@@ -2,6 +2,7 @@ using Ardalis.GuardClauses;
 using EntityFramework.Exceptions.Common;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using WebApp.Api.Common.Codecs;
 using WebApp.Api.Common.Http;
 using WebApp.Domain.Entities;
@@ -28,11 +29,20 @@ public sealed class Endpoint(
         Guard.Against.Null(req.Name);
         Guard.Against.Null(req.NormalizedIdentifier);
 
+        var namespaceId = await db
+            .Namespaces.Where(a => a.UserId == req.CallerId)
+            .Select(a => (NamespaceId?)a.Id)
+            .FirstOrDefaultAsync(ct);
+        if (!namespaceId.HasValue)
+        {
+            return TypedResults.BadRequest(Problem.FromError(ErrorCodes.NamespaceNotFound));
+        }
+
         var project = new Project
         {
             Name = req.Name,
             Identifier = req.NormalizedIdentifier,
-            CreatorId = req.CallerId,
+            NamespaceId = namespaceId.Value,
         };
         db.Projects.Add(project);
         try

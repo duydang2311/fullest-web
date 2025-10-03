@@ -11,16 +11,19 @@ public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.ToTable("projects");
         builder.Property(a => a.CreatedTime).HasDefaultValueSql("now()");
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("ProjectHiLoSequence");
-        builder.Property(a => a.CreatorId);
+        builder.Property(a => a.NamespaceId);
         builder.Property(a => a.Name);
         builder.Property(a => a.Identifier);
         builder.Property(a => a.Description);
         builder.Property(a => a.DeletedTime);
 
-        builder.HasIndex(a => new { a.CreatorId, a.Identifier }).IsUnique();
+        builder.HasIndex(a => new { a.NamespaceId, a.Identifier }).IsUnique();
         builder.HasIndex(a => a.DeletedTime);
         builder.HasKey(a => a.Id);
-        builder.HasOne(a => a.Creator).WithMany(a => a.Projects).HasForeignKey(a => a.CreatorId);
+        builder
+            .HasOne(a => a.Namespace)
+            .WithMany(a => a.Projects)
+            .HasForeignKey(a => a.NamespaceId);
         builder.HasQueryFilter(a => a.DeletedTime == null);
     }
 }
