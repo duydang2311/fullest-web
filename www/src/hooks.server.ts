@@ -62,29 +62,35 @@ export const handle: Handle = ({ event, resolve }) => {
 				},
 			})
 			.then(async (fetchedSession) => {
-				if ((!fetchedSession.ok || !fetchedSession.data.ok) && isPrivateRoute) {
+				if (!fetchedSession.ok) {
+					if (isPrivateRoute) {
+						return redirect(303, withQueryParams('/sign-in', { return_to: event.url.pathname }));
+					}
+					return withRuntime(event.locals)(resolve, event);
+				}
+
+				if (!fetchedSession.data.ok) {
 					event.cookies.delete('session_token', {
 						path: '/',
 						httpOnly: true,
 						secure: true,
 						sameSite: 'lax',
 					});
-					return redirect(303, withQueryParams('/sign-in', { return_to: event.url.pathname }));
+					if (isPrivateRoute) {
+						return redirect(303, withQueryParams('/sign-in', { return_to: event.url.pathname }));
+					}
 				}
 
-				if (fetchedSession.ok) {
-					const parsed = await jsonify(() =>
-						fetchedSession.data.json<{ user: { id: string; name: string } }>()
-					);
-					console.log(parsed);
-					if (!parsed.ok) {
-						if (isPrivateRoute) {
-							// TODO: handle parsed.error
-							return redirect(303, '/sign-in');
-						}
-					} else {
-						event.locals.session = parsed.data;
+				const parsed = await jsonify(() =>
+					fetchedSession.data.json<{ user: { id: string; name: string } }>()
+				);
+				if (!parsed.ok) {
+					if (isPrivateRoute) {
+						// TODO: handle parsed.error
+						return redirect(303, '/sign-in');
 					}
+				} else {
+					event.locals.session = parsed.data;
 				}
 				return withRuntime(event.locals)(resolve, event);
 			});
