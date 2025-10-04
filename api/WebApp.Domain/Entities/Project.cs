@@ -14,4 +14,5 @@ public sealed record Project : ISoftDelete
     public string Identifier { get; init; } = null!;
     public Instant? DeletedTime { get; init; }
     public ICollection<ProjectMember> ProjectMembers { get; init; } = null!;
+    public ICollection<Tag> Tags { get; init; } = null!;
 }

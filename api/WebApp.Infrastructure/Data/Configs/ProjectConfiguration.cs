@@ -25,6 +25,13 @@ public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .HasOne(a => a.Namespace)
             .WithMany(a => a.Projects)
             .HasForeignKey(a => a.NamespaceId);
+        builder
+            .HasMany(a => a.Tags)
+            .WithMany(a => a.Projects)
+            .UsingEntity<ProjectTag>(
+                r => r.HasOne(a => a.Tag).WithMany().HasForeignKey(a => a.TagId),
+                l => l.HasOne(a => a.Project).WithMany().HasForeignKey(a => a.ProjectId)
+            );
         builder.HasQueryFilter(a => a.DeletedTime == null);
     }
 }

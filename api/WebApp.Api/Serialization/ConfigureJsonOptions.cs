@@ -40,6 +40,7 @@ public class ConfigureJsonOptions(
         options.SerializerOptions.Converters.Add(
             new EntityIdJsonConverter<ProjectMemberId>(numberEncoder)
         );
+        options.SerializerOptions.Converters.Add(new EntityIdJsonConverter<TagId>(numberEncoder));
         options.SerializerOptions.Converters.Add(
             new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower)
         );

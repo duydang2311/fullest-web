@@ -47,6 +47,7 @@ public static class FastEndpointsConfiguration
         config.Binding.ValueParserForEntityId<UserAuthId>(numberEncoder);
         config.Binding.ValueParserForEntityId<ProjectMemberId>(numberEncoder);
         config.Binding.ValueParserForEntityId<NamespaceId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<TagId>(numberEncoder);
     }
 }
 
