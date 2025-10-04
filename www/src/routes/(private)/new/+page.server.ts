@@ -56,8 +56,8 @@ export const actions: Actions = {
 		e.cookies.set('last_created_project', parsedBody.data.id, {
 			path,
 			httpOnly: true,
-			sameSite: 'lax',
 			secure: true,
+			sameSite: 'lax',
 		});
 
 		return redirect(303, path);
@@ -68,7 +68,7 @@ const validator = createValidator(
 	v.object({
 		name: v.string(),
 		identifier: v.string(),
-		description: v.optional(v.string()),
+		summary: v.optional(v.string()),
 	})
 );
 
@@ -76,6 +76,6 @@ function decode(formData: FormData) {
 	return {
 		name: formData.get('name'),
 		identifier: formData.get('identifier'),
-		description: formData.get('description'),
+		summary: formData.get('summary'),
 	};
 }
