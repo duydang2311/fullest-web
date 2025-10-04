@@ -10,32 +10,37 @@
 @custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
 
 @theme {
-	--color-base: oklch(97% 0.005 55.59);
-	--color-base-light: oklch(99% 0.005 55.59);
-	--color-base-dark: oklch(95% 0.005 55.59);
-	--color-base-hover: oklch(95% 0.005 55.59);
-	--color-base-active: oklch(92% 0.005 55.59);
-	--color-base-selected: oklch(90% 0.005 55.59);
-	--color-base-border: oklch(90% 0.005 55.59);
-	--color-base-border-strong: oklch(86% 0.005 55.59);
-	--color-base-border-weak: oklch(94% 0.005 55.59);
-	--color-base-fg: oklch(30% 0.005 55.59);
-	--color-base-fg-weak: oklch(36% 0.005 55.59);
-	--color-base-fg-strong: oklch(24% 0.005 55.59);
-	--color-base-fg-dim: oklch(50% 0.005 55.59);
-	--color-base-fg-muted: oklch(70% 0.005 55.59);
+	--color-base: oklch(98% 0.001 45.19);
+	--color-base-light: oklch(100% 0.001 45.19);
+	--color-base-dark: oklch(96% 0.001 45.19);
+	--color-base-hover: oklch(95% 0.001 45.19);
+	--color-base-active: oklch(92% 0.001 45.19);
+	--color-base-selected: oklch(90% 0.001 45.19);
+	--color-base-border: oklch(90% 0.001 45.19);
+	--color-base-border-strong: oklch(86% 0.001 45.19);
+	--color-base-border-weak: oklch(94% 0.001 45.19);
+	--color-base-fg: oklch(30% 0.001 45.19);
+	--color-base-fg-weak: oklch(36% 0.001 45.19);
+	--color-base-fg-strong: oklch(24% 0.001 45.19);
+	--color-base-fg-dim: oklch(50% 0.001 45.19);
+	--color-base-fg-muted: oklch(70% 0.001 45.19);
 
-	--color-primary: oklch(55.36% 0.1358 55.59);
-	--color-primary-hover: oklch(58.36% 0.1358 55.59);
-	--color-primary-active: oklch(52.36% 0.1358 55.59);
-	--color-primary-border: oklch(52.36% 0.1358 55.59);
-	--color-primary-fg: oklch(100% 0.005 55.59);
+	--color-primary: oklch(53.9% 0.1535 45.19);
+	--color-primary-hover: oklch(56.9% 0.1535 45.19);
+	--color-primary-active: oklch(50.9% 0.1535 45.19);
+	--color-primary-border: oklch(50.9% 0.1535 45.19);
+	--color-primary-fg: oklch(98.9% 0.005 45.19);
 
-	--color-negative: oklch(54.76% 0.2242 29.3);
-	--color-negative-fg: oklch(96% 0.005 29.3);
+	--color-negative: oklch(54.5% 0.1888 24.42);
+	--color-negative-fg: oklch(98.9% 0.005 24.42);
 
 	--color-positive: oklch(50.49% 0.1717 142.5);
 	--color-positive-fg: oklch(96% 0.005 142.5);
+	--color-positive-border: oklch(45.49% 0.1717 142.5);
+
+	--color-info: oklch(52.19% 0.1978 258.63);
+	--color-info-hover: oklch(55.19% 0.1978 258.63);
+	--color-info-fg: oklch(98.9% 0.005 258.63);
 
 	--spacing-container-xl: 1536px;
 	--spacing-container-lg: 1024px;
@@ -55,7 +60,9 @@
 	--text-body-sm: 0.875rem;
 	--text-body-xs: 0.75rem;
 
-	--default-font-family: 'Manrope Variable', system-ui;
+	--default-transition-duration: 75ms;
+
+	--default-font-family: 'Geist Variable', system-ui, sans-serif;
 }
 
 @layer base {
@@ -105,7 +112,7 @@
 @layer base {
 	:root {
 		font-size: 14px;
-		font-weight: 500;
+		font-weight: 400;
 		color: var(--color-base-fg);
 		line-height: 1.5;
 	}

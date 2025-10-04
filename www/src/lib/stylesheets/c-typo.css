@@ -13,3 +13,11 @@
 	font-size: var(--text-body-xs);
 	color: var(--color-base-fg-dim);
 }
+
+.c-link {
+	@apply transition duration-75;
+	&:where(:hover) {
+		color: var(--color-info-hover);
+		text-decoration: underline;
+	}
+}

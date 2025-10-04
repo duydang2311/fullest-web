@@ -16,6 +16,7 @@ export const ErrorKind = {
 	ValidationError: 'ValidationError',
 	GoogleOAuthExchangeError: 'GoogleOAuthExchangeError',
 	GenericError: 'GenericError',
+	NotFoundError: 'NotFoundError',
 } as const;
 
 export const ErrorCode = {
@@ -80,6 +81,10 @@ export interface GenericError extends App.Error {
 	context: unknown;
 }
 
+export interface NotFoundError extends App.Error {
+	kind: ErrorKind['NotFoundError'];
+}
+
 const error = <T>(object: T) => ({
 	message: '', // bypassing App.Error required property
 	...object,
@@ -122,6 +127,9 @@ export const ValidationError = Object.assign(
 );
 export const GenericError = (context: unknown): GenericError =>
 	error({ kind: ErrorKind.GenericError, context });
+export function NotFoundError(): NotFoundError {
+	return error({ kind: ErrorKind.NotFoundError });
+}
 
 export const enrich =
 	(context: { step: string }) =>

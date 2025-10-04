@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
-	import '@fontsource-variable/manrope';
 	import '@fontsource-variable/geist-mono';
+	import '@fontsource-variable/geist';
 	import favicon from '$lib/assets/favicon.svg';
 
 	const { children } = $props();
