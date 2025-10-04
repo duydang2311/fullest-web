@@ -12,6 +12,13 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("RoleHiLoSequence");
         builder.Property(a => a.Name);
 
+        builder
+            .HasMany(a => a.Permissions)
+            .WithMany()
+            .UsingEntity<RolePermission>(
+                r => r.HasOne(a => a.Permission).WithMany().HasForeignKey(a => a.PermissionId),
+                l => l.HasOne(a => a.Role).WithMany().HasForeignKey(a => a.RoleId)
+            );
         builder.HasKey(a => a.Id);
     }
 }
