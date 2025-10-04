@@ -7,9 +7,10 @@ using WebApp.Domain.Entities;
 
 namespace WebApp.Api.V1.Projects.Create;
 
-public sealed record Request(string? Name, string? Identifier)
+public sealed record Request(string? Name, string? Identifier, string? Summary)
 {
     public string? NormalizedIdentifier => Identifier?.Trim().ToLowerInvariant();
+    public string? NormalizedSummary => Summary?.Trim();
 
     [FromClaim(ClaimTypes.NameIdentifier)]
     public UserId CallerId { get; init; }
@@ -29,10 +30,23 @@ public sealed partial class RequestValidator : AbstractValidator<Request>
         RuleFor(a => a.NormalizedIdentifier)
             .NotEmpty()
             .WithErrorCode(ErrorCodes.Required)
+            .WithName(nameof(Request.Identifier))
             .Matches(IdentifierPattern())
             .WithErrorCode(ErrorCodes.Invalid)
+            .WithName(nameof(Request.Identifier))
             .MaximumLength(50)
-            .WithErrorCode(ErrorCodes.MaxLength);
+            .WithErrorCode(ErrorCodes.MaxLength)
+            .WithName(nameof(Request.Identifier));
+        When(
+            a => !string.IsNullOrEmpty(a.NormalizedSummary),
+            () =>
+            {
+                RuleFor(a => a.NormalizedSummary)
+                    .MaximumLength(350)
+                    .WithErrorCode(ErrorCodes.MaxLength)
+                    .WithName(nameof(Request.Summary));
+            }
+        );
     }
 
     [GeneratedRegex("^[a-zA-Z0-9-_\\s]+$")]

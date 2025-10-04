@@ -43,6 +43,7 @@ public sealed class Endpoint(
             Name = req.Name,
             Identifier = req.NormalizedIdentifier,
             NamespaceId = namespaceId.Value,
+            Summary = req.NormalizedSummary,
         };
         db.Projects.Add(project);
         try
