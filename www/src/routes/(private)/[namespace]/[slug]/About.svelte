@@ -7,8 +7,7 @@
 	const { project }: Props = $props();
 </script>
 
-<div>
-	{#if project.about && project.about.length > 0}
-		<p>{project.about}</p>
-	{/if}
-</div>
+<h2 class="text-base-fg-strong font-semibold tracking-tight">About</h2>
+{#if project.about && project.about.length > 0}
+	<p class="mt-4">{project.about}</p>
+{/if}

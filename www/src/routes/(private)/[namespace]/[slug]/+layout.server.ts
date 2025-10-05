@@ -1,11 +1,12 @@
 import { attempt } from '@duydang2311/attempt';
 import { error } from '@sveltejs/kit';
+import type { Project } from '~/lib/models/project';
 import { enrichStep, NotFoundError, ValidationError } from '~/lib/utils/errors';
 import { jsonify, parseFailedResponse } from '~/lib/utils/http';
 import { useRuntime } from '~/lib/utils/runtime';
-import type { PageServerLoad } from './$types';
+import type { LayoutServerLoad } from './$types';
 
-export const load: PageServerLoad = async (e) => {
+export const load: LayoutServerLoad = async (e) => {
 	const fetchedAll = await fetchNamespace(e.params.namespace).then((ns) =>
 		ns.pipe(
 			attempt.mapError((e) => enrichStep('fetch_namespace')(e)),
@@ -93,12 +94,6 @@ async function fetchProject(namespaceId: string, identifier: string) {
 	}
 
 	return await jsonify(() =>
-		fetched.data.json<{
-			id: string;
-			name: string;
-			identifier: string;
-			summary?: string;
-			about?: string;
-		}>()
+		fetched.data.json<Pick<Project, 'id' | 'name' | 'identifier' | 'summary' | 'about' | 'tags'>>()
 	);
 }

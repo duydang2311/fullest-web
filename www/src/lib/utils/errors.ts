@@ -74,6 +74,7 @@ export interface MissingGoogleAuthorizationCodeError extends App.Error {
 export interface ValidationError extends App.Error {
 	kind: ErrorKind['ValidationError'];
 	errors: Record<string, string[]>;
+	detail?: string;
 }
 
 export interface GenericError extends App.Error {
@@ -108,8 +109,8 @@ export const MismatchOAuthStateError = (): MismatchOAuthStateError =>
 export const MissingGoogleAuthorizationCodeError = (): MissingGoogleAuthorizationCodeError =>
 	error({ kind: ErrorKind.MissingGoogleAuthorizationCodeError });
 export const ValidationError = Object.assign(
-	(errors: Record<string, string[]>): ValidationError =>
-		error({ kind: ErrorKind.ValidationError, errors }),
+	(errors: Record<string, string[]>, detail?: string): ValidationError =>
+		error({ kind: ErrorKind.ValidationError, errors, detail }),
 	{
 		from: (problemDetails: ProblemDetails) => {
 			return ValidationError(
@@ -120,7 +121,8 @@ export const ValidationError = Object.assign(
 						acc[cur.field].push(cur.code);
 					}
 					return acc;
-				}, {}) ?? {}
+				}, {}) ?? {},
+				problemDetails.detail
 			);
 		},
 	}
