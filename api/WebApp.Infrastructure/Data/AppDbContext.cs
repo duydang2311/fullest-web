@@ -24,6 +24,8 @@ public sealed class AppDbContext : DbContext, IDesignTimeDbContextFactory<AppDbC
     public DbSet<Permission> Permissions => Set<Permission>();
     public DbSet<Namespace> Namespaces => Set<Namespace>();
     public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
+    public DbSet<TaskEntityAssignee> TaskAssignees => Set<TaskEntityAssignee>();
 
     public AppDbContext CreateDbContext(string[] args)
     {
@@ -73,5 +75,6 @@ public sealed class AppDbContext : DbContext, IDesignTimeDbContextFactory<AppDbC
             .Properties<NamespaceId>()
             .HaveConversion<EntityIdConverter<NamespaceId, long>>();
         configurationBuilder.Properties<TagId>().HaveConversion<EntityIdConverter<TagId, long>>();
+        configurationBuilder.Properties<TaskId>().HaveConversion<EntityIdConverter<TaskId, long>>();
     }
 }
