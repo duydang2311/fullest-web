@@ -76,5 +76,14 @@ public sealed class AppDbContext : DbContext, IDesignTimeDbContextFactory<AppDbC
             .HaveConversion<EntityIdConverter<NamespaceId, long>>();
         configurationBuilder.Properties<TagId>().HaveConversion<EntityIdConverter<TagId, long>>();
         configurationBuilder.Properties<TaskId>().HaveConversion<EntityIdConverter<TaskId, long>>();
+        configurationBuilder
+            .Properties<LabelId>()
+            .HaveConversion<EntityIdConverter<LabelId, long>>();
+        configurationBuilder
+            .Properties<StatusId>()
+            .HaveConversion<EntityIdConverter<StatusId, long>>();
+        configurationBuilder
+            .Properties<ProjectStatusId>()
+            .HaveConversion<EntityIdConverter<ProjectStatusId, long>>();
     }
 }

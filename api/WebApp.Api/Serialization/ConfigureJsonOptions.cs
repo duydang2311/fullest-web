@@ -42,6 +42,13 @@ public class ConfigureJsonOptions(
         );
         options.SerializerOptions.Converters.Add(new EntityIdJsonConverter<TagId>(numberEncoder));
         options.SerializerOptions.Converters.Add(new EntityIdJsonConverter<TaskId>(numberEncoder));
+        options.SerializerOptions.Converters.Add(new EntityIdJsonConverter<LabelId>(numberEncoder));
+        options.SerializerOptions.Converters.Add(
+            new EntityIdJsonConverter<StatusId>(numberEncoder)
+        );
+        options.SerializerOptions.Converters.Add(
+            new EntityIdJsonConverter<ProjectStatusId>(numberEncoder)
+        );
         options.SerializerOptions.Converters.Add(
             new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower)
         );

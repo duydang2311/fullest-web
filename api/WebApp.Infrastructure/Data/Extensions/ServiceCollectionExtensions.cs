@@ -35,6 +35,7 @@ public static partial class ServiceCollectionExtensions
                         .UseNodaTime()
                         .MigrationsAssembly(dataOptions.MigrationsAssembly)
                         .MapEnum<NamespaceKind>("namespace_kind")
+                        .MapEnum<StatusCategory>("status_category")
             )
             .EnableDetailedErrors()
             .EnableSensitiveDataLogging()

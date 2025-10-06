@@ -14,9 +14,11 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("TaskHiLoSequence");
         builder.Property(a => a.ProjectId).ValueGeneratedNever();
         builder.Property(a => a.PublicId).ValueGeneratedOnAdd().UseHiLo("TaskPublicIdHiLoSequence");
-        builder.Property(a => a.Name);
+        builder.Property(a => a.Title);
         builder.Property(a => a.Description);
         builder.Property(a => a.DeletedTime);
+        builder.Property(a => a.DueTime);
+        builder.Property(a => a.DueTz);
 
         builder.HasKey(a => a.Id);
         builder.HasOne(a => a.Project).WithMany(a => a.Tasks).HasForeignKey(a => a.ProjectId);
@@ -28,6 +30,14 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 r => r.HasOne(a => a.User).WithMany().HasForeignKey(a => a.UserId),
                 l => l.HasOne(a => a.Task).WithMany().HasForeignKey(a => a.TaskId)
             );
+        builder
+            .HasMany(a => a.Labels)
+            .WithMany()
+            .UsingEntity<TaskLabel>(
+                r => r.HasOne(a => a.Label).WithMany().HasForeignKey(a => a.LabelId),
+                l => l.HasOne(a => a.Task).WithMany().HasForeignKey(a => a.TaskId)
+            );
+        builder.HasOne(a => a.ProjectStatus).WithMany().HasForeignKey(a => a.ProjectStatusId);
         builder.HasQueryFilter(a => a.DeletedTime == null && a.Project.DeletedTime == null);
     }
 }

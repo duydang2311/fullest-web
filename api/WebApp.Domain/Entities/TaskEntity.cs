@@ -13,7 +13,12 @@ public sealed record TaskEntity : ISoftDelete
     public User Author { get; init; } = null!;
     public ICollection<User> Assignees { get; init; } = null!;
     public long PublicId { get; init; }
-    public string Name { get; init; } = null!;
+    public string Title { get; init; } = null!;
+    public ProjectStatusId? ProjectStatusId { get; init; }
+    public ProjectStatus? ProjectStatus { get; init; }
     public string? Description { get; init; }
+    public Instant? DueTime { get; init; }
+    public string? DueTz { get; init; }
     public Instant? DeletedTime { get; init; }
+    public ICollection<Label> Labels { get; init; } = null!;
 }
