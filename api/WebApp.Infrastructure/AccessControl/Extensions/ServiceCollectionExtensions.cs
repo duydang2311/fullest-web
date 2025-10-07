@@ -6,7 +6,7 @@ public static partial class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAccessControlGroup(this IServiceCollection services)
     {
-        services.AddSingleton<IAuthorizer, Authorizer>();
+        services.AddScoped<IAuthorizer, Authorizer>();
         return services;
     }
 }

@@ -1,6 +1,7 @@
 using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using WebApp.Application.Data;
 using WebApp.Domain.Entities;
 using WebApp.Infrastructure.Data;
 
@@ -22,6 +23,7 @@ public static partial class ServiceCollectionExtensions
                 Configure(builder, dataOptions);
             }
         );
+        services.AddScoped<IAppDbContext, AppDbContext>();
         return services;
     }
 
