@@ -12,7 +12,6 @@ public sealed class ProjectStatusConfiguration : IEntityTypeConfiguration<Projec
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("ProjectStatusHiLoSequence");
         builder.Property(a => a.ProjectId).ValueGeneratedNever();
         builder.Property(a => a.StatusId).ValueGeneratedNever();
-        builder.Property(a => a.IsDefault);
 
         builder.HasKey(a => a.Id);
         builder.HasOne(a => a.Project).WithMany().HasForeignKey(a => a.ProjectId);

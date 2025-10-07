@@ -7,5 +7,4 @@ public sealed record ProjectStatus
     public Project Project { get; init; } = null!;
     public StatusId StatusId { get; init; }
     public Status Status { get; init; } = null!;
-    public bool IsDefault { get; init; }
 }
