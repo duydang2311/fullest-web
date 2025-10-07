@@ -8,7 +8,12 @@ using WebApp.Api.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDataGroup().AddProjectionGroup().AddCodecsGroup().AddHashingGroup();
+builder
+    .Services.AddDataGroup()
+    .AddProjectionGroup()
+    .AddCodecsGroup()
+    .AddHashingGroup()
+    .AddEventHandlersGroup();
 builder.Services.AddSingleton<ISlugHelper, SlugHelper>();
 
 builder.Services.AddProblemDetails(a =>

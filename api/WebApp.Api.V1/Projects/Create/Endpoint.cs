@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApp.Api.Common.Codecs;
 using WebApp.Api.Common.Http;
 using WebApp.Domain.Entities;
+using WebApp.Domain.Events;
 using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Projects.Create;
@@ -13,7 +14,8 @@ namespace WebApp.Api.V1.Projects.Create;
 public sealed class Endpoint(
     AppDbContext db,
     INumberEncoder numberEncoder,
-    LinkGenerator linkGenerator
+    LinkGenerator linkGenerator,
+    IEnumerable<IProjectCreatedHandler> projectCreatedHandlers
 ) : Endpoint<Request, Results<Conflict<Problem>, BadRequest<Problem>, Created<Response>>>
 {
     public override void Configure()
@@ -45,13 +47,21 @@ public sealed class Endpoint(
             NamespaceId = namespaceId.Value,
             Summary = req.NormalizedSummary,
         };
-        db.Projects.Add(project);
+        await db.Projects.AddAsync(project, ct).ConfigureAwait(false);
+        var projectCreated = new ProjectCreated(project.Id, req.CallerId);
+        foreach (var handler in projectCreatedHandlers)
+        {
+            await handler.HandleAsync(projectCreated, ct).ConfigureAwait(false);
+        }
         try
         {
             await db.SaveChangesAsync(ct).ConfigureAwait(false);
         }
         catch (UniqueConstraintException e)
-            when (e.ConstraintProperties.Any(a => a.Equals(nameof(Project.Identifier))))
+            when (e.ConstraintProperties.Any(a =>
+                    a.Equals(nameof(Project.Identifier), StringComparison.Ordinal)
+                )
+            )
         {
             return TypedResults.Conflict(
                 Problem.FromError(nameof(req.Identifier), ErrorCodes.Conflict)

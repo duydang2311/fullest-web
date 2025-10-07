@@ -1,13 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using WebApp.Application.Data;
 using WebApp.Domain.Constants;
 using WebApp.Domain.Entities;
 using WebApp.Infrastructure.Data.Converters;
 
 namespace WebApp.Infrastructure.Data;
 
-public sealed class AppDbContext : DbContext, IDesignTimeDbContextFactory<AppDbContext>
+public sealed class AppDbContext
+    : DbContext,
+        IAppDbContext,
+        IDesignTimeDbContextFactory<AppDbContext>
 {
     public AppDbContext()
         : base() { }
