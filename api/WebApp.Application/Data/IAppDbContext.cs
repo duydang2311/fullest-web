@@ -5,6 +5,8 @@ namespace WebApp.Application.Data;
 
 public interface IAppDbContext
 {
+    DbContextId ContextId { get; }
+
     DbSet<User> Users { get; }
     DbSet<UserSession> UserSessions { get; }
     DbSet<UserAuth> UserAuths { get; }

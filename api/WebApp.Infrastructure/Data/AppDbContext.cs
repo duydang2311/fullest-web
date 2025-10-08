@@ -25,6 +25,7 @@ public sealed class AppDbContext
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
     public DbSet<Role> Roles => Set<Role>();
+    public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
     public DbSet<Permission> Permissions => Set<Permission>();
     public DbSet<Namespace> Namespaces => Set<Namespace>();
     public DbSet<Tag> Tags => Set<Tag>();

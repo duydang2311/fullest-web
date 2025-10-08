@@ -39,4 +39,13 @@ public sealed class ProjectRoleDefaults(RoleId id, string name, int rank, string
         rank: 500,
         permissions: [.. Manager.Permissions]
     );
+
+    public static readonly ProjectRoleDefaults[] AllRoles =
+    [
+        Viewer,
+        Contributor,
+        Member,
+        Manager,
+        Owner,
+    ];
 }

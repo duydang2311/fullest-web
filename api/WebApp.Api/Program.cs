@@ -5,6 +5,7 @@ using WebApp.Api;
 using WebApp.Api.Middlewares;
 using WebApp.Api.Security;
 using WebApp.Api.Serialization;
+using WebApp.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder
     .AddProjectionGroup()
     .AddCodecsGroup()
     .AddHashingGroup()
+    .AddAccessControlGroup()
     .AddEventHandlersGroup();
 builder.Services.AddSingleton<ISlugHelper, SlugHelper>();
 
@@ -60,4 +62,11 @@ app.UseFastEndpoints(options =>
 
 ValidatorOptions.Global.LanguageManager.Enabled = false;
 
-app.Run();
+var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+await using (var scope = scopeFactory.CreateAsyncScope())
+{
+    var seed = scope.ServiceProvider.GetRequiredService<SeedDatabase>();
+    await seed.EnsureRolesAsync().ConfigureAwait(false);
+}
+
+await app.RunAsync().ConfigureAwait(false);

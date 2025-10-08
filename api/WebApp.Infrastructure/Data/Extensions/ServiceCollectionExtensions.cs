@@ -23,7 +23,8 @@ public static partial class ServiceCollectionExtensions
                 Configure(builder, dataOptions);
             }
         );
-        services.AddScoped<IAppDbContext, AppDbContext>();
+        services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+        services.AddScoped<SeedDatabase>();
         return services;
     }
 
