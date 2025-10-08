@@ -13,7 +13,7 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
         builder.Property(a => a.UpdatedTime);
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("TaskHiLoSequence");
         builder.Property(a => a.ProjectId).ValueGeneratedNever();
-        builder.Property(a => a.PublicId).ValueGeneratedOnAdd().UseHiLo("TaskPublicIdHiLoSequence");
+        builder.Property(a => a.PublicId).ValueGeneratedOnAdd();
         builder.Property(a => a.Title);
         builder.Property(a => a.Description);
         builder.Property(a => a.DeletedTime);
