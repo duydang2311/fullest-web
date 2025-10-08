@@ -11,12 +11,13 @@ export function parseHttpProblem(input: Response | unknown) {
 	return problemDetailsValidator.parse(input);
 }
 
-export async function parseFailedResponse(response: Response) {
+export async function parseHttpError(response: Response) {
 	invariant(!response.ok, 'response must have error status code');
 	const parsedBody = await jsonify(() => response.json());
 	if (!parsedBody.ok) {
 		return parsedBody;
 	}
+
 	const parsedProblem = parseHttpProblem(parsedBody.data);
 	if (!parsedProblem.ok) {
 		return attempt.fail(ValidationError({ $: [response.status + ''] }));

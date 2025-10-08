@@ -10,7 +10,7 @@ export const createMenu = (props: menu.Props) => {
 	return new Menu(props);
 };
 
-class Tabs {
+export class Tabs {
 	readonly #api: tabs.Api;
 
 	constructor(props: tabs.Props) {

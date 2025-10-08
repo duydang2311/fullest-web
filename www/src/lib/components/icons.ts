@@ -15,6 +15,7 @@ export { default as LogOutOutline } from '~icons/lucide/log-out';
 export { default as MenuOutline } from '~icons/lucide/menu';
 export { default as MessageSquareOutline } from '~icons/lucide/message-square';
 export { default as PlusOutline } from '~icons/lucide/plus';
+export { default as MagnifyingGlass } from '~icons/lucide/search';
 export { default as ShieldOutline } from '~icons/lucide/shield';
 export { default as StarOutline } from '~icons/lucide/star';
 export { default as UsersOutline } from '~icons/lucide/users';

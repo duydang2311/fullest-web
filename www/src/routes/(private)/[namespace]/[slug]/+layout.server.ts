@@ -2,7 +2,7 @@ import { attempt } from '@duydang2311/attempt';
 import { error } from '@sveltejs/kit';
 import type { Project } from '~/lib/models/project';
 import { enrichStep, NotFoundError, ValidationError } from '~/lib/utils/errors';
-import { jsonify, parseFailedResponse } from '~/lib/utils/http';
+import { jsonify, parseHttpError } from '~/lib/utils/http';
 import { useRuntime } from '~/lib/utils/runtime';
 import type { LayoutServerLoad } from './$types';
 
@@ -64,7 +64,7 @@ async function fetchNamespace(namespace: string) {
 			if (response.status === 404) {
 				return error(404, NotFoundError());
 			}
-			const parsed = await parseFailedResponse(response);
+			const parsed = await parseHttpError(response);
 			if (!parsed.ok) {
 				return attempt.fail(parsed.error);
 			}
@@ -86,7 +86,7 @@ async function fetchProject(namespaceId: string, identifier: string) {
 		if (fetched.data.status === 404) {
 			return error(404, NotFoundError());
 		}
-		const parsedFailedResponse = await parseFailedResponse(fetched.data);
+		const parsedFailedResponse = await parseHttpError(fetched.data);
 		if (!parsedFailedResponse.ok) {
 			return attempt.fail(parsedFailedResponse.error);
 		}

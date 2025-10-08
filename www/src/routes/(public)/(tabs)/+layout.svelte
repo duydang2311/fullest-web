@@ -65,7 +65,7 @@
 			>
 				{#if tabs.value === tab.value}
 					<div
-						class="active-tab bg-base-selected group-focus-visible:ring-focus-base-fg-muted absolute inset-0 rounded-xl transition-[box-shadow]"
+						class="active-tab bg-base-selected group-focus-visible:ring-focus-base-fg absolute inset-0 rounded-xl transition-[box-shadow]"
 						data-flip-id="active-tab"
 					></div>
 				{/if}

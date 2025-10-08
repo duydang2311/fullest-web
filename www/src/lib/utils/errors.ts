@@ -3,21 +3,23 @@ import * as v from 'valibot';
 import type { ProblemDetails } from './problem';
 import { createValidator } from './validation';
 
-export const ErrorKind = {
-	AbortError: 'AbortError',
-	HttpNetworkError: 'HttpNetworkError',
-	HttpUnknownError: 'HttpUnknownError',
-	JsonSyntaxError: 'JsonSyntaxError',
-	JsonUnknownError: 'JsonUnknownError',
-	InternalServerError: 'InternalServerError',
-	MissingOAuthStateError: 'MissingOAuthStateError',
-	MismatchOAuthStateError: 'MismatchOAuthStateError',
-	MissingGoogleAuthorizationCodeError: 'MissingGoogleAuthorizationCodeError',
-	ValidationError: 'ValidationError',
-	GoogleOAuthExchangeError: 'GoogleOAuthExchangeError',
-	GenericError: 'GenericError',
-	NotFoundError: 'NotFoundError',
-} as const;
+export enum ErrorKind {
+	Abort = 'Abort',
+	HttpNetwork = 'HttpNetwork',
+	HttpUnknown = 'HttpUnknown',
+	JsonSyntax = 'JsonSyntax',
+	JsonUnknown = 'JsonUnknown',
+	InternalServer = 'InternalServer',
+	MissingOAuthState = 'MissingOAuthState',
+	MismatchOAuthState = 'MismatchOAuthState',
+	MissingGoogleAuthorizationCode = 'MissingGoogleAuthorizationCode',
+	Validation = 'Validation',
+	GoogleOAuthExchange = 'GoogleOAuthExchange',
+	Generic = 'Generic',
+	NotFound = 'NotFound',
+	Forbidden = 'Forbidden',
+	Unknown = 'Unknown',
+}
 
 export const ErrorCode = {
 	Invalid: 'ERR_INVALID',
@@ -31,59 +33,67 @@ export const ErrorCode = {
 } as const;
 
 export type ErrorCode = typeof ErrorCode;
-export type ErrorKind = typeof ErrorKind;
 
 export interface AbortError extends App.Error {
-	kind: ErrorKind['AbortError'];
+	kind: ErrorKind.Abort;
 }
 
 export interface HttpNetworkError extends App.Error {
-	kind: ErrorKind['HttpNetworkError'];
+	kind: ErrorKind.HttpNetwork;
 }
 
 export interface HttpUnknownError extends App.Error {
-	kind: ErrorKind['HttpUnknownError'];
+	kind: ErrorKind.HttpUnknown;
 	details?: unknown;
 }
 
 export interface JsonSyntaxError extends App.Error {
-	kind: ErrorKind['JsonSyntaxError'];
+	kind: ErrorKind.JsonSyntax;
 }
 
 export interface JsonUnknownError extends App.Error {
-	kind: ErrorKind['JsonUnknownError'];
+	kind: ErrorKind.JsonUnknown;
 	details?: unknown;
 }
 
 export interface InternalServerError extends App.Error {
-	kind: ErrorKind['InternalServerError'];
+	kind: ErrorKind.InternalServer;
 }
 
 export interface MissingOAuthStateError extends App.Error {
-	kind: ErrorKind['MissingOAuthStateError'];
+	kind: ErrorKind.MissingOAuthState;
 }
 
 export interface MismatchOAuthStateError extends App.Error {
-	kind: ErrorKind['MismatchOAuthStateError'];
+	kind: ErrorKind.MismatchOAuthState;
 }
 
 export interface MissingGoogleAuthorizationCodeError extends App.Error {
-	kind: ErrorKind['MissingGoogleAuthorizationCodeError'];
+	kind: ErrorKind.MissingGoogleAuthorizationCode;
 }
 
 export interface ValidationError extends App.Error {
-	kind: ErrorKind['ValidationError'];
+	kind: ErrorKind.Validation;
 	errors: Record<string, string[]>;
 	detail?: string;
 }
 
 export interface GenericError extends App.Error {
-	kind: ErrorKind['GenericError'];
+	kind: ErrorKind.Generic;
 	context: unknown;
 }
 
 export interface NotFoundError extends App.Error {
-	kind: ErrorKind['NotFoundError'];
+	kind: ErrorKind.NotFound;
+}
+
+export interface ForbiddenError extends App.Error {
+	kind: ErrorKind.Forbidden;
+}
+
+export interface UnknownError extends App.Error {
+	kind: ErrorKind.Unknown;
+	context?: unknown;
 }
 
 const error = <T>(object: T) => ({
@@ -93,24 +103,24 @@ const error = <T>(object: T) => ({
 
 type RichError<T> = T & { context: { step: string } };
 
-export const AbortError = (): AbortError => error({ kind: ErrorKind.AbortError });
-export const HttpNetworkError = (): HttpNetworkError => error({ kind: ErrorKind.HttpNetworkError });
+export const AbortError = (): AbortError => error({ kind: ErrorKind.Abort });
+export const HttpNetworkError = (): HttpNetworkError => error({ kind: ErrorKind.HttpNetwork });
 export const HttpUnknownError = (details?: unknown): HttpUnknownError =>
-	error({ kind: ErrorKind.HttpUnknownError, details });
-export const JsonSyntaxError = (): JsonSyntaxError => error({ kind: ErrorKind.JsonSyntaxError });
+	error({ kind: ErrorKind.HttpUnknown, details });
+export const JsonSyntaxError = (): JsonSyntaxError => error({ kind: ErrorKind.JsonSyntax });
 export const JsonUnknownError = (details?: unknown): JsonUnknownError =>
-	error({ kind: ErrorKind.JsonUnknownError, details });
+	error({ kind: ErrorKind.JsonUnknown, details });
 export const InternalServerError = (message?: string): InternalServerError =>
-	error({ kind: ErrorKind.InternalServerError, message: message ?? '' });
+	error({ kind: ErrorKind.InternalServer, message: message ?? '' });
 export const MissingOAuthStateError = (): MissingOAuthStateError =>
-	error({ kind: ErrorKind.MissingOAuthStateError });
+	error({ kind: ErrorKind.MissingOAuthState });
 export const MismatchOAuthStateError = (): MismatchOAuthStateError =>
-	error({ kind: ErrorKind.MismatchOAuthStateError });
+	error({ kind: ErrorKind.MismatchOAuthState });
 export const MissingGoogleAuthorizationCodeError = (): MissingGoogleAuthorizationCodeError =>
-	error({ kind: ErrorKind.MissingGoogleAuthorizationCodeError });
+	error({ kind: ErrorKind.MissingGoogleAuthorizationCode });
 export const ValidationError = Object.assign(
 	(errors: Record<string, string[]>, detail?: string): ValidationError =>
-		error({ kind: ErrorKind.ValidationError, errors, detail }),
+		error({ kind: ErrorKind.Validation, errors, detail }),
 	{
 		from: (problemDetails: ProblemDetails) => {
 			return ValidationError(
@@ -128,9 +138,15 @@ export const ValidationError = Object.assign(
 	}
 );
 export const GenericError = (context: unknown): GenericError =>
-	error({ kind: ErrorKind.GenericError, context });
+	error({ kind: ErrorKind.Generic, context });
 export function NotFoundError(): NotFoundError {
-	return error({ kind: ErrorKind.NotFoundError });
+	return error({ kind: ErrorKind.NotFound });
+}
+export function ForbiddenError(): ForbiddenError {
+	return error({ kind: ErrorKind.Forbidden });
+}
+export function UnknownError(context?: unknown): UnknownError {
+	return error({ kind: ErrorKind.Unknown, context });
 }
 
 export const enrich =

@@ -29,7 +29,7 @@
 	}
 
 	&:where(:focus-visible) {
-		@apply ring-focus-base-fg-muted;
+		@apply ring-focus-base-fg;
 	}
 }
 
@@ -62,11 +62,12 @@
 }
 
 .c-button {
-	padding: --spacing(2) --spacing(3);
+	padding: --spacing(1.5) --spacing(3);
 	border-radius: var(--radius-lg);
 	border: 1px solid var(--_border);
 	background-color: var(--_bg);
 	color: var(--_text);
+	font-weight: 500;
 	@apply transition;
 
 	&:where(.c-button--icon) {
