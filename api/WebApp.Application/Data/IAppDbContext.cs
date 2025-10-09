@@ -18,4 +18,6 @@ public interface IAppDbContext
     DbSet<Tag> Tags { get; }
     DbSet<TaskEntity> Tasks { get; }
     DbSet<TaskEntityAssignee> TaskAssignees { get; }
+    DbSet<Status> Statuses { get; }
+    DbSet<ProjectStatus> ProjectStatuses { get; }
 }

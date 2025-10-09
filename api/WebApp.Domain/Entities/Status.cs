@@ -6,5 +6,6 @@ public sealed record Status
     public string Name { get; init; } = null!;
     public StatusCategory Category { get; init; }
     public string Color { get; init; } = null!;
+    public string Rank { get; init; } = null!;
     public string? Description { get; init; }
 }

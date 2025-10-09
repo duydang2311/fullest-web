@@ -5,7 +5,7 @@ using WebApp.Domain.Events;
 
 namespace WebApp.Application.Features.ProjectMembers.Create;
 
-public sealed class CreateProjectOwner(IAppDbContext db) : IProjectCreatedHandler
+public sealed class AddProjectCreatorAsProjectOwner(IAppDbContext db) : IProjectCreatedHandler
 {
     public async Task HandleAsync(ProjectCreated created, CancellationToken ct)
     {
