@@ -1,9 +1,12 @@
 namespace WebApp.Api.Common.Projection;
 
-public readonly struct Projectable(object value, string? fields)
+public sealed record Projectable(object Value, string? Fields)
 {
-    public object Value { get; } = value;
-    public string? Fields { get; } = fields;
+    public static Func<T, Projectable> From<T>(string? fields)
+        where T : notnull
+    {
+        return value => new Projectable(value, fields);
+    }
 }
 
 public static class ProjectableExtensions
