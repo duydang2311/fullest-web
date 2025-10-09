@@ -66,10 +66,11 @@ const transformValibotIssues = (issues: v.BaseIssue<unknown>[]) => {
 	return ValidationError(
 		issues.reduce<Record<string, string[]>>((acc, cur) => {
 			const path = v.getDotPath(cur) ?? '$';
+			const type = cur.received === 'undefined' ? 'required' : cur.type;
 			if (!acc[path]) {
-				acc[path] = [cur.type];
+				acc[path] = [type];
 			} else {
-				acc[path].push(cur.type);
+				acc[path].push(type);
 			}
 			return acc;
 		}, {})
