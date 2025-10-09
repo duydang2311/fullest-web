@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { createTextEditor, TextEditor } from '~/lib/components/editor.svelte';
-	import { PlusOutline } from '~/lib/components/icons';
-	import { ErrorKind } from '~/lib/utils/errors.js';
+	import Errors from '~/lib/components/Errors.svelte';
+	import { ExclamationCircleOutline, PlusOutline } from '~/lib/components/icons';
+	import InlineAlert from '~/lib/components/InlineAlert.svelte';
+	import { matchNone } from '~/lib/utils/comparer.js';
+	import { ErrorKind, flattenErrorEntries } from '~/lib/utils/errors.js';
 	import { button, field, input, label } from '~/lib/utils/styles';
 
 	const { data, form } = $props();
@@ -25,12 +28,18 @@
 				type="text"
 				class={input()}
 				required
-				minlength="0"
+				minlength="1"
 				placeholder="Enter task title"
+				aria-invalid={fieldErrors.title ? true : undefined}
 			/>
-			{#if fieldErrors.title}
-				<p class="c-help-text text-negative">{fieldErrors.title}</p>
-			{/if}
+			<Errors
+				errors={fieldErrors.title}
+				transforms={{
+					required: 'Enter a title for the task.',
+					string: 'Enter a title for the task.',
+				}}
+				class="c-help-text text-negative"
+			/>
 		</div>
 		<div class={field()}>
 			<!-- svelte-ignore a11y_label_has_associated_control -->
@@ -70,7 +79,7 @@
 					placeholder="Enter task description"
 				></textarea>
 			</noscript>
-			<p class="c-help-text">Supported text format: Plain text, Markdown.</p>
+			<p class="c-help-text">Supported formats: Plain text, Markdown.</p>
 		</div>
 		<button
 			type="submit"
@@ -90,10 +99,13 @@
 				You do not have permission to create tasks in this project.
 			</p>
 		{:else if form.kind === ErrorKind.Validation}
-			{form.errors}
-			<p class="c-help-text text-negative">
-				You do not have permission to create tasks in this project.
-			</p>
+			{@const errors = Object.entries(form.errors)
+				.filter(([k]) => matchNone('title', 'description')(k))
+				.flatMap(flattenErrorEntries)}
+			<InlineAlert variant="negative" header="Invalid submission">
+				<p class="c-help-text">Please review and correct the following errors:</p>
+				<Errors {errors} class="mt-1" />
+			</InlineAlert>
 		{/if}
 	{/if}
 </form>

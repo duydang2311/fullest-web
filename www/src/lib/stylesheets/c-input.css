@@ -2,12 +2,14 @@
 	--_text: inherit;
 	--_bg: transparent;
 	--_border: transparent;
+	--_border-invalid: transparent;
 }
 
 .c-input {
 	--_text: var(--color-base-fg);
 	--_bg: var(--color-base-light);
 	--_border: var(--color-base-border);
+	--_border-invalid: color-mix(in oklch, var(--color-negative-border) 60%, transparent);
 }
 
 .c-input {
@@ -26,5 +28,13 @@
 	&:where(:focus-visible) {
 		outline: none;
 		@apply ring-focus-base-fg;
+	}
+
+	&:where([aria-invalid='true']) {
+		border-color: var(--_border-invalid);
+		&:where(:focus-visible) {
+			outline: none;
+			@apply ring-focus-negative;
+		}
 	}
 }

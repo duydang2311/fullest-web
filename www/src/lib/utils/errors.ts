@@ -214,3 +214,7 @@ export const isError = (error: unknown): error is v.InferOutput<typeof errorSche
 export const isRichError = <T>(error: T): error is RichError<T> => {
 	return richErrorValidator.check(error);
 };
+
+export const flattenErrorEntries = ([field, errors]: [string, string[]]): string[] => {
+	return errors.map((e) => `${field}:${e}`);
+};

@@ -5,6 +5,7 @@
 @import './lib/stylesheets/c-typo.css' layer(components);
 @import './lib/stylesheets/c-field.css' layer(components);
 @import './lib/stylesheets/c-menu.css' layer(components);
+@import './lib/stylesheets/c-inline-alert.css' layer(components);
 
 @plugin '@tailwindcss/typography';
 
@@ -35,6 +36,7 @@
 
 	--color-negative: oklch(54.5% 0.1888 24.42);
 	--color-negative-fg: oklch(98.9% 0.005 24.42);
+	--color-negative-border: oklch(49.5% 0.1888 24.42);
 
 	--color-positive: oklch(50.49% 0.1717 142.5);
 	--color-positive-fg: oklch(96% 0.005 142.5);
@@ -131,11 +133,15 @@
 }
 
 @utility ring-focus-primary {
-	@apply ring-2 ring-primary/15;
+	@apply ring-2 ring-primary/20;
 }
 
 @utility ring-focus-base-fg {
 	@apply ring-2 ring-base-fg/15;
+}
+
+@utility ring-focus-negative {
+	@apply ring-2 ring-negative/20;
 }
 
 .tiptap p.is-editor-empty:first-child::before {

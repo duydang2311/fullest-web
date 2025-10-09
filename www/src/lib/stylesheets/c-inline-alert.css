@@ -1,0 +1,26 @@
+.c-inline-alert--header {
+	--_color: transparent;
+}
+
+.c-inline-alert--header--base {
+	--_color: var(--color-base-fg-strong);
+}
+
+.c-inline-alert--header--negative {
+	--_color: var(--color-negative);
+}
+
+.c-inline-alert--header {
+	color: var(--_color);
+	font-weight: 600;
+}
+
+.c-inline-alert--icon--negative {
+	--_color: var(--color-negative);
+}
+
+.c-inline-alert--icon {
+	flex-shrink: 0;
+	transform: translateY(0.125lh);
+	color: var(--_color);
+}

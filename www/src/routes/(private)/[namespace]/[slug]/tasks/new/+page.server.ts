@@ -1,5 +1,6 @@
 import { attempt } from '@duydang2311/attempt';
 import { error, fail, redirect } from '@sveltejs/kit';
+import invariant from 'tiny-invariant';
 import * as v from 'valibot';
 import type { Task } from '~/lib/models/task';
 import { enrichStep, ForbiddenError, GenericError, ValidationError } from '~/lib/utils/errors';
@@ -10,12 +11,14 @@ import type { Actions } from './$types';
 export const actions: Actions = {
 	default: async (e) => {
 		const formData = await e.request.formData();
-
-		const validated = validator.parse({
+		const input = {
 			projectId: formData.get('projectId'),
 			title: formData.get('title'),
 			description: formData.get('description'),
-		});
+		};
+		invariant(typeof input.projectId === 'string', 'projectId must be a string');
+
+		const validated = validator.parse(input);
 		if (!validated.ok) {
 			return fail(400, validated.error);
 		}
