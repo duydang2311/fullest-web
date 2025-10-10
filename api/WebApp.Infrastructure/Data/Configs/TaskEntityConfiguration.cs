@@ -37,7 +37,6 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 r => r.HasOne(a => a.Label).WithMany().HasForeignKey(a => a.LabelId),
                 l => l.HasOne(a => a.Task).WithMany().HasForeignKey(a => a.TaskId)
             );
-        builder.HasOne(a => a.ProjectStatus).WithMany().HasForeignKey(a => a.ProjectStatusId);
         builder.HasQueryFilter(a => a.DeletedTime == null && a.Project.DeletedTime == null);
     }
 }

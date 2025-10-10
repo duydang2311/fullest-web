@@ -4,9 +4,9 @@ using WebApp.Domain.Constants;
 using WebApp.Domain.Entities;
 using WebApp.Domain.Events;
 
-namespace WebApp.Application.Features.ProjectStatuses.Create;
+namespace WebApp.Application.Features.Statuses.Create;
 
-public sealed class CreateDefaultProjectStatuses(IAppDbContext db) : IProjectCreatedHandler
+public sealed class CreateDefaultStatuses(IAppDbContext db) : IProjectCreatedHandler
 {
     public const string BASE_95_DIGITS =
         " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
@@ -19,20 +19,17 @@ public sealed class CreateDefaultProjectStatuses(IAppDbContext db) : IProjectCre
             StatusDefaults.All.Length,
             BASE_95_DIGITS
         );
-        await db.ProjectStatuses.AddRangeAsync(
+        await db.Statuses.AddRangeAsync(
             StatusDefaults.All.Select(
                 (a, i) =>
-                    new ProjectStatus
+                    new Status
                     {
                         ProjectId = created.ProjectId,
-                        Status = new Status
-                        {
-                            Name = a.Name,
-                            Color = a.Color,
-                            Category = a.Category,
-                            Description = a.Description,
-                            Rank = ranks[i],
-                        },
+                        Name = a.Name,
+                        Color = a.Color,
+                        Category = a.Category,
+                        Description = a.Description,
+                        Rank = ranks[i],
                     }
             ),
             ct

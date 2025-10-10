@@ -17,6 +17,6 @@ public sealed record Project : ISoftDelete
     public ICollection<Tag> Tags { get; init; } = null!;
     public ICollection<TaskEntity> Tasks { get; init; } = null!;
     public ICollection<Status> Statuses { get; init; } = null!;
-    public ProjectStatusId? DefaultProjectStatusId { get; init; }
-    public ProjectStatus? DefaultProjectStatus { get; init; }
+    public StatusId? DefaultStatusId { get; init; }
+    public Status? DefaultStatus { get; init; }
 }

@@ -33,16 +33,9 @@ public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
                 l => l.HasOne(a => a.Project).WithMany().HasForeignKey(a => a.ProjectId)
             );
         builder
-            .HasMany(a => a.Statuses)
-            .WithMany()
-            .UsingEntity<ProjectStatus>(
-                r => r.HasOne(a => a.Status).WithMany().HasForeignKey(a => a.StatusId),
-                l => l.HasOne(a => a.Project).WithMany().HasForeignKey(a => a.ProjectId)
-            );
-        builder
-            .HasOne(a => a.DefaultProjectStatus)
+            .HasOne(a => a.DefaultStatus)
             .WithOne()
-            .HasForeignKey<Project>(a => a.DefaultProjectStatusId);
+            .HasForeignKey<Project>(a => a.DefaultStatusId);
         builder.HasQueryFilter(a => a.DeletedTime == null);
     }
 }

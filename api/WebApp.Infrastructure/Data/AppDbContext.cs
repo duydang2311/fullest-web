@@ -32,7 +32,6 @@ public sealed class AppDbContext
     public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
     public DbSet<TaskEntityAssignee> TaskAssignees => Set<TaskEntityAssignee>();
     public DbSet<Status> Statuses => Set<Status>();
-    public DbSet<ProjectStatus> ProjectStatuses => Set<ProjectStatus>();
 
     public AppDbContext CreateDbContext(string[] args)
     {
@@ -89,8 +88,5 @@ public sealed class AppDbContext
         configurationBuilder
             .Properties<StatusId>()
             .HaveConversion<EntityIdConverter<StatusId, long>>();
-        configurationBuilder
-            .Properties<ProjectStatusId>()
-            .HaveConversion<EntityIdConverter<ProjectStatusId, long>>();
     }
 }

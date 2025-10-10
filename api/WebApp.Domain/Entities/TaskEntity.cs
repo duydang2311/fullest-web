@@ -14,8 +14,8 @@ public sealed record TaskEntity : ISoftDelete
     public ICollection<User> Assignees { get; init; } = null!;
     public long PublicId { get; init; }
     public string Title { get; init; } = null!;
-    public ProjectStatusId? ProjectStatusId { get; init; }
-    public ProjectStatus? ProjectStatus { get; init; }
+    public StatusId? StatusId { get; init; }
+    public Status? Status { get; init; }
     public string? Description { get; init; }
     public Instant? DueTime { get; init; }
     public string? DueTz { get; init; }

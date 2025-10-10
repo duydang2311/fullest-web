@@ -1,5 +1,5 @@
 using WebApp.Application.Features.ProjectMembers.Create;
-using WebApp.Application.Features.ProjectStatuses.Create;
+using WebApp.Application.Features.Statuses.Create;
 using WebApp.Domain.Events;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddEventHandlersGroup(this IServiceCollection services)
     {
         services.AddScoped<IProjectCreatedHandler, AddProjectCreatorAsProjectOwner>();
-        services.AddScoped<IProjectCreatedHandler, CreateDefaultProjectStatuses>();
+        services.AddScoped<IProjectCreatedHandler, CreateDefaultStatuses>();
         return services;
     }
 }
