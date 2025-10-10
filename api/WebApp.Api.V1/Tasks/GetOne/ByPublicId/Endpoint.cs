@@ -12,7 +12,7 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
 {
     public override void Configure()
     {
-        Get("projects/{ProjectId}/tasks/{TaskId}");
+        Get("projects/{ProjectId}/tasks/{PublicId}");
         Version(1);
         PreProcessor<Authorize>();
     }
