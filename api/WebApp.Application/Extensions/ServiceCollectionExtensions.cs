@@ -1,3 +1,4 @@
+using WebApp.Application.Features.Priorities.Create;
 using WebApp.Application.Features.ProjectMembers.Create;
 using WebApp.Application.Features.Statuses.Create;
 using WebApp.Domain.Events;
@@ -10,6 +11,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IProjectCreatedHandler, AddProjectCreatorAsProjectOwner>();
         services.AddScoped<IProjectCreatedHandler, CreateDefaultStatuses>();
+        services.AddScoped<IProjectCreatedHandler, CreateDefaultPriorities>();
         return services;
     }
 }

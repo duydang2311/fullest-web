@@ -5,9 +5,9 @@ using WebApp.Domain.Constants;
 using WebApp.Domain.Entities;
 using WebApp.Domain.Events;
 
-namespace WebApp.Application.Features.Statuses.Create;
+namespace WebApp.Application.Features.Priorities.Create;
 
-public sealed class CreateDefaultStatuses(BaseDbContext db) : IProjectCreatedHandler
+public sealed class CreateDefaultPriorities(BaseDbContext db) : IProjectCreatedHandler
 {
     public const string BASE_95_DIGITS =
         " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
@@ -17,29 +17,28 @@ public sealed class CreateDefaultStatuses(BaseDbContext db) : IProjectCreatedHan
         var ranks = OrderKeyGenerator.GenerateNKeysBetween(
             null,
             null,
-            StatusDefaults.All.Length,
+            PriorityDefaults.All.Length,
             BASE_95_DIGITS
         );
-        var statuses = StatusDefaults
+        var priorities = PriorityDefaults
             .All.Select(
                 (a, i) =>
-                    new Status
+                    new Priority
                     {
                         ProjectId = created.ProjectId,
                         Name = a.Name,
                         Color = a.Color,
-                        Category = a.Category,
                         Description = a.Description,
                         Rank = ranks[i],
                     }
             )
             .ToList();
-        await db.Statuses.AddRangeAsync(statuses, ct);
+        await db.Priorities.AddRangeAsync(priorities, ct);
         await db.SaveChangesAsync(ct).ConfigureAwait(false);
         await db
             .Projects.Where(a => a.Id == created.ProjectId)
             .ExecuteUpdateAsync(
-                a => a.SetProperty(b => b.DefaultStatusId, b => statuses[0].Id),
+                a => a.SetProperty(b => b.DefaultPriorityId, b => priorities[0].Id),
                 ct
             );
     }

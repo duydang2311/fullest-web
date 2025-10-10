@@ -40,6 +40,7 @@ public sealed class Endpoint(
             return TypedResults.BadRequest(Problem.FromError(ErrorCodes.NamespaceNotFound));
         }
 
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
         var project = new Project
         {
             Name = req.Name,
@@ -48,11 +49,6 @@ public sealed class Endpoint(
             Summary = req.NormalizedSummary,
         };
         await db.Projects.AddAsync(project, ct).ConfigureAwait(false);
-        var projectCreated = new ProjectCreated(project.Id, req.CallerId);
-        foreach (var handler in projectCreatedHandlers)
-        {
-            await handler.HandleAsync(projectCreated, ct).ConfigureAwait(false);
-        }
         try
         {
             await db.SaveChangesAsync(ct).ConfigureAwait(false);
@@ -68,6 +64,13 @@ public sealed class Endpoint(
             );
         }
 
+        var projectCreated = new ProjectCreated(project.Id, req.CallerId);
+        foreach (var handler in projectCreatedHandlers)
+        {
+            await handler.HandleAsync(projectCreated, ct).ConfigureAwait(false);
+        }
+
+        await tx.CommitAsync(ct).ConfigureAwait(false);
         return TypedResults.Created(
             linkGenerator.GetUriByName(
                 HttpContext,
