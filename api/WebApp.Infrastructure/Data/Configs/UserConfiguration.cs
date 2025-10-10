@@ -17,6 +17,5 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(a => a.Name).IsUnique();
         builder.HasIndex(a => a.DeletedTime);
         builder.HasKey(a => a.Id);
-        builder.HasQueryFilter(a => a.DeletedTime == null);
     }
 }

@@ -21,6 +21,7 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
         builder.Property(a => a.DueTz);
 
         builder.HasKey(a => a.Id);
+        builder.HasIndex(a => a.DeletedTime);
         builder.HasOne(a => a.Project).WithMany(a => a.Tasks).HasForeignKey(a => a.ProjectId);
         builder.HasOne(a => a.Author).WithMany().HasForeignKey(a => a.AuthorId);
         builder
@@ -37,6 +38,5 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 r => r.HasOne(a => a.Label).WithMany().HasForeignKey(a => a.LabelId),
                 l => l.HasOne(a => a.Task).WithMany().HasForeignKey(a => a.TaskId)
             );
-        builder.HasQueryFilter(a => a.DeletedTime == null && a.Project.DeletedTime == null);
     }
 }

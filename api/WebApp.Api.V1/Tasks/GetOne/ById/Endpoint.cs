@@ -22,7 +22,9 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
         CancellationToken ct
     )
     {
-        var query = db.Tasks.Where(a => a.Id == req.TaskId && a.ProjectId == req.ProjectId);
+        var query = db.Tasks.Where(a =>
+            a.DeletedTime == null && a.Id == req.TaskId && a.ProjectId == req.ProjectId
+        );
         if (!string.IsNullOrEmpty(req.Fields))
         {
             query = query.Select(projectionService.Project<TaskEntity>(req.Fields));

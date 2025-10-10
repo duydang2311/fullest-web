@@ -22,7 +22,9 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
     )
     {
         var query = db.Projects.Where(a =>
-            a.NamespaceId == req.NamespaceId && a.Identifier.Equals(req.Identifier)
+            a.DeletedTime == null
+            && a.NamespaceId == req.NamespaceId
+            && a.Identifier.Equals(req.Identifier)
         );
 
         if (!string.IsNullOrEmpty(req.Fields))

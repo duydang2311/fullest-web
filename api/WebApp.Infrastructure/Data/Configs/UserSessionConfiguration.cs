@@ -16,6 +16,5 @@ public sealed class UserSessionConfiguration : IEntityTypeConfiguration<UserSess
 
         builder.HasIndex(a => new { a.UserId, a.Token }).IsUnique();
         builder.HasKey(a => a.Id);
-        builder.HasQueryFilter(a => a.User.DeletedTime == null);
     }
 }

@@ -23,6 +23,5 @@ public sealed class ProjectMemberConfiguration : IEntityTypeConfiguration<Projec
             .HasForeignKey(a => a.ProjectId);
         builder.HasOne(a => a.User).WithMany(a => a.ProjectMembers).HasForeignKey(a => a.UserId);
         builder.HasOne(a => a.Role).WithMany().HasForeignKey(a => a.RoleId);
-        builder.HasQueryFilter(a => a.Project.DeletedTime == null);
     }
 }

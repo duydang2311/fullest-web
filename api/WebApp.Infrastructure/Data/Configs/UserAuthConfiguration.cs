@@ -23,6 +23,5 @@ public sealed class UserAuthConfiguration : IEntityTypeConfiguration<UserAuth>
         builder.HasKey(a => a.Id);
         builder.HasIndex(a => new { a.UserId, a.Provider }).IsUnique();
         builder.HasOne(a => a.User).WithMany(a => a.Auths).HasForeignKey(a => a.UserId);
-        builder.HasQueryFilter(a => a.User.DeletedTime == null);
     }
 }

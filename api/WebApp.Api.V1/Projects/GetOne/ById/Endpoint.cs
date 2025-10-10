@@ -21,7 +21,7 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
         CancellationToken ct
     )
     {
-        var query = db.Projects.Where(a => a.Id == req.ProjectId);
+        var query = db.Projects.Where(a => a.DeletedTime == null && a.Id == req.ProjectId);
 
         if (!string.IsNullOrEmpty(req.Fields))
         {

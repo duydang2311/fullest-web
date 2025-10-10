@@ -13,6 +13,5 @@ public sealed class ProjectTagConfiguration : IEntityTypeConfiguration<ProjectTa
         builder.Property(a => a.TagId).ValueGeneratedNever();
 
         builder.HasKey(a => new { a.ProjectId, a.TagId });
-        builder.HasQueryFilter(a => a.Project.DeletedTime == null);
     }
 }

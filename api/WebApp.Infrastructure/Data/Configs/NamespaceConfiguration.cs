@@ -17,6 +17,5 @@ public sealed class NamespaceConfiguration : IEntityTypeConfiguration<Namespace>
         builder.HasKey(a => a.Id);
         builder.HasIndex(a => a.UserId).IsUnique();
         builder.HasOne(a => a.User).WithOne().HasForeignKey<Namespace>(a => a.UserId);
-        builder.HasQueryFilter(a => a.User!.DeletedTime == null);
     }
 }

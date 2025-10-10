@@ -22,7 +22,7 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
         CancellationToken ct
     )
     {
-        var query = db.Users.Where(a => a.Id == req.UserId);
+        var query = db.Users.Where(a => a.DeletedTime == null && a.Id == req.UserId);
 
         if (!string.IsNullOrEmpty(req.Fields))
         {
