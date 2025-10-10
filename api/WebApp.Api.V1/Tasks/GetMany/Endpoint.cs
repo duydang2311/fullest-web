@@ -26,7 +26,7 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
         var query = db.Tasks.Where(a => a.DeletedTime == null);
         if (req.ProjectId.HasValue)
         {
-            query = query.Where(a => a.ProjectId == req.ProjectId);
+            query = query.Where(a => a.ProjectId == req.ProjectId && a.Project.DeletedTime == null);
         }
 
         if (!string.IsNullOrEmpty(req.Fields))

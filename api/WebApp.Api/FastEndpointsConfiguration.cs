@@ -64,15 +64,32 @@ public static class BindingOptionsExtensions
     {
         options.ValueParserFor<T>(values =>
         {
-            var value = values.FirstOrDefault();
-            if (
-                string.IsNullOrEmpty(value)
-                || !numberEncoder.TryDecode(value, out long decodedValue)
-            )
+            if (values.Count == 0)
             {
                 return new ParseResult(false, null);
             }
-            return new ParseResult(true, new T { Value = decodedValue });
+            return ParseInternal<T>(values[0], numberEncoder);
         });
+        options.ValueParserFor(
+            typeof(Nullable<>).MakeGenericType(typeof(T)),
+            values =>
+            {
+                if (values.Count == 0)
+                {
+                    return new ParseResult(true, null);
+                }
+                return ParseInternal<T>(values[0], numberEncoder);
+            }
+        );
+    }
+
+    private static ParseResult ParseInternal<T>(string? value, INumberEncoder numberEncoder)
+        where T : IEntityId<long>, new()
+    {
+        if (string.IsNullOrEmpty(value) || !numberEncoder.TryDecode(value, out long decodedValue))
+        {
+            return new ParseResult(false, default);
+        }
+        return new ParseResult(true, new T { Value = decodedValue });
     }
 }

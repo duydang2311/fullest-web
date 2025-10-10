@@ -26,7 +26,7 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
         var query = db.Statuses.AsQueryable();
         if (req.ProjectId.HasValue)
         {
-            query = query.Where(a => a.ProjectId == req.ProjectId);
+            query = query.Where(a => a.ProjectId == req.ProjectId.Value);
         }
 
         if (!string.IsNullOrEmpty(req.Fields))

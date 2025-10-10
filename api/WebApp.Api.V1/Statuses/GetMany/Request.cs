@@ -5,10 +5,14 @@ using WebApp.Domain.Entities;
 
 namespace WebApp.Api.V1.Statuses.GetMany;
 
-public sealed record Request(ProjectId? ProjectId, string? Fields, int Page, int Size, string Sort)
-    : IOffsetPagination,
-        IOrderable
+public sealed record Request : IOffsetPagination, IOrderable
 {
+    public ProjectId? ProjectId { get; init; }
+    public string? Fields { get; init; }
+    public int Page { get; init; } = 1;
+    public int Size { get; init; } = 20;
+    public string Sort { get; init; } = string.Empty;
+
     [FromClaim(ClaimTypes.NameIdentifier)]
     public UserId CallerId { get; init; }
 }
