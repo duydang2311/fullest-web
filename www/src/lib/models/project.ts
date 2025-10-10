@@ -27,12 +27,3 @@ export interface ProjectMember {
 	roleId: string;
 	role: Role;
 }
-
-export interface ProjectStatus {
-	id: string;
-	projectId: string;
-	project: string;
-	statusId: string;
-	status: string;
-	isDefault: boolean;
-}

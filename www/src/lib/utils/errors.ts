@@ -102,6 +102,7 @@ const error = <T>(object: T) => ({
 });
 
 type RichError<T> = T & { context: { step: string } };
+export type Traced<T> = T & { trace: string };
 
 export const AbortError = (): AbortError => error({ kind: ErrorKind.Abort });
 export const HttpNetworkError = (): HttpNetworkError => error({ kind: ErrorKind.HttpNetwork });
@@ -161,6 +162,15 @@ export const enrich =
 export const enrichStep = (step: string) => {
 	return enrich({ step });
 };
+
+export function traced(trace: string) {
+	return <T>(error: T): Traced<T> => {
+		return {
+			...error,
+			trace,
+		};
+	};
+}
 
 export const mapFetchException = (e: unknown) => {
 	if (isNetworkError(e)) {

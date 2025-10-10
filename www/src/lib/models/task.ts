@@ -1,5 +1,6 @@
 import type { Label } from './label';
 import type { Project } from './project';
+import type { Status } from './status';
 import type { User } from './user';
 
 export interface Task {
@@ -13,8 +14,8 @@ export interface Task {
 	assignees: User[];
 	publicId: string;
 	title: string;
-	projectStatusId: string;
-	projectStatus: string;
+	statusId?: string;
+	status?: Status;
 	description?: string;
 	dueTime?: string;
 	dueTz?: string;
