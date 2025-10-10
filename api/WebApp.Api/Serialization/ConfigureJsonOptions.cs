@@ -47,6 +47,9 @@ public class ConfigureJsonOptions(
             new EntityIdJsonConverter<StatusId>(numberEncoder)
         );
         options.SerializerOptions.Converters.Add(
+            new EntityIdJsonConverter<PriorityId>(numberEncoder)
+        );
+        options.SerializerOptions.Converters.Add(
             new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower)
         );
         options.SerializerOptions.Converters.Add(new ProjectableJsonConverter(projectionService));

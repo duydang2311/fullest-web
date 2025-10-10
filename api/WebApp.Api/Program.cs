@@ -1,11 +1,13 @@
 using FastEndpoints;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Slugify;
 using WebApp.Api;
 using WebApp.Api.Middlewares;
 using WebApp.Api.Security;
 using WebApp.Api.Serialization;
 using WebApp.Domain.Common;
+using WebApp.Domain.Entities;
 using WebApp.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);

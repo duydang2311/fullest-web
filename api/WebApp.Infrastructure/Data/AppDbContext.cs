@@ -88,5 +88,8 @@ public sealed class AppDbContext
         configurationBuilder
             .Properties<StatusId>()
             .HaveConversion<EntityIdConverter<StatusId, long>>();
+        configurationBuilder
+            .Properties<PriorityId>()
+            .HaveConversion<EntityIdConverter<PriorityId, long>>();
     }
 }

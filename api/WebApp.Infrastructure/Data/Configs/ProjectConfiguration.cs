@@ -36,5 +36,9 @@ public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .HasOne(a => a.DefaultStatus)
             .WithOne()
             .HasForeignKey<Project>(a => a.DefaultStatusId);
+        builder
+            .HasOne(a => a.DefaultPriority)
+            .WithOne()
+            .HasForeignKey<Project>(a => a.DefaultPriorityId);
     }
 }

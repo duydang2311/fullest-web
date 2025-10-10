@@ -33,11 +33,22 @@ namespace System.Linq
         public static IQueryable<T> Paginate<T>(
             this IQueryable<T> query,
             OffsetPagination pagination
-        ) => query.Skip(pagination.Offset).Take(pagination.Size);
+        )
+        {
+            return query.Skip(pagination.Offset).Take(pagination.Size);
+        }
 
         public static IQueryable<T> Paginate<T>(
             this OffsetPagination pagination,
             IQueryable<T> query
         ) => query.Skip(pagination.Offset).Take(pagination.Size);
+
+        public static IEnumerable<T> Paginate<T>(
+            this IEnumerable<T> enumerable,
+            OffsetPagination pagination
+        )
+        {
+            return enumerable.Skip(pagination.Offset).Take(pagination.Size);
+        }
     }
 }
