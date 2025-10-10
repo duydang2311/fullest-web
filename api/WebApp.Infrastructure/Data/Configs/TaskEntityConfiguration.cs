@@ -38,5 +38,7 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 r => r.HasOne(a => a.Label).WithMany().HasForeignKey(a => a.LabelId),
                 l => l.HasOne(a => a.Task).WithMany().HasForeignKey(a => a.TaskId)
             );
+        builder.HasOne(a => a.Status).WithMany().HasForeignKey(a => a.StatusId);
+        builder.HasOne(a => a.Priority).WithMany().HasForeignKey(a => a.PriorityId);
     }
 }
