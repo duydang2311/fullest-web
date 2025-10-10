@@ -4,7 +4,7 @@ using WebApp.Domain.Constants;
 using WebApp.Infrastructure.AccessControl;
 using WebApp.Infrastructure.Data;
 
-namespace WebApp.Api.V1.Tasks.GetOne.ById;
+namespace WebApp.Api.V1.Tasks.GetOne.ByPublicId;
 
 public sealed class Authorize : IPreProcessor<Request>
 {
@@ -17,22 +17,20 @@ public sealed class Authorize : IPreProcessor<Request>
 
         var authorizer = context.HttpContext.Resolve<IAuthorizer>();
         var db = context.HttpContext.Resolve<AppDbContext>();
-        var task = await db
-            .Tasks.Where(a => a.Id == context.Request.TaskId)
-            .Select(a => new { a.ProjectId, a.AuthorId })
-            .FirstOrDefaultAsync(ct)
+        var canRead = await db
+            .Tasks.AnyAsync(
+                a =>
+                    a.ProjectId == context.Request.ProjectId
+                    && a.PublicId == context.Request.PublicId
+                    && a.AuthorId == context.Request.CallerId,
+                ct
+            )
             .ConfigureAwait(false);
-        if (task is null)
-        {
-            await context.HttpContext.Response.SendForbiddenAsync(ct).ConfigureAwait(false);
-            return;
-        }
-        var canRead = task.AuthorId == context.Request.CallerId;
         if (!canRead)
         {
             await authorizer.HasProjectPermissionAsync(
                 context.Request.CallerId,
-                task.ProjectId,
+                context.Request.ProjectId,
                 Permit.ReadTask,
                 ct
             );
