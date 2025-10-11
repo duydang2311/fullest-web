@@ -79,7 +79,7 @@
 	<main class="bg-base-light flex flex-1 flex-col px-8 py-4">
 		<div
 			{...tabs.getContentProps({ value: tabs.value! })}
-			class="max-w-container-xl mx-auto w-full flex-1"
+			class="max-w-container-xl mx-auto flex w-full flex-1 flex-col"
 		>
 			{@render children()}
 		</div>
