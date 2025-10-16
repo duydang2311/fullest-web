@@ -91,7 +91,7 @@
 		></svg
 	>
 	<div class="text-center">
-		<h2 class="text-base-fg-strong font-bold leading-none tracking-tighter">
+		<h2 class="text-base-fg-strong font-bold leading-none tracking-tighter text-title-md">
 			Everything you need to manage tasks effectively
 		</h2>
 		<p class="mt-4">
