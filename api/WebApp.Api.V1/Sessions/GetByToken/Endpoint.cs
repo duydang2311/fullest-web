@@ -9,7 +9,7 @@ using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Sessions.GetByToken;
 
-public sealed class Endpoint(AppDbContext db, IProjectionService projectionService)
+public sealed class Endpoint(AppDbContext db)
     : Endpoint<Request, Results<NotFound, Ok<Projectable>>>
 {
     public override void Configure()
@@ -29,7 +29,7 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
 
         if (!string.IsNullOrEmpty(req.Fields))
         {
-            query = query.Select(projectionService.Project<UserSession>(req.Fields));
+            query = query.Select(FieldProjector.Project<UserSession>(req.Fields));
         }
 
         var user = await query.FirstOrDefaultAsync(ct);

@@ -3,8 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace WebApp.Api.Common.Projection;
 
-public sealed class ProjectableJsonConverter(IProjectionService projectionService)
-    : JsonConverter<Projectable>
+public sealed class ProjectableJsonConverter : JsonConverter<Projectable>
 {
     public override Projectable Read(
         ref Utf8JsonReader reader,
@@ -27,7 +26,7 @@ public sealed class ProjectableJsonConverter(IProjectionService projectionServic
         }
         else
         {
-            projectionService.Project(writer, value.Value, value.Fields, options);
+            FieldProjector.Project(writer, value.Value, value.Fields, options);
         }
     }
 }

@@ -8,7 +8,7 @@ using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Tasks.GetMany;
 
-public sealed class Endpoint(AppDbContext db, IProjectionService projectionService)
+public sealed class Endpoint(AppDbContext db)
     : Endpoint<Request, Ok<Paginated<Projectable>>>
 {
     public override void Configure()
@@ -31,7 +31,7 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
 
         if (!string.IsNullOrEmpty(req.Fields))
         {
-            query = query.Select(projectionService.Project<TaskEntity>(req.Fields));
+            query = query.Select(FieldProjector.Project<TaskEntity>(req.Fields));
         }
 
         var totalCount = await query.CountAsync(ct).ConfigureAwait(false);

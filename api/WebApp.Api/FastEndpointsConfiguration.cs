@@ -2,7 +2,6 @@ using System.Reflection;
 using FastEndpoints;
 using WebApp.Api.Common.Codecs;
 using WebApp.Api.Common.Http;
-using WebApp.Api.Common.Projection;
 using WebApp.Domain.Entities;
 
 namespace WebApp.Api;
@@ -19,7 +18,6 @@ public static class FastEndpointsConfiguration
     public static void ConfigureFastEndpoints(WebApplication app, Config config)
     {
         var numberEncoder = app.Services.GetRequiredService<INumberEncoder>();
-        var projectionService = app.Services.GetRequiredService<IProjectionService>();
 
         config.Endpoints.RoutePrefix = "api";
         config.Versioning.Prefix = "v";

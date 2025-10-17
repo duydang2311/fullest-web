@@ -203,14 +203,31 @@ public static class FieldProjector
                 );
                 continue;
             }
+
+            var isNullable = propertyInfo.PropertyType.IsValueType
+                ? Nullable.GetUnderlyingType(propertyInfo.PropertyType) is not null
+                : IsNullableReferenceType(propertyInfo);
             bindings.Add(
                 Expression.Bind(
                     propertyInfo,
-                    BuildMemberInitExpression(
-                        propertyInfo.PropertyType,
-                        Expression.Property(parameter, propertyInfo),
-                        dict
-                    )
+                    isNullable
+                        ? Expression.Condition(
+                            Expression.Equal(
+                                Expression.Property(parameter, propertyInfo),
+                                Expression.Constant(null, propertyInfo.PropertyType)
+                            ),
+                            Expression.Constant(null, propertyInfo.PropertyType),
+                            BuildMemberInitExpression(
+                                propertyInfo.PropertyType,
+                                Expression.Property(parameter, propertyInfo),
+                                dict
+                            )
+                        )
+                        : BuildMemberInitExpression(
+                            propertyInfo.PropertyType,
+                            Expression.Property(parameter, propertyInfo),
+                            dict
+                        )
                 )
             );
         }
@@ -252,5 +269,13 @@ public static class FieldProjector
     {
         internal readonly PropertyInfo PropertyInfo = propertyInfo;
         internal readonly Func<object, object?> Getter = getter;
+    }
+
+    private static readonly NullabilityInfoContext context = new();
+
+    private static bool IsNullableReferenceType(PropertyInfo propertyInfo)
+    {
+        var nullability = context.Create(propertyInfo);
+        return nullability.WriteState == NullabilityState.Nullable;
     }
 }

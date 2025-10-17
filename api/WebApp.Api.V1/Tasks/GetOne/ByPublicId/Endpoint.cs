@@ -7,7 +7,7 @@ using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Tasks.GetOne.ByPublicId;
 
-public sealed class Endpoint(AppDbContext db, IProjectionService projectionService)
+public sealed class Endpoint(AppDbContext db)
     : Endpoint<Request, Results<NotFound, Ok<Projectable>>>
 {
     public override void Configure()
@@ -27,7 +27,7 @@ public sealed class Endpoint(AppDbContext db, IProjectionService projectionServi
         );
         if (!string.IsNullOrEmpty(req.Fields))
         {
-            query = query.Select(projectionService.Project<TaskEntity>(req.Fields));
+            query = query.Select(FieldProjector.Project<TaskEntity>(req.Fields));
         }
         var task = await query.FirstOrDefaultAsync(ct).ConfigureAwait(false);
         if (task is null)

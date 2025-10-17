@@ -12,7 +12,6 @@ namespace WebApp.Api.Serialization;
 
 public class ConfigureJsonOptions(
     INumberEncoder numberEncoder,
-    IProjectionService projectionService,
     IHttpContextAccessor httpContextAccessor
 ) : IConfigureOptions<JsonOptions>
 {
@@ -56,7 +55,7 @@ public class ConfigureJsonOptions(
         options.SerializerOptions.Converters.Add(
             new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower)
         );
-        options.SerializerOptions.Converters.Add(new ProjectableJsonConverter(projectionService));
+        options.SerializerOptions.Converters.Add(new ProjectableJsonConverter());
         options.SerializerOptions.Converters.Add(new ProblemJsonConverter(httpContextAccessor));
     }
 }
