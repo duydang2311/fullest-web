@@ -76,7 +76,7 @@ public sealed class Endpoint(
             : new Comment
             {
                 TaskId = task.Id,
-                CreatorId = req.CallerId,
+                AuthorId = req.CallerId,
                 ContentJson = JsonSerializer.Serialize(doc),
                 ContentPreview = preview,
             };
