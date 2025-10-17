@@ -25,4 +25,5 @@ public abstract class BaseDbContext : DbContext
     public DbSet<TaskEntityAssignee> TaskAssignees => Set<TaskEntityAssignee>();
     public DbSet<Status> Statuses => Set<Status>();
     public DbSet<Priority> Priorities => Set<Priority>();
+    public DbSet<Comment> Comments => Set<Comment>();
 }

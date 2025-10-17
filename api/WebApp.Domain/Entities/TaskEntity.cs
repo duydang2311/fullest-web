@@ -18,7 +18,9 @@ public sealed record TaskEntity : ISoftDelete
     public Status? Status { get; init; }
     public PriorityId? PriorityId { get; init; }
     public Priority? Priority { get; init; }
-    public string? Description { get; init; }
+    public CommentId? InitialCommentId { get; init; }
+    public Comment? InitialComment { get; init; } = null!;
+    public ICollection<Comment>? Comments { get; init; }
     public Instant? DueTime { get; init; }
     public string? DueTz { get; init; }
     public Instant? DeletedTime { get; init; }

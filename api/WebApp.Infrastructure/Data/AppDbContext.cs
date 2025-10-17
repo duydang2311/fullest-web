@@ -77,5 +77,8 @@ public sealed class AppDbContext
         configurationBuilder
             .Properties<PriorityId>()
             .HaveConversion<EntityIdConverter<PriorityId, long>>();
+        configurationBuilder
+            .Properties<CommentId>()
+            .HaveConversion<EntityIdConverter<CommentId, long>>();
     }
 }

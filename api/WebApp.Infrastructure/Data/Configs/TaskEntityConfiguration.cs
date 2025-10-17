@@ -15,7 +15,6 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
         builder.Property(a => a.ProjectId).ValueGeneratedNever();
         builder.Property(a => a.PublicId).ValueGeneratedOnAdd();
         builder.Property(a => a.Title);
-        builder.Property(a => a.Description);
         builder.Property(a => a.DeletedTime);
         builder.Property(a => a.DueTime);
         builder.Property(a => a.DueTz);

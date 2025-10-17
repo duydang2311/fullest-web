@@ -52,6 +52,7 @@ public static class FastEndpointsConfiguration
         config.Binding.ValueParserForEntityId<LabelId>(numberEncoder);
         config.Binding.ValueParserForEntityId<StatusId>(numberEncoder);
         config.Binding.ValueParserForEntityId<PriorityId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<CommentId>(numberEncoder);
     }
 }
 
