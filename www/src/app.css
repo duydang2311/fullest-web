@@ -13,26 +13,26 @@
 @custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
 
 @theme {
-	--color-base: oklch(98% 0.001 45.19);
-	--color-base-light: oklch(100% 0.001 45.19);
-	--color-base-dark: oklch(96% 0.001 45.19);
-	--color-base-hover: oklch(95% 0.001 45.19);
-	--color-base-active: oklch(92% 0.001 45.19);
-	--color-base-selected: oklch(90% 0.001 45.19);
-	--color-base-border: oklch(90% 0.001 45.19);
-	--color-base-border-strong: oklch(86% 0.001 45.19);
-	--color-base-border-weak: oklch(94% 0.001 45.19);
-	--color-base-fg: oklch(30% 0.001 45.19);
-	--color-base-fg-weak: oklch(36% 0.001 45.19);
-	--color-base-fg-strong: oklch(24% 0.001 45.19);
-	--color-base-fg-dim: oklch(50% 0.001 45.19);
-	--color-base-fg-muted: oklch(70% 0.001 45.19);
+	--color-base: oklch(99% 0.002 264);
+	--color-base-light: oklch(100% 0.002 264);
+	--color-base-dark: oklch(97% 0.002 264);
+	--color-base-hover: oklch(97.5% 0.008 264);
+	--color-base-active: oklch(97.5% 0.016 264);
+	--color-base-selected: oklch(97.5% 0.016 264);
+	--color-base-border: oklch(94% 0.002 264);
+	--color-base-border-strong: oklch(86% 0.002 264);
+	--color-base-border-weak: oklch(94% 0.002 264);
+	--color-base-fg: oklch(30% 0.002 264);
+	--color-base-fg-weak: oklch(36% 0.002 264);
+	--color-base-fg-strong: oklch(24% 0.016 264);
+	--color-base-fg-dim: oklch(50% 0.002 264);
+	--color-base-fg-muted: oklch(70% 0.002 264);
 
-	--color-primary: oklch(53.9% 0.1535 45.19);
-	--color-primary-hover: oklch(56.9% 0.1535 45.19);
-	--color-primary-active: oklch(50.9% 0.1535 45.19);
-	--color-primary-border: oklch(48.9% 0.1535 45.19);
-	--color-primary-fg: oklch(98.9% 0.005 45.19);
+	--color-primary: oklch(55% 0.2146 264);
+	--color-primary-hover: oklch(58% 0.2146 264);
+	--color-primary-active: oklch(52% 0.2146 264);
+	--color-primary-border: oklch(50% 0.2146 264);
+	--color-primary-fg: oklch(98.9% 0.005 264);
 
 	--color-negative: oklch(54.5% 0.1888 24.42);
 	--color-negative-fg: oklch(98.9% 0.005 24.42);
@@ -57,7 +57,7 @@
 
 	--text-display-lg: 3.5rem;
 	--text-display-md: 3rem;
-	--text-title-md: 2.5rem;
+	--text-title-md: 2rem;
 	--text-title-sm: 1.5rem;
 	--text-title-xs: 1.25rem;
 	--text-body-md: 1rem;
@@ -97,20 +97,20 @@
 
 	[data-theme='accent'],
 	[data-theme='accent'] * {
-		--color-base: oklch(28.27% 0.0286 68.85);
-		--color-base-light: oklch(32.27% 0.0286 68.85);
-		--color-base-dark: oklch(24.27% 0.0286 68.85);
-		--color-base-hover: oklch(34.27% 0.0286 68.85);
-		--color-base-active: oklch(32.27% 0.0286 68.85);
-		--color-base-selected: oklch(32.27% 0.0286 68.85);
-		--color-base-border: oklch(34.27% 0.0286 68.85);
-		--color-base-border-strong: oklch(38.27% 0.0286 68.85);
-		--color-base-border-weak: oklch(32.27% 0.0286 68.85);
-		--color-base-fg: oklch(82.22% 0.02 68.85);
-		--color-base-fg-strong: oklch(96.22% 0.02 68.85);
-		--color-base-fg-weak: oklch(72.22% 0.02 68.85);
-		--color-base-fg-dim: oklch(64.22% 0.02 68.85);
-		--color-base-fg-muted: oklch(56.22% 0.02 68.85);
+		--color-base: oklch(32% 0.06 264);
+		--color-base-light: oklch(32% 0.06 264);
+		--color-base-dark: oklch(32% 0.06 264);
+		--color-base-hover: oklch(32% 0.06 264);
+		--color-base-active: oklch(32% 0.06 264);
+		--color-base-selected: oklch(32% 0.06 264);
+		--color-base-border: oklch(38% 0.06 264);
+		--color-base-border-strong: oklch(42% 0.06 264);
+		--color-base-border-weak: oklch(36% 0.06 264);
+		--color-base-fg: oklch(85% 0.002 264);
+		--color-base-fg-strong: oklch(100% 0.002 264);
+		--color-base-fg-weak: oklch(80% 0.002 264);
+		--color-base-fg-dim: oklch(65% 0.002 264);
+		--color-base-fg-muted: oklch(50% 0.002 264);
 	}
 }
 
@@ -151,7 +151,8 @@
 	height: 0;
 	pointer-events: none;
 }
-.tiptap ul[data-type='taskList'] li {
+.tiptap ul[data-type='taskList'] li,
+.prose ul[data-type='taskList'] li {
 	display: flex;
 	align-items: flex-start;
 	justify-content: flex-start;
