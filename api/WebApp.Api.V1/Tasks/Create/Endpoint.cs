@@ -71,20 +71,14 @@ public sealed class Endpoint(
         };
         await db.AddAsync(task, ct).ConfigureAwait(false);
 
-        var comment = doc is null
-            ? null
-            : new Comment
-            {
-                TaskId = task.Id,
-                AuthorId = req.CallerId,
-                ContentJson = JsonSerializer.Serialize(doc),
-                ContentPreview = preview,
-            };
-        if (comment is not null)
+        var comment = new Comment
         {
-            await db.AddAsync(comment, ct).ConfigureAwait(false);
-        }
-
+            TaskId = task.Id,
+            AuthorId = req.CallerId,
+            ContentJson = doc is null ? null : JsonSerializer.Serialize(doc),
+            ContentPreview = preview,
+        };
+        await db.AddAsync(comment, ct).ConfigureAwait(false);
         try
         {
             await db.SaveChangesAsync(ct).ConfigureAwait(false);
