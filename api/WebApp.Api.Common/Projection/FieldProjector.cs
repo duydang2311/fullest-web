@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Linq.Expressions;
@@ -10,49 +11,6 @@ public static class FieldProjector
 {
     private static readonly ConcurrentDictionary<Type, TypeProjection> projectionCache = new();
 
-    public static IDictionary<string, object?> Project<T>(T instance, string fields)
-        where T : notnull
-    {
-        var queue =
-            new Queue<(
-                IDictionary<string, object?> Tree,
-                object? Instance,
-                IDictionary<string, object?> Target
-            )>();
-        var rootTarget = new Dictionary<string, object?>(
-            fields.Count(a => a == ','),
-            StringComparer.Ordinal
-        );
-        queue.Enqueue((BuildFieldTreeSpan(fields), instance, rootTarget));
-        while (queue.TryDequeue(out var item))
-        {
-            if (item.Instance is null)
-            {
-                continue;
-            }
-            foreach (var (field, value) in item.Tree)
-            {
-                var projection = projectionCache.GetOrAdd(
-                    item.Instance.GetType(),
-                    static a => new TypeProjection(a)
-                );
-                var property = projection.Properties.GetValueOrDefault(field);
-                if (value is not IDictionary<string, object?> innerTree)
-                {
-                    if (property is not null)
-                    {
-                        item.Target[field] = property.Getter(item.Instance);
-                    }
-                    continue;
-                }
-                var innerTarget = new Dictionary<string, object?>(StringComparer.Ordinal);
-                item.Target[field] = innerTarget;
-                queue.Enqueue((innerTree, property?.Getter(item.Instance), innerTarget));
-            }
-        }
-        return rootTarget;
-    }
-
     public static void Project(
         Utf8JsonWriter writer,
         object instance,
@@ -62,53 +20,143 @@ public static class FieldProjector
     {
         var namingPolicy = options.PropertyNamingPolicy ?? JsonNamingPolicy.CamelCase;
         writer.WriteStartObject();
+
         var queue =
             new Queue<(
                 IDictionary<string, object?> Tree,
                 object? Instance,
-                string? ObjectFieldName
+                string? PropertyName,
+                bool BeginArray
             )>();
-        queue.Enqueue((BuildFieldTreeSpan(fields), instance, default));
+
+        queue.Enqueue((BuildFieldTreeSpan(fields), instance, default, false));
         while (queue.TryDequeue(out var item))
         {
-            if (item.ObjectFieldName is not null)
+            if (item.PropertyName is not null)
             {
-                writer.WritePropertyName(namingPolicy.ConvertName(item.ObjectFieldName));
-                writer.WriteStartObject();
+                writer.WritePropertyName(namingPolicy.ConvertName(item.PropertyName));
+                if (item.BeginArray)
+                {
+                    writer.WriteStartArray();
+                }
+                else
+                {
+                    writer.WriteStartObject();
+                }
             }
+
             if (item.Instance is null)
             {
+                if (item.PropertyName is not null)
+                {
+                    if (item.BeginArray)
+                    {
+                        writer.WriteEndArray();
+                    }
+                    else
+                    {
+                        writer.WriteEndObject();
+                    }
+                }
                 continue;
             }
+
+            // If current instance is a collection — iterate over its elements
+            if (
+                item.BeginArray
+                && item.Instance is IEnumerable enumerable
+                && item.Instance is not string
+            )
+            {
+                foreach (var element in enumerable)
+                {
+                    writer.WriteStartObject();
+                    foreach (var (field, value) in item.Tree)
+                    {
+                        var elementType = element.GetType();
+                        var projection = projectionCache.GetOrAdd(
+                            elementType,
+                            static a => new TypeProjection(a)
+                        );
+                        var property = projection.Properties.GetValueOrDefault(field);
+                        if (property is null)
+                            continue;
+
+                        var fieldValue = property.Getter(element);
+                        if (value is not IDictionary<string, object?> innerTree)
+                        {
+                            writer.WritePropertyName(namingPolicy.ConvertName(field));
+                            JsonSerializer.Serialize(writer, fieldValue, options);
+                        }
+                        else if (fieldValue is not null)
+                        {
+                            // Nested projection (array or object)
+                            queue.Enqueue(
+                                (
+                                    innerTree,
+                                    fieldValue,
+                                    field,
+                                    fieldValue is IEnumerable && fieldValue is not string
+                                )
+                            );
+                        }
+                    }
+                    writer.WriteEndObject();
+                }
+
+                if (item.PropertyName is not null)
+                {
+                    writer.WriteEndArray();
+                }
+
+                continue;
+            }
+
             foreach (var (field, value) in item.Tree)
             {
+                var instanceType = item.Instance.GetType();
                 var projection = projectionCache.GetOrAdd(
-                    item.Instance.GetType(),
+                    instanceType,
                     static a => new TypeProjection(a)
                 );
+
                 var property = projection.Properties.GetValueOrDefault(field);
-                var fieldValue = property?.Getter(item.Instance);
+                if (property is null)
+                    continue;
+
+                var fieldValue = property.Getter(item.Instance);
                 if (value is not IDictionary<string, object?> innerTree)
                 {
-                    if (property is not null)
-                    {
-                        writer.WritePropertyName(namingPolicy.ConvertName(field));
-                        JsonSerializer.Serialize(writer, fieldValue, options);
-                    }
-                    continue;
+                    writer.WritePropertyName(namingPolicy.ConvertName(field));
+                    JsonSerializer.Serialize(writer, fieldValue, options);
                 }
-                if (fieldValue is null)
+                else if (fieldValue is not null)
                 {
-                    continue;
+                    // Enqueue nested object or collection
+                    queue.Enqueue(
+                        (
+                            innerTree,
+                            fieldValue,
+                            field,
+                            fieldValue is IEnumerable && fieldValue is not string
+                        )
+                    );
                 }
-                var innerTarget = new Dictionary<string, object?>(StringComparer.Ordinal);
-                queue.Enqueue((innerTree, fieldValue, field));
             }
-            if (item.ObjectFieldName is not null)
+
+            if (item.PropertyName is not null)
             {
-                writer.WriteEndObject();
+                if (item.BeginArray)
+                {
+                    writer.WriteEndArray();
+                }
+                else
+                {
+                    writer.WriteEndObject();
+                }
             }
         }
+
         writer.WriteEndObject();
     }
 
@@ -207,28 +255,59 @@ public static class FieldProjector
             var isNullable = propertyInfo.PropertyType.IsValueType
                 ? Nullable.GetUnderlyingType(propertyInfo.PropertyType) is not null
                 : IsNullableReferenceType(propertyInfo);
+            var isCollection =
+                propertyInfo.PropertyType.IsAssignableTo(typeof(IEnumerable))
+                && propertyInfo.PropertyType != typeof(string);
+
+            Expression bind;
+            if (isCollection)
+            {
+                var innerType = propertyInfo.PropertyType.GetGenericArguments()[0];
+                var innerParameter = Expression.Parameter(innerType);
+                var memberInit = BuildMemberInitExpression(innerType, innerParameter, dict);
+                var selectMethod = typeof(Enumerable)
+                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .First(m => m.Name == "Select" && m.GetParameters().Length == 2)
+                    .MakeGenericMethod(innerType, innerType);
+                var toListMethod = typeof(Enumerable)
+                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .First(m => m.Name == "ToList" && m.GetParameters().Length == 1)
+                    .MakeGenericMethod(innerType);
+                bind = Expression.Convert(
+                    Expression.Call(
+                        toListMethod,
+                        Expression.Call(
+                            selectMethod,
+                            Expression.Property(parameter, propertyInfo),
+                            Expression.Lambda(memberInit, innerParameter)
+                        )
+                    ),
+                    propertyInfo.PropertyType
+                );
+            }
+            else
+            {
+                bind = BuildMemberInitExpression(
+                    propertyInfo.PropertyType,
+                    Expression.Property(parameter, propertyInfo),
+                    dict
+                );
+            }
+
             bindings.Add(
-                Expression.Bind(
-                    propertyInfo,
-                    isNullable
-                        ? Expression.Condition(
+                isNullable
+                    ? Expression.Bind(
+                        propertyInfo,
+                        Expression.Condition(
                             Expression.Equal(
                                 Expression.Property(parameter, propertyInfo),
                                 Expression.Constant(null, propertyInfo.PropertyType)
                             ),
                             Expression.Constant(null, propertyInfo.PropertyType),
-                            BuildMemberInitExpression(
-                                propertyInfo.PropertyType,
-                                Expression.Property(parameter, propertyInfo),
-                                dict
-                            )
+                            bind
                         )
-                        : BuildMemberInitExpression(
-                            propertyInfo.PropertyType,
-                            Expression.Property(parameter, propertyInfo),
-                            dict
-                        )
-                )
+                    )
+                    : Expression.Bind(propertyInfo, bind)
             );
         }
         return Expression.MemberInit(Expression.New(type), bindings);
@@ -252,6 +331,19 @@ public static class FieldProjector
         }
 
         private static Func<object, object?> CompileGetterExpression(PropertyInfo prop)
+        {
+            var objParam = Expression.Parameter(typeof(object), "obj");
+            var castedObj = Expression.Convert(objParam, prop.DeclaringType!);
+            var propertyAccess = Expression.Property(castedObj, prop);
+            var castToObject = Expression.Convert(propertyAccess, typeof(object));
+            var lambda = Expression.Lambda<Func<object, object?>>(castToObject, objParam);
+            return lambda.Compile();
+        }
+
+        private static Func<object, object?> CompileGetterExpressionCollection(
+            PropertyInfo prop,
+            Dictionary<string, object?> tree
+        )
         {
             var objParam = Expression.Parameter(typeof(object), "obj");
             var castedObj = Expression.Convert(objParam, prop.DeclaringType!);
