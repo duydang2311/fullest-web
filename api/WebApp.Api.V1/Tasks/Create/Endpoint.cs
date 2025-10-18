@@ -31,7 +31,11 @@ public sealed class Endpoint(
     {
         Guard.Against.Null(req.NormalizedTitle);
 
-        var doc = req.DescriptionJson;
+        var doc =
+            req.DescriptionJson is null
+            || req.DescriptionJson.RootElement.ValueKind == JsonValueKind.Null
+                ? null
+                : req.DescriptionJson;
         string? preview = default;
         if (doc is null)
         {
