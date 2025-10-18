@@ -18,145 +18,62 @@ public static class FieldProjector
         JsonSerializerOptions options
     )
     {
-        var namingPolicy = options.PropertyNamingPolicy ?? JsonNamingPolicy.CamelCase;
-        writer.WriteStartObject();
+        ProjectInternal(writer, instance, BuildFieldTreeSpan(fields), options);
+    }
 
-        var queue =
-            new Queue<(
-                IDictionary<string, object?> Tree,
-                object? Instance,
-                string? PropertyName,
-                bool BeginArray
-            )>();
-
-        queue.Enqueue((BuildFieldTreeSpan(fields), instance, default, false));
-        while (queue.TryDequeue(out var item))
+    private static void ProjectInternal(
+        Utf8JsonWriter writer,
+        object instance,
+        IDictionary<string, object?> fieldTree,
+        JsonSerializerOptions options
+    )
+    {
+        if (instance is null)
         {
-            if (item.PropertyName is not null)
-            {
-                writer.WritePropertyName(namingPolicy.ConvertName(item.PropertyName));
-                if (item.BeginArray)
-                {
-                    writer.WriteStartArray();
-                }
-                else
-                {
-                    writer.WriteStartObject();
-                }
-            }
-
-            if (item.Instance is null)
-            {
-                if (item.PropertyName is not null)
-                {
-                    if (item.BeginArray)
-                    {
-                        writer.WriteEndArray();
-                    }
-                    else
-                    {
-                        writer.WriteEndObject();
-                    }
-                }
-                continue;
-            }
-
-            // If current instance is a collection — iterate over its elements
-            if (
-                item.BeginArray
-                && item.Instance is IEnumerable enumerable
-                && item.Instance is not string
-            )
-            {
-                foreach (var element in enumerable)
-                {
-                    writer.WriteStartObject();
-                    foreach (var (field, value) in item.Tree)
-                    {
-                        var elementType = element.GetType();
-                        var projection = projectionCache.GetOrAdd(
-                            elementType,
-                            static a => new TypeProjection(a)
-                        );
-                        var property = projection.Properties.GetValueOrDefault(field);
-                        if (property is null)
-                            continue;
-
-                        var fieldValue = property.Getter(element);
-                        if (value is not IDictionary<string, object?> innerTree)
-                        {
-                            writer.WritePropertyName(namingPolicy.ConvertName(field));
-                            JsonSerializer.Serialize(writer, fieldValue, options);
-                        }
-                        else if (fieldValue is not null)
-                        {
-                            // Nested projection (array or object)
-                            queue.Enqueue(
-                                (
-                                    innerTree,
-                                    fieldValue,
-                                    field,
-                                    fieldValue is IEnumerable && fieldValue is not string
-                                )
-                            );
-                        }
-                    }
-                    writer.WriteEndObject();
-                }
-
-                if (item.PropertyName is not null)
-                {
-                    writer.WriteEndArray();
-                }
-
-                continue;
-            }
-
-            foreach (var (field, value) in item.Tree)
-            {
-                var instanceType = item.Instance.GetType();
-                var projection = projectionCache.GetOrAdd(
-                    instanceType,
-                    static a => new TypeProjection(a)
-                );
-
-                var property = projection.Properties.GetValueOrDefault(field);
-                if (property is null)
-                    continue;
-
-                var fieldValue = property.Getter(item.Instance);
-                if (value is not IDictionary<string, object?> innerTree)
-                {
-                    writer.WritePropertyName(namingPolicy.ConvertName(field));
-                    JsonSerializer.Serialize(writer, fieldValue, options);
-                }
-                else if (fieldValue is not null)
-                {
-                    // Enqueue nested object or collection
-                    queue.Enqueue(
-                        (
-                            innerTree,
-                            fieldValue,
-                            field,
-                            fieldValue is IEnumerable && fieldValue is not string
-                        )
-                    );
-                }
-            }
-
-            if (item.PropertyName is not null)
-            {
-                if (item.BeginArray)
-                {
-                    writer.WriteEndArray();
-                }
-                else
-                {
-                    writer.WriteEndObject();
-                }
-            }
+            writer.WriteNullValue();
+            return;
         }
 
+        if (instance is IEnumerable enumerable)
+        {
+            writer.WriteStartArray();
+            foreach (var element in enumerable)
+            {
+                if (element is null)
+                {
+                    continue;
+                }
+                ProjectInternal(writer, element, fieldTree, options);
+            }
+            writer.WriteEndArray();
+            return;
+        }
+
+        var namingPolicy = options.PropertyNamingPolicy ?? JsonNamingPolicy.CamelCase;
+        var projection = projectionCache.GetOrAdd(
+            instance.GetType(),
+            static a => new TypeProjection(a)
+        );
+        writer.WriteStartObject();
+        foreach (var kvp in fieldTree)
+        {
+            var property = projection.Properties.GetValueOrDefault(kvp.Key);
+            var fieldValue = property?.Getter(instance);
+
+            writer.WritePropertyName(namingPolicy.ConvertName(kvp.Key));
+            if (fieldValue is null)
+            {
+                writer.WriteNullValue();
+            }
+            else if (kvp.Value is not IDictionary<string, object?> innerTree)
+            {
+                JsonSerializer.Serialize(writer, fieldValue, options);
+            }
+            else
+            {
+                ProjectInternal(writer, fieldValue, innerTree, options);
+            }
+        }
         writer.WriteEndObject();
     }
 
