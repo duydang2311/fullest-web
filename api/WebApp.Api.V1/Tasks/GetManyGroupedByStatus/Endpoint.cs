@@ -10,7 +10,7 @@ using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Tasks.GetManyGroupedByStatus;
 
-public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<List<Paginated<Projectable>>>>
+public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<List<PaginatedList<Projectable>>>>
 {
     public override void Configure()
     {
@@ -19,7 +19,7 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<List<Pagina
         PreProcessor<Authorize>();
     }
 
-    public override async Task<Ok<List<Paginated<Projectable>>>> ExecuteAsync(
+    public override async Task<Ok<List<PaginatedList<Projectable>>>> ExecuteAsync(
         Request req,
         CancellationToken ct
     )
@@ -40,7 +40,7 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<List<Pagina
         return TypedResults.Ok(
             groups
                 .Select(wrapped =>
-                    Paginated.From(
+                    PaginatedList.From(
                         wrapped.Items.Select(task => task.ToProjectable(req.Fields)),
                         pagination,
                         wrapped.TotalCount

@@ -9,16 +9,16 @@ using WebApp.Infrastructure.Data;
 namespace WebApp.Api.V1.Comments.GetMany;
 
 public sealed class Endpoint(AppDbContext db)
-    : Endpoint<Request, Results<NotFound, Ok<Paginated<Projectable>>>>
+    : Endpoint<Request, Results<NotFound, Ok<PaginatedList<Projectable>>>>
 {
     public override void Configure()
     {
-        Get("comments/{CommentId}");
+        Get("comments");
         Version(1);
         PreProcessor<Authorize>();
     }
 
-    public override async Task<Results<NotFound, Ok<Paginated<Projectable>>>> ExecuteAsync(
+    public override async Task<Results<NotFound, Ok<PaginatedList<Projectable>>>> ExecuteAsync(
         Request req,
         CancellationToken ct
     )
@@ -37,7 +37,7 @@ public sealed class Endpoint(AppDbContext db)
             .ToListAsync(ct)
             .ConfigureAwait(false);
         return TypedResults.Ok(
-            Paginated.From(list.Select(task => task.ToProjectable(req.Fields)), req, totalCount)
+            PaginatedList.From(list.Select(task => task.ToProjectable(req.Fields)), req, totalCount)
         );
     }
 }
