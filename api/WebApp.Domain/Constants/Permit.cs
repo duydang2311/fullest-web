@@ -11,4 +11,9 @@ public static class Permit
     public const string ReadStatus = "status:read";
     public const string UpdateStatus = "status:update";
     public const string DeleteStatus = "status:delete";
+
+    public const string CreateComment = "comment:create";
+    public const string ReadComment = "comment:read";
+    public const string UpdateComment = "comment:update";
+    public const string DeleteComment = "comment:delete";
 }

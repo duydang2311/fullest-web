@@ -8,8 +8,7 @@ using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Tasks.GetMany;
 
-public sealed class Endpoint(AppDbContext db)
-    : Endpoint<Request, Ok<Paginated<Projectable>>>
+public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<Paginated<Projectable>>>
 {
     public override void Configure()
     {

@@ -13,13 +13,20 @@ public sealed class ProjectRoleDefaults(RoleId id, string name, int rank, string
         id: new RoleId(1),
         name: "Viewer",
         rank: 100,
-        permissions: [Permit.ReadTask, Permit.ReadStatus]
+        permissions: [Permit.ReadTask, Permit.ReadStatus, Permit.ReadComment]
     );
     public static readonly ProjectRoleDefaults Contributor = new(
         id: new RoleId(2),
         name: "Contributor",
         rank: 200,
-        permissions: [.. Viewer.Permissions, Permit.ReadTask, Permit.CreateTask, Permit.UpdateTask]
+        permissions:
+        [
+            .. Viewer.Permissions,
+            Permit.ReadTask,
+            Permit.CreateTask,
+            Permit.UpdateTask,
+            Permit.CreateComment,
+        ]
     );
     public static readonly ProjectRoleDefaults Member = new(
         id: new RoleId(3),

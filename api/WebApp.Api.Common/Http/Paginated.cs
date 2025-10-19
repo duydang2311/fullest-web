@@ -12,7 +12,7 @@ public static class Paginated
 
     public static Paginated<T> From<T>(
         IEnumerable<T> items,
-        OffsetPagination pagination,
+        IOffsetPagination pagination,
         int totalCount
     ) => new(items, pagination.Page, pagination.Size, totalCount);
 }

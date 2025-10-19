@@ -30,6 +30,19 @@ namespace System.Linq
 
     public static class OffsetPaginationExtensions
     {
+        public static IQueryable<T> Paginate<T>(this IQueryable<T> query, int page, int size)
+        {
+            return query.Skip((page - 1) * size).Take(size);
+        }
+
+        public static IQueryable<T> Paginate<T>(
+            this IQueryable<T> query,
+            IOffsetPagination pagination
+        )
+        {
+            return query.Paginate(pagination.Page, pagination.Size);
+        }
+
         public static IQueryable<T> Paginate<T>(
             this IQueryable<T> query,
             OffsetPagination pagination
