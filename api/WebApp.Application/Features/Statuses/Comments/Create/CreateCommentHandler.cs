@@ -118,6 +118,10 @@ public sealed class CreateCommentHandler(BaseDbContext db) : ICreateCommentHandl
             }
         }
 
+        if (sb.Length == 0)
+        {
+            return null;
+        }
         if (sb[^1] == ' ')
         {
             return sb.ToString(0, sb.Length - 1);
