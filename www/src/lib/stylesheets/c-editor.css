@@ -1,0 +1,20 @@
+.c-editor {
+	overflow: auto;
+	overflow-wrap: anywhere !important;
+	word-wrap: normal !important;
+	padding: --spacing(4);
+	transition: box-shadow var(--default-transition-duration) var(--default-transition-timing-function);
+
+	&:where(:focus) {
+		outline: none;
+	}
+}
+
+.c-editor--outlined {
+	border: 1px solid var(--color-base-border);
+	border-radius: var(--radius-lg);
+
+	&:where(:focus) {
+		@apply ring-focus-base-fg;
+	}
+}

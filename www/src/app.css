@@ -6,6 +6,7 @@
 @import './lib/stylesheets/c-field.css' layer(components);
 @import './lib/stylesheets/c-menu.css' layer(components);
 @import './lib/stylesheets/c-inline-alert.css' layer(components);
+@import './lib/stylesheets/c-editor.css' layer(components);
 
 @plugin '@tailwindcss/typography';
 
@@ -15,9 +16,9 @@
 @theme {
 	--color-base: oklch(99% 0.002 264);
 	--color-base-light: oklch(100% 0.002 264);
-	--color-base-dark: oklch(97% 0.002 264);
+	--color-base-dark: oklch(98% 0.002 264);
 	--color-base-hover: oklch(97.5% 0.008 264);
-	--color-base-active: oklch(97.5% 0.016 264);
+	--color-base-active: oklch(97% 0.016 264);
 	--color-base-selected: oklch(97.5% 0.016 264);
 	--color-base-border: oklch(94% 0.002 264);
 	--color-base-border-strong: oklch(86% 0.002 264);
@@ -35,6 +36,8 @@
 	--color-primary-fg: oklch(98.9% 0.005 264);
 
 	--color-negative: oklch(54.5% 0.1888 24.42);
+	--color-negative-hover: oklch(58.5% 0.1888 24.42);
+	--color-negative-active: oklch(52.5% 0.1888 24.42);
 	--color-negative-fg: oklch(98.9% 0.005 24.42);
 	--color-negative-border: oklch(49.5% 0.1888 24.42);
 
@@ -206,4 +209,10 @@
 
 	line-height: inherit;
 	font-size: inherit;
+}
+
+.prose {
+	:where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+		margin: 0;
+	}
 }

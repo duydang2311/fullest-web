@@ -1,4 +1,5 @@
 import type { Label } from './label';
+import type { Priority } from './priority';
 import type { Project } from './project';
 import type { Status } from './status';
 import type { User } from './user';
@@ -16,7 +17,11 @@ export interface Task {
 	title: string;
 	statusId?: string;
 	status?: Status;
-	description?: string;
+	priorityId?: string;
+	priority?: Priority;
+	initialCommentId: string;
+	initialComment: Comment;
+	comments?: Comment[];
 	dueTime?: string;
 	dueTz?: string;
 	deletedTime?: string;

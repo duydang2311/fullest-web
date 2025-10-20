@@ -19,6 +19,7 @@ export enum ErrorKind {
 	NotFound = 'NotFound',
 	Forbidden = 'Forbidden',
 	Unknown = 'Unknown',
+	BadHttpResponse = 'BadHttpResponse',
 }
 
 export const ErrorCode = {
@@ -30,6 +31,7 @@ export const ErrorCode = {
 	Json: 'ERR_JSON',
 	NotFound: 'ERR_NOT_FOUND',
 	UserNotFound: 'ERR_USER_NOT_FOUND',
+	BadHttpResponse: 'ERR_BAD_HTTP_RESPONSE',
 } as const;
 
 export type ErrorCode = typeof ErrorCode;
@@ -96,6 +98,12 @@ export interface UnknownError extends App.Error {
 	context?: unknown;
 }
 
+export interface BadHttpResponse extends App.Error {
+	kind: ErrorKind.BadHttpResponse;
+	status: number;
+	context?: unknown;
+}
+
 const error = <T>(object: T) => ({
 	message: '', // bypassing App.Error required property
 	...object,
@@ -148,6 +156,14 @@ export function ForbiddenError(): ForbiddenError {
 }
 export function UnknownError(context?: unknown): UnknownError {
 	return error({ kind: ErrorKind.Unknown, context });
+}
+export function BadHttpResponse(status: number, context?: unknown): BadHttpResponse {
+	return error({
+		kind: ErrorKind.BadHttpResponse,
+		status,
+		context,
+		message: `Bad HTTP response: ${status}`,
+	});
 }
 
 export const enrich =

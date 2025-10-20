@@ -14,7 +14,8 @@ export const actions: Actions = {
 		const input = {
 			projectId: formData.get('projectId'),
 			title: formData.get('title'),
-			description: formData.get('description'),
+			descriptionJson: formData.get('description_json'),
+			descriptionText: formData.get('description_text'),
 		};
 		invariant(typeof input.projectId === 'string', 'projectId must be a string');
 
@@ -23,6 +24,9 @@ export const actions: Actions = {
 			return fail(400, validated.error);
 		}
 
+		if (validated.data.descriptionJson) {
+			validated.data.descriptionJson = JSON.parse(validated.data.descriptionJson);
+		}
 		const response = await e.locals.http
 			.post(`projects/${formData.get('projectId')}/tasks`, {
 				body: validated.data,
@@ -67,6 +71,7 @@ const validator = createValidator(
 	v.object({
 		projectId: v.string(),
 		title: v.string(),
-		description: v.nullish(v.string()),
+		descriptionJson: v.pipe(v.nullish(v.string())),
+		descriptionText: v.nullish(v.string()),
 	})
 );

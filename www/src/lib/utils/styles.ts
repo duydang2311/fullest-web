@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 type ButtonStyles = {
-	variant?: 'base' | 'primary';
+	variant?: 'base' | 'primary' | 'negative';
 	outlined?: boolean;
 	icon?: boolean;
 } & EitherOr<{ filled?: boolean }, { ghost?: boolean }>;
