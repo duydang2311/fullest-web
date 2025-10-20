@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DOMPurify from 'isomorphic-dompurify';
+import sanitizeHtml from 'sanitize-html';
 	import { renderToHTMLString } from '~/lib/components/editor';
 	import type { Comment } from '~/lib/models/comment';
 	import CommentActions from './CommentActions.svelte';
@@ -46,7 +46,7 @@
 		{:else}
 			<article class="prose max-w-none p-4">
 				{#if comment?.contentJson && comment?.contentJson.length > 0}
-					{@html DOMPurify.sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
+					{@html sanitizeHtml(renderToHTMLString(JSON.parse(comment.contentJson)))}
 				{:else}
 					<i class="text-base-fg-muted">No description provided.</i>
 				{/if}
