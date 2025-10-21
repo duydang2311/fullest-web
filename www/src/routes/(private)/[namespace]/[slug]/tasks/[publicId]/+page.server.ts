@@ -26,8 +26,10 @@ export const load: PageServerLoad = async (e) => {
 		`projects/${parent.project.id}/tasks/${e.params.publicId}`,
 		{
 			query: {
-				fields:
+				fields: [
 					'Id,PublicId,Title,Status,Priority,CreatedTime,UpdatedTime,InitialCommentId,Author.Name',
+					'InitialComment.Id,InitialComment.ContentJson,InitialComment.CreatedTime,InitialComment.Author.Name',
+				].join(','),
 			},
 		}
 	);
@@ -56,6 +58,9 @@ export const load: PageServerLoad = async (e) => {
 						| 'updatedTime'
 						| 'initialCommentId'
 					> & {
+						initialComment: Pick<Comment, 'id' | 'contentJson' | 'createdTime'> & {
+							author: Pick<User, 'name'>;
+						};
 						author: Pick<User, 'name'>;
 					}
 				>()
@@ -71,8 +76,8 @@ export const load: PageServerLoad = async (e) => {
 
 	return {
 		task,
-		commentList: (await fetchComments(task.id)).pipe(
-			attempt.unwrapOrElse(() => keysetList<never, never>())
+		streamedCommentList: fetchComments(task.id).then((fetched) =>
+			fetched.pipe(attempt.unwrapOrElse(() => keysetList<never, never>()))
 		),
 	};
 };

@@ -6,7 +6,7 @@
       "devDependencies": {
         "@bitty/pipe": "^0.4.0",
         "@duydang2311/attempt": "^0.1.11",
-        "@duydang2311/svutils": "^0.0.7",
+        "@duydang2311/svutils": "^0.0.9",
         "@eslint/compat": "^1.4.0",
         "@eslint/js": "^9.38.0",
         "@fontsource-variable/geist": "^5.2.8",
@@ -75,7 +75,7 @@
 
     "@duydang2311/attempt": ["@duydang2311/attempt@0.1.11", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-/5VMMdjDKxBoW5wRRvMbiFZD1Qrq6yad+UBiNy1LImmi6Cp2GWDzZHT3sNP0iLsttMlacl2ZvxLvKTxqIUCYUg=="],
 
-    "@duydang2311/svutils": ["@duydang2311/svutils@0.0.7", "", { "peerDependencies": { "gsap": "^3.13.0", "svelte": "^5.0.0", "typescript": "^5" } }, "sha512-fnzosytLRMNPYMerp7aqQTjwhPeJ8lmxW5gSMdUnsdYUHV/DBfbEFtNOzSLXT8hnqRzOoPJtTr/OXuO/75/R5g=="],
+    "@duydang2311/svutils": ["@duydang2311/svutils@0.0.9", "", { "peerDependencies": { "gsap": "^3.13.0", "svelte": "^5.0.0", "typescript": "^5" } }, "sha512-Zm5Byz35IFFtLpwjkuPUDc4QXc8npnCMyTvJFjnJVEBZgRUT/x5bw7CrpJUJCWqnn5bZRnnvAuId4rIoYhh6JA=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.25.9", "", { "os": "aix", "cpu": "ppc64" }, "sha512-OaGtL73Jck6pBKjNIe24BnFE6agGl+6KxDtTfHhy1HmhthfKouEcOhqpSL64K4/0WCtbKFLOdzD/44cJ4k9opA=="],
 

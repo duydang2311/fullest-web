@@ -1,14 +1,13 @@
 <script lang="ts">
+	import { createRef } from '@duydang2311/svutils';
 	import CommentItem from './CommentItem.svelte';
 	import CommentSection from './CommentSection.svelte';
 	import Stats from './Stats.svelte';
 
 	const { data, form } = $props();
-	const initialComment = $derived(
-		data.commentList.items.find((a) => a.id === data.task.initialCommentId)
-	);
+	const commentList = createRef(() => data.streamedCommentList)
 	const filteredItems = $derived(
-		data.commentList.items.filter((a) => a.id !== data.task.initialCommentId)
+		commentList.current?.items.filter((a) => a.id !== data.task.initialCommentId) ?? []
 	);
 </script>
 
@@ -35,7 +34,7 @@
 		</div>
 		<hr class="border-base-border-weak mt-4 w-full lg:hidden" />
 		<div class="mt-4">
-			<CommentItem comment={initialComment ?? { author: data.task.author, id: data.task.initialCommentId }} />
+			<CommentItem comment={data.task.initialComment} />
 		</div>
 		<div class="mt-8">
 			<CommentSection taskId={data.task.id} comments={filteredItems} />
