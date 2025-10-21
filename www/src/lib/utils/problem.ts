@@ -5,7 +5,7 @@ export type ProblemDetails = v.InferOutput<typeof problemDetailsSchema>;
 
 const problemDetailsSchema = v.object({
 	status: v.number(),
-	title: v.string(),
+	title: v.optional(v.string()),
 	detail: v.optional(v.string()),
 	type: v.optional(v.string()),
 	instance: v.optional(v.string()),
