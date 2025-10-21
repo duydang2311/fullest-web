@@ -9,7 +9,7 @@ using WebApp.Infrastructure.Data;
 namespace WebApp.Api.V1.Statuses.GetMany;
 
 public sealed class Endpoint(AppDbContext db)
-    : Endpoint<Request, Ok<PaginatedList<Projectable>>>
+    : Endpoint<Request, Ok<IPaginatedList<Projectable>>>
 {
     public override void Configure()
     {
@@ -18,7 +18,7 @@ public sealed class Endpoint(AppDbContext db)
         PreProcessor<Authorize>();
     }
 
-    public override async Task<Ok<PaginatedList<Projectable>>> ExecuteAsync(
+    public override async Task<Ok<IPaginatedList<Projectable>>> ExecuteAsync(
         Request req,
         CancellationToken ct
     )
@@ -43,8 +43,8 @@ public sealed class Endpoint(AppDbContext db)
             .Paginate(pagination)
             .ToListAsync(ct)
             .ConfigureAwait(false);
-        return TypedResults.Ok(
-            PaginatedList.From(
+        return TypedResults.Ok<IPaginatedList<Projectable>>(
+            OffsetList.From(
                 list.Select(task => task.ToProjectable(req.Fields)),
                 pagination,
                 totalCount

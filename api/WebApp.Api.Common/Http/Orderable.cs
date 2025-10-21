@@ -13,6 +13,10 @@ public static class OrderableExtensions
 {
     public static IQueryable<T> Sort<T>(this IQueryable<T> query, IOrderable orderable)
     {
+        if (string.IsNullOrEmpty(orderable.Sort))
+        {
+            return query;
+        }
         var fields = orderable.Sort.Split(
             ',',
             StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries
