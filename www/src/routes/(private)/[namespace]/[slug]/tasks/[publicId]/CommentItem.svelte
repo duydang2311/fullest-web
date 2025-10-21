@@ -1,15 +1,14 @@
 <script lang="ts">
-import sanitizeHtml from 'sanitize-html';
+	import sanitizeHtml from 'sanitize-html';
 	import { renderToHTMLString } from '~/lib/components/editor';
 	import type { Comment } from '~/lib/models/comment';
+	import type { User } from '~/lib/models/user';
 	import CommentActions from './CommentActions.svelte';
 	import CommentEdit from './CommentEdit.svelte';
-	import type { User } from '~/lib/models/user';
 
 	const {
 		comment,
-	}: {
-		comment: Pick<Comment, 'id' | 'contentJson'> & {
+	}: { comment: Pick<Comment, 'id' | 'contentJson'> & {
 			author: Pick<User, 'name'>;
 		};
 	} = $props();

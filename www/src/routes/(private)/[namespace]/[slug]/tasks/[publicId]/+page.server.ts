@@ -1,7 +1,7 @@
 import { attempt } from '@duydang2311/attempt';
 import { error, fail } from '@sveltejs/kit';
 import type { Comment } from '~/lib/models/comment';
-import { offsetList, type OffsetList } from '~/lib/models/paginated';
+import { keysetList, type KeysetList } from '~/lib/models/paginated';
 import type { Task } from '~/lib/models/task';
 import type { User } from '~/lib/models/user';
 import {
@@ -20,15 +20,14 @@ import { createValidator } from '~/lib/utils/validation';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (e) => {
+	e.depends(e.route.id);
 	const parent = await e.parent();
 	const fetchedTask = await e.locals.http.get(
 		`projects/${parent.project.id}/tasks/${e.params.publicId}`,
 		{
 			query: {
-				fields: [
-					'Id,PublicId,Title,Status,Priority,CreatedTime,UpdatedTime',
-					'InitialComment.Id,InitialComment.ContentJson,InitialComment.CreatedTime,InitialComment.Author.Name',
-				].join(','),
+				fields:
+					'Id,PublicId,Title,Status,Priority,CreatedTime,UpdatedTime,InitialCommentId,Author.Name',
 			},
 		}
 	);
@@ -48,14 +47,16 @@ export const load: PageServerLoad = async (e) => {
 				response.json<
 					Pick<
 						Task,
-						'id' | 'publicId' | 'title' | 'status' | 'priority' | 'createdTime' | 'updatedTime'
+						| 'id'
+						| 'publicId'
+						| 'title'
+						| 'status'
+						| 'priority'
+						| 'createdTime'
+						| 'updatedTime'
+						| 'initialCommentId'
 					> & {
-						initialComment: Pick<Comment, 'id' | 'contentJson'> & {
-							author: Pick<User, 'name'>;
-						};
-						comments?: (Pick<Comment, 'id' | 'contentJson' | 'createdTime'> & {
-							author: Pick<User, 'name'>;
-						})[];
+						author: Pick<User, 'name'>;
 					}
 				>()
 			);
@@ -67,10 +68,11 @@ export const load: PageServerLoad = async (e) => {
 			);
 		})
 	);
+
 	return {
 		task,
 		commentList: (await fetchComments(task.id)).pipe(
-			attempt.unwrapOrElse(() => offsetList<never>())
+			attempt.unwrapOrElse(() => keysetList<never, never>())
 		),
 	};
 };
@@ -78,12 +80,11 @@ export const load: PageServerLoad = async (e) => {
 async function fetchComments(taskId: string) {
 	const { http } = useRuntime();
 	return (
-		await http.get('comments', {
+		await http.get('comments/keyset', {
 			query: {
 				taskId,
 				fields: 'Id,ContentJson,CreatedTime,Author.Name',
 				sort: 'Id',
-				page: 1,
 				size: 20,
 			},
 		})
@@ -91,8 +92,9 @@ async function fetchComments(taskId: string) {
 		attempt.flatMap((response) =>
 			jsonify(() =>
 				response.json<
-					OffsetList<
-						Pick<Comment, 'id' | 'contentJson' | 'createdTime'> & { author: Pick<User, 'name'> }
+					KeysetList<
+						Pick<Comment, 'id' | 'contentJson' | 'createdTime'> & { author: Pick<User, 'name'> },
+						string
 					>
 				>()
 			)

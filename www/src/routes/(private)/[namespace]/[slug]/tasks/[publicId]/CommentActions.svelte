@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
+	import { page } from '$app/state';
+	import invariant from 'tiny-invariant';
 	import { MenuOutline, PencilOutline, TrashOutline } from '~/lib/components/icons';
 	import type { Comment } from '~/lib/models/comment';
 	import { deleteComment } from '~/lib/remotes/comment.remote';
@@ -35,6 +38,8 @@
 			title="Delete"
 			onclick={async () => {
 				await deleteComment({ id: comment.id });
+				invariant(page.route.id, 'page.route.id must not be null');
+				await invalidate(page.route.id);
 			}}
 		>
 			<TrashOutline />
