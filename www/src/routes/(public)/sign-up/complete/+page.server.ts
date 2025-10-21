@@ -44,7 +44,7 @@ export const actions: Actions = {
 					return error(500, created.error);
 				}
 				if (!created.data.ok) {
-					const problemParsed = await parseHttpProblem(created.data);
+					const problemParsed = parseHttpProblem(created.data);
 					if (!problemParsed.ok) {
 						return error(500, problemParsed.error);
 					}
