@@ -14,7 +14,8 @@ builder
     .AddCodecsGroup()
     .AddHashingGroup()
     .AddAccessControlGroup()
-    .AddEventHandlersGroup();
+    .AddEventHandlersGroup()
+    .AddStorageGroup();
 builder.Services.AddSingleton<ISlugHelper, SlugHelper>();
 
 builder.Services.AddProblemDetails(a =>
@@ -60,6 +61,11 @@ app.UseFastEndpoints(options =>
 });
 
 ValidatorOptions.Global.LanguageManager.Enabled = false;
+
+// var rsa = RSA.Create(2048);
+// Console.WriteLine(rsa.ExportPkcs8PrivateKeyPem());
+// Console.WriteLine(rsa.ExportSubjectPublicKeyInfoPem());
+// return 0;
 
 var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 await using (var scope = scopeFactory.CreateAsyncScope())
