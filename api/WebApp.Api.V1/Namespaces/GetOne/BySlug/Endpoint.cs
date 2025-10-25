@@ -14,6 +14,7 @@ public sealed class Endpoint(AppDbContext db)
     {
         Get("namespaces/{Slug}");
         Version(1);
+        AllowAnonymous();
     }
 
     public override async Task<Results<NotFound, Ok<Projectable>>> ExecuteAsync(
