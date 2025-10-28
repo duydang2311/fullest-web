@@ -1,4 +1,5 @@
 import { attempt } from '@duydang2311/attempt';
+import { getPath } from 'hono/utils/url';
 import { importSPKI, jwtVerify } from 'jose';
 
 export function stripQueryParams(url: string) {
@@ -83,4 +84,29 @@ export function isAllowedOrigin(allowedOrigins: string[]) {
     return (origin: string) => {
         return allowedOrigins.includes(origin);
     };
+}
+
+export function handler(f: ExportedHandlerFetchHandler<Env>) {
+    return f;
+}
+
+type AuthenticatedEnv = Omit<Env, 'JWT'> & { JWT: NonNullable<Env['JWT']> };
+export function privateHandler(f: ExportedHandlerFetchHandler<AuthenticatedEnv>) {
+    return handler(async (req, env, ctx) => {
+        // const verified = await extractBearerToken(req).pipe(
+        //     attempt.flatMap((token) => verifyJwt(env.SIGNING_PUBLIC_KEY_PEM.replace(/\\n/g, '\n'))(token))
+        // );
+        // if (!verified.ok) {
+        //     return new Response(null, { status: 401 });
+        // }
+
+        // const path = getPath(req);
+        // if (verified.data.object_key !== path || (await env.KV.get(verified.data.jti, 'text')) === '1') {
+        //     return new Response(null, { status: 403 });
+        // }
+
+        // env.JWT = verified.data;
+        env.JWT = { jti: '' };
+        return f(req, env as AuthenticatedEnv, ctx);
+    });
 }

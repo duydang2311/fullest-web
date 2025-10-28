@@ -1,7 +1,7 @@
 import { getPath } from 'hono/utils/url';
-import { stripQueryParams, withR2Metadata } from '../lib/utils';
+import { handler, stripQueryParams, withR2Metadata } from '../lib/utils';
 
-export const getObject: ExportedHandlerFetchHandler<Env> = async (req, env, ctx) => {
+export const getObject = handler(async (req, env, ctx) => {
     const cache = caches.default;
     const cacheKey = stripQueryParams(req.url);
     let response = await cache.match(cacheKey);
@@ -21,4 +21,4 @@ export const getObject: ExportedHandlerFetchHandler<Env> = async (req, env, ctx)
     response = new Response(obj.body, { status: 200, headers });
     ctx.waitUntil(cache.put(cacheKey, response.clone()));
     return response;
-};
+});

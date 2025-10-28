@@ -1,20 +1,8 @@
-import { attempt } from '@duydang2311/attempt';
 import { getPath } from 'hono/utils/url';
-import { extractBearerToken, makeHeadersFrom, stripQueryParams, verifyJwt, withR2Metadata } from '../lib/utils';
+import { privateHandler, stripQueryParams, withR2Metadata } from '../lib/utils';
 
-export const putUserObject: ExportedHandlerFetchHandler<Env> = async (req, env, ctx) => {
-    const verified = await extractBearerToken(req).pipe(
-        attempt.flatMap((token) => verifyJwt(env.SIGNING_PUBLIC_KEY_PEM.replace(/\\n/g, '\n'))(token))
-    );
-    if (!verified.ok) {
-        return new Response(null, { status: 401 });
-    }
-
+export const putUserObject = privateHandler(async (req, env, ctx) => {
     const path = getPath(req);
-    if (verified.data.object_key !== path || (await env.KV.get(verified.data.jti, 'text')) === '1') {
-        return new Response(null, { status: 403 });
-    }
-
     const version = Date.now();
     const obj = await env.BUCKET.put(path, await req.arrayBuffer(), {
         httpMetadata: {
@@ -23,7 +11,7 @@ export const putUserObject: ExportedHandlerFetchHandler<Env> = async (req, env, 
     });
 
     ctx.waitUntil(caches.default.delete(stripQueryParams(req.url)));
-    ctx.waitUntil(env.KV.put(verified.data.jti, '1', { expirationTtl: 60 }));
+    ctx.waitUntil(env.KV.put(env.JWT.jti, '1', { expirationTtl: 60 }));
 
     return Response.json(
         {
@@ -37,4 +25,4 @@ export const putUserObject: ExportedHandlerFetchHandler<Env> = async (req, env, 
             headers: withR2Metadata(obj)(new Headers()),
         }
     );
-};
+});
