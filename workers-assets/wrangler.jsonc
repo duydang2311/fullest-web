@@ -7,7 +7,6 @@
     "name": "workers-assets",
     "main": "src/index.ts",
     "compatibility_date": "2025-10-22",
-    "compatibility_flags": ["nodejs_compat"],
     "observability": {
         "enabled": true
     },
