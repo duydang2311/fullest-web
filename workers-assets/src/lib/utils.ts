@@ -67,6 +67,10 @@ export function withR2Metadata(obj: R2Object) {
 }
 
 export function withCors(allowedOrigin: string, allowedHeaders: string) {
+    return setCors(allowedOrigin, allowedHeaders);
+}
+
+export function setCors(allowedOrigin: string, allowedHeaders: string) {
     return (headers: Headers) => {
         headers.set('Access-Control-Allow-Origin', allowedOrigin);
         headers.set('Access-Control-Allow-Methods', 'OPTIONS,GET,PUT');
@@ -90,22 +94,65 @@ export function handler(f: ExportedHandlerFetchHandler<Env>) {
     return f;
 }
 
+export function corsHandler(f: ExportedHandlerFetchHandler<Env>) {
+    return Object.assign(
+        handler(async (req, env, ctx) => {
+            const origin = req.headers.get('Origin') || '*';
+            const headers = req.headers.get('Access-Control-Request-Headers') ?? '*';
+            if (req.method === 'OPTIONS') {
+                return new Response(null, {
+                    status: 204,
+                    headers: withCors(origin, headers)(new Headers()),
+                });
+            }
+            const response = await f(req, env, ctx);
+            setCors(origin, headers)(response.headers);
+            return response;
+        }),
+        { __raw: f }
+    );
+}
+
+export function originHandler(f: ExportedHandlerFetchHandler<Env>) {
+    return Object.assign(
+        handler((req, env, ctx) => {
+            const origin = req.headers.get('Origin');
+            if (origin == null || !isAllowedOrigin(env.ALLOWED_ORIGINS)(origin)) {
+                return new Response(null, { status: 403 });
+            }
+            return f(req, env, ctx);
+        }),
+        { __raw: f }
+    );
+}
+
 type AuthenticatedEnv = Omit<Env, 'JWT'> & { JWT: NonNullable<Env['JWT']> };
 export function privateHandler(f: ExportedHandlerFetchHandler<AuthenticatedEnv>) {
-    return handler(async (req, env, ctx) => {
-        const verified = await extractBearerToken(req).pipe(
-            attempt.flatMap((token) => verifyJwt(env.SIGNING_PUBLIC_KEY_PEM.replace(/\\n/g, '\n'))(token))
-        );
-        if (!verified.ok) {
-            return new Response(null, { status: 401 });
-        }
+    return Object.assign(
+        handler(async (req, env, ctx) => {
+            const verified = await extractBearerToken(req).pipe(
+                attempt.flatMap((token) => verifyJwt(env.SIGNING_PUBLIC_KEY_PEM.replace(/\\n/g, '\n'))(token))
+            );
+            if (!verified.ok) {
+                return new Response(null, { status: 401 });
+            }
 
-        const path = getPath(req);
-        if (verified.data.object_key !== path || (await env.KV.get(verified.data.jti, 'text')) === '1') {
-            return new Response(null, { status: 403 });
-        }
+            const path = getPath(req);
+            if (verified.data.object_key !== path || (await env.KV.get(verified.data.jti, 'text')) === '1') {
+                return new Response(null, { status: 403 });
+            }
 
-        env.JWT = verified.data;
-        return f(req, env as AuthenticatedEnv, ctx);
-    });
+            env.JWT = verified.data;
+            return f(req, env as AuthenticatedEnv, ctx);
+        }),
+        { __raw: f }
+    );
+}
+
+export function getRawHandler(f: ExportedHandlerFetchHandler<Env>) {
+    let handler = f;
+    while ('__raw' in handler && handler.__raw) {
+        handler = handler.__raw as ExportedHandlerFetchHandler<Env>;
+    }
+    return handler;
 }

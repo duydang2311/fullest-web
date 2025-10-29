@@ -3,7 +3,6 @@ import { getPath } from 'hono/utils/url';
 import { getObject } from './handlers/get-object';
 import { putUserObject } from './handlers/put-user-object';
 import { putUserPfp } from './handlers/put-user-pfp';
-import { isAllowedOrigin, withCors } from './lib/utils';
 
 declare global {
     interface Env extends Cloudflare.Env {
@@ -19,18 +18,6 @@ router.add('PUT', '/users/:userId/*', putUserObject);
 
 export default {
     async fetch(req, env, ctx) {
-        const requestOrigin = req.headers.get('Origin');
-        if (requestOrigin == null || !isAllowedOrigin(env.ALLOWED_ORIGINS)(requestOrigin)) {
-            return new Response(null, { status: 403 });
-        }
-
-        const requestHeaders = req.headers.get('Access-Control-Request-Headers') ?? '*';
-        if (req.method === 'OPTIONS') {
-            return new Response(null, {
-                status: 204,
-                headers: withCors(requestOrigin, requestHeaders)(new Headers()),
-            });
-        }
         const path = getPath(req);
         const result = router.match(req.method, path)[0];
         let response: Response | null = null;
@@ -41,7 +28,6 @@ export default {
         } else {
             response = new Response(null, { status: 404 });
         }
-        withCors(requestOrigin, requestHeaders)(response.headers);
         return response;
     },
 } satisfies ExportedHandler<Env>;
