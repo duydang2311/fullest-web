@@ -1,32 +1,30 @@
 import { getPath } from 'hono/utils/url';
-import { corsHandler, originHandler, privateHandler, stripQueryParams, withR2Metadata } from '../lib/utils';
+import { originHandler, privateHandler, stripQueryParams, withR2Metadata } from '../lib/utils';
 
-export const putUserObject = corsHandler(
-    originHandler(
-        privateHandler(async (req, env, ctx) => {
-            const path = getPath(req);
-            const version = Date.now();
-            const obj = await env.BUCKET.put(path, await req.arrayBuffer(), {
-                httpMetadata: {
-                    contentType: req.headers.get('Content-Type') ?? 'application/octet-stream',
-                },
-            });
+export const putUserObject = originHandler(
+    privateHandler(async (req, env, ctx) => {
+        const path = getPath(req);
+        const version = Date.now();
+        const obj = await env.BUCKET.put(path, await req.arrayBuffer(), {
+            httpMetadata: {
+                contentType: req.headers.get('Content-Type') ?? 'application/octet-stream',
+            },
+        });
 
-            ctx.waitUntil(caches.default.delete(stripQueryParams(req.url)));
-            ctx.waitUntil(env.KV.put(env.JWT.jti, '1', { expirationTtl: 60 }));
+        ctx.waitUntil(caches.default.delete(stripQueryParams(req.url)));
+        ctx.waitUntil(env.KV.put(env.JWT.jti, '1', { expirationTtl: 60 }));
 
-            return Response.json(
-                {
-                    key: obj.key,
-                    version,
-                    size: obj.size,
-                    uploaded: obj.uploaded,
-                },
-                {
-                    status: 200,
-                    headers: withR2Metadata(obj)(new Headers()),
-                }
-            );
-        })
-    )
+        return Response.json(
+            {
+                key: obj.key,
+                version,
+                size: obj.size,
+                uploaded: obj.uploaded,
+            },
+            {
+                status: 200,
+                headers: withR2Metadata(obj)(new Headers()),
+            }
+        );
+    })
 );

@@ -66,10 +66,6 @@ export function withR2Metadata(obj: R2Object) {
     };
 }
 
-export function withCors(allowedOrigin: string, allowedHeaders: string) {
-    return setCors(allowedOrigin, allowedHeaders);
-}
-
 export function setCors(allowedOrigin: string, allowedHeaders: string) {
     return (headers: Headers) => {
         headers.set('Access-Control-Allow-Origin', allowedOrigin);
@@ -92,25 +88,6 @@ export function isAllowedOrigin(allowedOrigins: string[]) {
 
 export function handler(f: ExportedHandlerFetchHandler<Env>) {
     return f;
-}
-
-export function corsHandler(f: ExportedHandlerFetchHandler<Env>) {
-    return Object.assign(
-        handler(async (req, env, ctx) => {
-            const origin = req.headers.get('Origin') || '*';
-            const headers = req.headers.get('Access-Control-Request-Headers') ?? '*';
-            if (req.method === 'OPTIONS') {
-                return new Response(null, {
-                    status: 204,
-                    headers: withCors(origin, headers)(new Headers()),
-                });
-            }
-            const response = await f(req, env, ctx);
-            setCors(origin, headers)(response.headers);
-            return response;
-        }),
-        { __raw: f }
-    );
 }
 
 export function originHandler(f: ExportedHandlerFetchHandler<Env>) {
