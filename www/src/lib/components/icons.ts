@@ -23,6 +23,7 @@ export { default as MagnifyingGlass } from '~icons/lucide/search';
 export { default as ShieldOutline } from '~icons/lucide/shield';
 export { default as StarOutline } from '~icons/lucide/star';
 export { default as TrashOutline } from '~icons/lucide/trash';
+export { default as UploadOutline } from '~icons/lucide/upload';
 export { default as UsersOutline } from '~icons/lucide/users';
 export { default as XOutline } from '~icons/lucide/x';
 export { default as ZapOutline } from '~icons/lucide/zap';
