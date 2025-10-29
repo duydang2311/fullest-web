@@ -37,6 +37,7 @@ export const putUserPfp = originHandler(
             const data = (await response.clone().json()) as Record<string, unknown>;
             ctx.waitUntil(
                 fetch(env.NOTIFICATION_URL, {
+                    method: 'POST',
                     body: JSON.stringify({
                         kind: 'PUT_USER_PFP',
                         data: {
