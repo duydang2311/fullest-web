@@ -12,8 +12,12 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(a => a.CreatedTime).HasDefaultValueSql("now()");
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("UserHiLoSequence");
         builder.Property(a => a.Name);
+        builder.Property(a => a.DisplayName);
+        builder.Property(b => b.ImageKey);
+        builder.Property(b => b.ImageVersion);
         builder.Property(a => a.DeletedTime);
 
+        builder.Property(a => a.DeletedTime);
         builder.HasIndex(a => a.Name).IsUnique();
         builder.HasIndex(a => a.DeletedTime);
         builder.HasKey(a => a.Id);

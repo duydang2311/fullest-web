@@ -11,5 +11,7 @@ public sealed record User : ISoftDelete
     public Instant? DeletedTime { get; init; }
     public ICollection<Project> Projects { get; init; } = null!;
     public ICollection<ProjectMember> ProjectMembers { get; init; } = null!;
-    public UserProfile? Profile { get; init; }
+    public string? DisplayName { get; init; }
+    public string? ImageKey { get; init; }
+    public string? ImageVersion { get; init; }
 }

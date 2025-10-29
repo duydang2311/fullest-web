@@ -26,5 +26,4 @@ public abstract class BaseDbContext : DbContext
     public DbSet<Status> Statuses => Set<Status>();
     public DbSet<Priority> Priorities => Set<Priority>();
     public DbSet<Comment> Comments => Set<Comment>();
-    public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
 }

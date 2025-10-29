@@ -15,7 +15,8 @@ builder
     .AddHashingGroup()
     .AddAccessControlGroup()
     .AddEventHandlersGroup()
-    .AddStorageGroup();
+    .AddStorageGroup()
+    .AddIntegrationGroup();
 builder.Services.AddSingleton<ISlugHelper, SlugHelper>();
 
 builder.Services.AddProblemDetails(a =>
@@ -31,8 +32,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddHybridCache();
 builder
-    .Services.AddAuthentication()
-    .AddScheme<SessionAuthSchemeOptions, SessionAuthSchemeHandler>("Session", null);
+    .Services.AddAuthentication("Session")
+    .AddScheme<SessionAuthSchemeOptions, SessionAuthSchemeHandler>("Session", null)
+    .AddScheme<ServiceAuthSchemeOptions, ServiceAuthSchemeHandler>("Service", null);
 builder.Services.AddAuthorization();
 
 builder.Services.AddExceptionHandler<JsonExceptionHandler>();
@@ -65,6 +67,19 @@ ValidatorOptions.Global.LanguageManager.Enabled = false;
 // var rsa = RSA.Create(2048);
 // Console.WriteLine(rsa.ExportPkcs8PrivateKeyPem());
 // Console.WriteLine(rsa.ExportSubjectPublicKeyInfoPem());
+// return 0;
+// Console.WriteLine(
+//     JwtHelper.CreateToken(
+//         app.Services.GetRequiredService<
+//             IOptions<IntegrationKeysOptions>
+//         >().Value.AssetWorkers.PrivateKeyPem,
+//         iss: "api",
+//         aud: "workers-assets",
+//         iat: DateTime.UtcNow,
+//         nbf: DateTime.UtcNow,
+//         exp: DateTime.UtcNow.AddYears(1)
+//     )
+// );
 // return 0;
 
 var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
