@@ -2,7 +2,7 @@ using System.Security.Claims;
 using FastEndpoints;
 using WebApp.Domain.Entities;
 
-namespace WebApp.Api.V1.Assets.CreateProfileUploadRequest;
+namespace WebApp.Api.V1.Users.CreateProfileUploadRequest;
 
 public sealed record Request
 {

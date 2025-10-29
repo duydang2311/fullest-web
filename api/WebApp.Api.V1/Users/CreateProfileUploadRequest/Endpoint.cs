@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using WebApp.Api.Common.Codecs;
 using WebApp.Infrastructure.Storages;
 
-namespace WebApp.Api.V1.Assets.CreateProfileUploadRequest;
+namespace WebApp.Api.V1.Users.CreateProfileUploadRequest;
 
 public sealed class Endpoint(
     IOptions<AssetStorageOptions> assetStorageOptions,
@@ -18,8 +18,9 @@ public sealed class Endpoint(
 {
     public override void Configure()
     {
-        Post("assets/profile-upload-request");
+        Post("users/profile-upload-request");
         Version(1);
+        Description(a => a.ClearDefaultAccepts().Accepts<Request>(true, "*/*"));
     }
 
     public override Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)
