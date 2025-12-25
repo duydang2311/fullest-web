@@ -1,14 +1,14 @@
 <script lang="ts">
-	import '../app.css';
-	import '@fontsource-variable/geist-mono';
-	import '@fontsource-variable/geist';
-	import favicon from '$lib/assets/favicon.svg';
+    import '../app.css';
+    import '@fontsource-variable/geist-mono';
+    import '@fontsource/google-sans-flex';
+    import favicon from '$lib/assets/favicon.svg';
 
-	const { children } = $props();
+    const { children } = $props();
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+    <link rel="icon" href={favicon} />
 </svelte:head>
 
 {@render children?.()}

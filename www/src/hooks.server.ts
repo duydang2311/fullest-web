@@ -14,8 +14,8 @@ let cache: Cache;
 export const init: ServerInit = () => {
     invariant(env.API_URL_PREFIX, 'expect API_URL_PREFIX');
     invariant(env.API_URL_SUFFIX, 'expect API_URL_SUFFIX');
-    invariant(env.GOOGLE_OAUTH_CLIENT_ID, 'expect GOOGLE_OAUTH_CLIENT_ID');
-    invariant(env.GOOGLE_OAUTH_CLIENT_SECRET, 'expect GOOGLE_OAUTH_CLIENT_SECRET');
+    // invariant(env.GOOGLE_OAUTH_CLIENT_ID, 'expect GOOGLE_OAUTH_CLIENT_ID');
+    // invariant(env.GOOGLE_OAUTH_CLIENT_SECRET, 'expect GOOGLE_OAUTH_CLIENT_SECRET');
     cache = new MemoryCache(new Cacheable({ ttl: '30m' }));
 };
 
