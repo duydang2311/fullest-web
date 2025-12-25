@@ -26,7 +26,7 @@
 					<div
 						id="active-tab-underline"
 						data-flip-id="active-tab-underline"
-						class="bg-primary absolute inset-x-0 -bottom-1 h-[2px] rounded-full"
+						class="bg-primary absolute inset-x-0 -bottom-1 h-0.5 rounded-full"
 					></div>
 				{/if}
 				<a
@@ -34,7 +34,7 @@
 					class="{button({
 						variant: 'base',
 						ghost: true,
-					})} group-[[data-selected]]:text-base-fg-strong block group-[[data-selected]]:font-bold group-[[data-selected]]:tracking-tight"
+					})} group-data-selected:text-base-fg-strong block group-data-selected:font-bold group-data-selected:tracking-tight"
 				>
 					{item.label}
 				</a>
