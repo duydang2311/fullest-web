@@ -107,9 +107,9 @@
 		--color-base-hover: oklch(24% 0.06 261.46);
 		--color-base-active: oklch(24% 0.06 261.46);
 		--color-base-selected: oklch(24% 0.06 261.46);
-		--color-base-border: oklch(30% 0.06 261.46);
-		--color-base-border-strong: oklch(34% 0.06 261.46);
-		--color-base-border-weak: oklch(28% 0.06 261.46);
+		--color-base-border: oklch(32% 0.06 261.46);
+		--color-base-border-strong: oklch(36% 0.06 261.46);
+		--color-base-border-weak: oklch(30% 0.06 261.46);
 		--color-base-fg: oklch(70% 0.02 261.46);
 		--color-base-fg-strong: oklch(100% 0.02 261.46);
 		--color-base-fg-weak: oklch(60% 0.02 261.46);
