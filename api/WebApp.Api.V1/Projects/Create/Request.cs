@@ -29,14 +29,14 @@ public sealed partial class RequestValidator : AbstractValidator<Request>
             .WithErrorCode(ErrorCodes.MaxLength);
         RuleFor(a => a.NormalizedIdentifier)
             .NotEmpty()
+            .WithName(nameof(Request.Identifier))
             .WithErrorCode(ErrorCodes.Required)
-            .WithName(nameof(Request.Identifier))
             .Matches(IdentifierPattern())
-            .WithErrorCode(ErrorCodes.Invalid)
             .WithName(nameof(Request.Identifier))
+            .WithErrorCode(ErrorCodes.Invalid)
             .MaximumLength(50)
-            .WithErrorCode(ErrorCodes.MaxLength)
-            .WithName(nameof(Request.Identifier));
+            .WithName(nameof(Request.Identifier))
+            .WithErrorCode(ErrorCodes.MaxLength);
         When(
             a => !string.IsNullOrEmpty(a.NormalizedSummary),
             () =>
