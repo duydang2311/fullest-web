@@ -20,6 +20,7 @@
 		"@duydang2311/svutils": "^0.0.9",
 		"@eslint/compat": "^2.0.0",
 		"@eslint/js": "^9.39.2",
+		"@fontsource-variable/geist": "^5.2.8",
 		"@fontsource-variable/geist-mono": "^5.2.7",
 		"@fontsource/google-sans-flex": "^5.2.1",
 		"@iconify-json/heroicons": "^1.2.3",

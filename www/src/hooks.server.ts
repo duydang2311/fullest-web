@@ -56,12 +56,14 @@ export const handle: Handle = ({ event, resolve }) => {
         return resolve(event);
     }
 
+    
     let sessionToken: string | null = null;
+    event.locals.session = {user: {id: '', name: ''}}
     let isPrivateRoute = false;
     if (routeId.includes('(private)')) {
         isPrivateRoute = true;
         sessionToken = event.cookies.get('session_token') ?? null;
-        if (!sessionToken) {
+        if (!event.locals.session && !sessionToken) {
             return redirect(303, '/sign-in');
         }
     } else if (routeId.includes('(auth-optional)')) {
@@ -78,7 +80,7 @@ export const handle: Handle = ({ event, resolve }) => {
         cache,
     };
 
-    if (sessionToken != null) {
+    if (!event.locals.session && sessionToken != null) {
         return event.locals.http
             .get(`/sessions/${sessionToken}`, {
                 query: {

@@ -2,6 +2,7 @@
     import '../app.css';
     import '@fontsource-variable/geist-mono';
     import '@fontsource/google-sans-flex';
+    import '@fontsource-variable/geist';
     import favicon from '$lib/assets/favicon.svg';
 
     const { children } = $props();

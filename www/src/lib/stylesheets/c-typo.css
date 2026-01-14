@@ -1,7 +1,7 @@
 .c-label {
 	display: block;
 	font-size: var(--text-body-sm);
-	color: var(--color-base-fg-dim);
+	/* color: var(--color-base-fg-dim); */
 }
 
 .c-help-text {

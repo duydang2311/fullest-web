@@ -1,40 +1,41 @@
 .c-input {
-	--_text: inherit;
-	--_bg: transparent;
-	--_border: transparent;
-	--_border-invalid: transparent;
+    --_text: inherit;
+    --_bg: transparent;
+    --_border: transparent;
+    --_border-invalid: transparent;
 }
 
 .c-input {
-	--_text: var(--color-base-fg);
-	--_bg: var(--color-base-light);
-	--_border: var(--color-base-border);
-	--_border-invalid: color-mix(in oklch, var(--color-negative-border) 60%, transparent);
+    --_text: var(--color-base-fg);
+    --_bg: var(--color-base-light);
+    --_border: color-mix(in oklch, var(--color-base-border) 60%, var(--color-base-border-strong));
+    --_border-invalid: color-mix(in oklch, var(--color-negative-border) 60%, transparent);
 }
 
 .c-input {
-	width: 100%;
-	padding: --spacing(1.5) --spacing(3);
-	border: 1px solid var(--_border);
-	border-radius: var(--radius-lg);
-	background-color: var(--_bg);
-	color: var(--_text);
-	@apply transition;
+    width: 100%;
+    padding: --spacing(1.5) --spacing(3);
+    border: 1px solid var(--_border);
+    border-radius: var(--radius-lg);
+    background-color: var(--_bg);
+    color: var(--_text);
+    @apply transition;
 
-	&:where(::placeholder) {
-		color: var(--color-base-fg-muted);
-	}
+    &:where(::placeholder) {
+        color: var(--color-base-fg-muted);
+    }
 
-	&:where(:focus-visible) {
-		outline: none;
-		@apply ring-focus-base-fg;
-	}
+    &:where(:focus-visible) {
+        outline: none;
+        --_border: var(--color-base-border-strong);
+        @apply ring-focus-base-fg;
+    }
 
-	&:where([aria-invalid='true']) {
-		border-color: var(--_border-invalid);
-		&:where(:focus-visible) {
-			outline: none;
-			@apply ring-focus-negative;
-		}
-	}
+    &:where([aria-invalid='true']) {
+        border-color: var(--_border-invalid);
+        &:where(:focus-visible) {
+            outline: none;
+            @apply ring-focus-negative;
+        }
+    }
 }

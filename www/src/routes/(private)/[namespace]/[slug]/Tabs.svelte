@@ -15,7 +15,7 @@
 <div {...tabs.getRootProps()}>
 	<div
 		{...tabs.getListProps()}
-		class="border-b-base-border flex items-center border-b px-8 *:basis-32 max-md:*:flex-1 pb-1"
+		class="border-b-base-border flex items-center border-b px-8 *:basis-28 max-md:*:flex-1 pb-1"
 	>
 		{#each tabItems as item}
 			<button

@@ -1,135 +1,139 @@
 .c-button {
-	--_text: inherit;
-	--_bg: transparent;
-	--_bg-hover: transparent;
-	--_bg-active: transparent;
-	--_border: transparent;
+    --_text: inherit;
+    --_bg: transparent;
+    --_bg-hover: transparent;
+    --_bg-active: transparent;
+    --_border: transparent;
 }
 
 .c-button--base {
-	--_text: var(--color-base-fg);
+    --_text: var(--color-base-fg);
 
-	&:where(.c-button--filled) {
-		--_bg: var(--color-base-light);
-		--_bg-hover: var(--color-base-hover);
-		--_bg-active: var(--color-base-active);
-	}
+    &:where(.c-button--filled) {
+        --_bg: var(--color-base-light);
+        --_bg-hover: var(--color-base-hover);
+        --_bg-active: var(--color-base-active);
+    }
 
-	&:where(.c-button--ghost) {
-		/* --_bg-hover: color-mix(in oklch, var(--color-base-fg) 5%, transparent); */
-		/* --_bg-active: color-mix(in oklch, var(--color-base-fg) 10%, transparent); */
-		--_bg-hover: var(--color-base-hover);
-		--_bg-active: var(--color-base-active);
-		&:where(:disabled) {
-			--_text: var(--color-base-fg-muted);
-			--_bg-hover: transparent;
-			--_bg-active: transparent;
-		}
-	}
+    &:where(.c-button--ghost) {
+        /* --_bg-hover: color-mix(in oklch, var(--color-base-fg) 5%, transparent); */
+        /* --_bg-active: color-mix(in oklch, var(--color-base-fg) 10%, transparent); */
+        --_bg-hover: var(--color-base-hover);
+        --_bg-active: var(--color-base-active);
+        &:where(:disabled) {
+            --_text: var(--color-base-fg-muted);
+            --_bg-hover: transparent;
+            --_bg-active: transparent;
+        }
+    }
 
-	&:where([data-state='open']) {
-		--_bg: var(--_bg-active);
-	}
+    &:where([data-state='open']) {
+        --_bg: var(--_bg-active);
+    }
 
-	&:where(.c-button--outlined) {
-		--_border: var(--color-base-border);
-	}
+    &:where(.c-button--outlined) {
+        --_border: color-mix(
+            in oklch,
+            var(--color-base-border) 60%,
+            var(--color-base-border-strong)
+        );
+    }
 
-	&:where(:focus-visible) {
-		@apply ring-focus-base-fg;
-	}
+    &:where(:focus-visible) {
+        @apply ring-focus-base-fg;
+    }
 }
 
 .c-button--primary {
-	--_text: var(--color-primary);
+    --_text: var(--color-primary);
 
-	&:where(.c-button--filled) {
-		--_text: var(--color-primary-fg);
-		--_bg: var(--color-primary);
-		--_bg-hover: var(--color-primary-hover);
-		--_bg-active: var(--color-primary-active);
-		&:where(:disabled) {
-			--_text: var(--color-base-fg-muted);
-			--_bg: color-mix(in oklch, var(--color-base-fg-muted) 20%, transparent);
-		}
-	}
+    &:where(.c-button--filled) {
+        --_text: var(--color-primary-fg);
+        --_bg: var(--color-primary);
+        --_bg-hover: var(--color-primary-hover);
+        --_bg-active: var(--color-primary-active);
+        &:where(:disabled) {
+            --_text: var(--color-base-fg-muted);
+            --_bg: color-mix(in oklch, var(--color-base-fg-muted) 20%, transparent);
+        }
+    }
 
-	&:where([data-state='open']) {
-		--_bg: color-mix(in oklch, var(--color-primary-active) 15%, transparent);
-	}
+    &:where([data-state='open']) {
+        --_bg: color-mix(in oklch, var(--color-primary-active) 15%, transparent);
+    }
 
-	&:where(.c-button--ghost) {
-		--_bg-hover: color-mix(in oklch, var(--color-primary-hover) 10%, transparent);
-		--_bg-active: color-mix(in oklch, var(--color-primary-active) 15%, transparent);
-	}
+    &:where(.c-button--ghost) {
+        --_bg-hover: color-mix(in oklch, var(--color-primary-hover) 10%, transparent);
+        --_bg-active: color-mix(in oklch, var(--color-primary-active) 15%, transparent);
+    }
 
-	&:where(.c-button--outlined) {
-		--_border: var(--color-primary-border);
-		&:where(:disabled) {
-			--_border: transparent;
-		}
-	}
+    &:where(.c-button--outlined) {
+        --_border: var(--color-primary-border);
+        &:where(:disabled) {
+            --_border: transparent;
+        }
+    }
 
-	&:where(:focus-visible) {
-		@apply ring-focus-primary;
-	}
+    &:where(:focus-visible) {
+        @apply ring-focus-primary;
+    }
 }
 
 .c-button--negative {
-	--_text: var(--color-negative);
+    --_text: var(--color-negative);
 
-	&:where(.c-button--filled) {
-		--_text: var(--color-negative-fg);
-		--_bg: var(--color-negative);
-		--_bg-hover: var(--color-negative-hover);
-		--_bg-active: var(--color-negative-active);
-	}
+    &:where(.c-button--filled) {
+        --_text: var(--color-negative-fg);
+        --_bg: var(--color-negative);
+        --_bg-hover: var(--color-negative-hover);
+        --_bg-active: var(--color-negative-active);
+    }
 
-	&:where([data-state='open']) {
-		--_bg: color-mix(in oklch, var(--color-negative-active) 15%, transparent);
-	}
+    &:where([data-state='open']) {
+        --_bg: color-mix(in oklch, var(--color-negative-active) 15%, transparent);
+    }
 
-	&:where(.c-button--ghost) {
-		--_bg-hover: color-mix(in oklch, var(--color-negative-hover) 10%, transparent);
-		--_bg-active: color-mix(in oklch, var(--color-negative-active) 15%, transparent);
-	}
+    &:where(.c-button--ghost) {
+        --_bg-hover: color-mix(in oklch, var(--color-negative-hover) 10%, transparent);
+        --_bg-active: color-mix(in oklch, var(--color-negative-active) 15%, transparent);
+    }
 
-	&:where(.c-button--outlined) {
-		--_border: var(--color-negative-border);
-	}
+    &:where(.c-button--outlined) {
+        --_border: var(--color-negative-border);
+    }
 
-	&:where(:focus-visible) {
-		@apply ring-focus-negative;
-	}
+    &:where(:focus-visible) {
+        @apply ring-focus-negative;
+    }
 }
 
 .c-button {
-	padding: --spacing(1.5) --spacing(3);
-	border-radius: var(--radius-lg);
-	border: 1px solid var(--_border);
-	background-color: var(--_bg);
-	color: var(--_text);
-	font-weight: 500;
-	@apply transition;
+    padding: --spacing(1.5) --spacing(3);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--_border);
+    background-color: var(--_bg);
+    color: var(--_text);
+    font-weight: 500;
+    @apply transition;
 
-	&:where(.c-button--icon) {
-		padding: --spacing(1.5);
-		border-radius: var(--radius-lg);
-	}
+    &:where(.c-button--icon) {
+        padding: --spacing(1.5);
+        border-radius: var(--radius-md);
+    }
 
-	&:where(:hover) {
-		background-color: var(--_bg-hover);
-	}
+    &:where(:hover) {
+        background-color: var(--_bg-hover);
+    }
 
-	&:where(:active) {
-		background-color: var(--_bg-active);
-	}
+    &:where(:active) {
+        background-color: var(--_bg-active);
+    }
 
-	&:where(:focus-visible) {
-		outline: none;
-	}
+    &:where(:focus-visible) {
+        outline: none;
+    }
 
-	&:where(:disabled) {
-		pointer-events: none;
-	}
+    &:where(:disabled) {
+        pointer-events: none;
+    }
 }
