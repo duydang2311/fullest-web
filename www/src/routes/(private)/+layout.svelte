@@ -1,12 +1,12 @@
 <script lang="ts">
-	import AuthenticatedHeader from '$lib/components/AuthenticatedHeader.svelte';
-	import Footer from '$lib/components/Footer.svelte';
+    import AuthenticatedHeader from '$lib/components/AuthenticatedHeader.svelte';
+    import Footer from '$lib/components/Footer.svelte';
 
-	const { children } = $props();
+    const { children, data } = $props();
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<AuthenticatedHeader />
-	{@render children()}
-	<Footer />
+    <AuthenticatedHeader user={data.user} />
+    {@render children()}
+    <Footer />
 </div>

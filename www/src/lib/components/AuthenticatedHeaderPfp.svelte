@@ -3,6 +3,14 @@
     import { createMenu } from '~/lib/components/builders.svelte';
     import { LogOutOutline } from '~/lib/components/icons';
     import { button } from '~/lib/utils/styles';
+    import type { UserPreset } from '../models/user';
+    import Avatar from './Avatar.svelte';
+
+    interface Props {
+        user: UserPreset['Avatar'];
+    }
+
+    const { user }: Props = $props();
 
     const id = $props.id();
     const menu = createMenu({ id });
@@ -18,7 +26,7 @@
             ghost: true,
         })} rounded-full p-0.5"
     >
-        <img src="https://placehold.co/32" alt="you" class="size-avatar-sm rounded-full" />
+        <Avatar {user} class="size-avatar-sm rounded-full" />
     </button>
     <div use:portal {...menu.api.getPositionerProps()}>
         <ul {...menu.api.getContentProps()} class="c-menu--content flex flex-col gap-1">

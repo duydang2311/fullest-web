@@ -74,6 +74,35 @@
     --default-mono-font-family: 'Geist Mono Variable', monospace;
 }
 
+@theme inline {
+    --animate-fade-in: fade-in var(--tw-duration, var(--default-transition-duration))
+        var(--tw-ease, var(--default-transition-timing-function));
+
+    --animate-slide-in-from-b: slide-in-from-b
+        var(--tw-duration, var(--default-transition-duration))
+        var(--tw-ease, var(--default-transition-timing-function));
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slide-in-from-b {
+        from {
+            transform: translateY(2rem);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+}
+
 @layer base {
     [data-theme='dark'],
     [data-theme='dark'] * {
@@ -133,6 +162,14 @@
 
     small {
         font-size: var(--text-body-sm);
+    }
+}
+
+@layer components {
+    .c-avatar--fallback {
+        background-color: var(--color-base-light);
+        border: 2px solid var(--color-base-border);
+        border-radius: calc(infinity * 1px);
     }
 }
 

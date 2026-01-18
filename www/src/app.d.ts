@@ -3,6 +3,7 @@
 import type { Cache } from '$lib/services/cache';
 import type { HttpClient } from '$lib/services/http_client';
 import 'unplugin-icons/types/svelte';
+import type { UserPreset } from './lib/models/user';
 
 // for information about these interfaces
 declare global {
@@ -19,7 +20,7 @@ declare global {
 		interface Locals {
 			http: HttpClient;
 			cache: Cache;
-			session?: { user: { id: string; name: string } };
+			session?: { user: Pick<User, 'id'> & UserPreset['Avatar'] };
 		}
 		// interface PageData {}
 		// interface PageState {}
@@ -31,4 +32,5 @@ declare global {
 	}
 }
 
-export {};
+export { };
+

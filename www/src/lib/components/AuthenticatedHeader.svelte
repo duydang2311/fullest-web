@@ -1,8 +1,15 @@
 <script lang="ts">
+    import type { UserPreset } from '../models/user';
     import { button } from '../utils/styles';
     import CreateActions from './AuthenticatedHeaderCreateActions.svelte';
     import AuthenticatedHeaderPfp from './AuthenticatedHeaderPfp.svelte';
     import LogoType from './LogoType.svelte';
+
+    interface Props {
+        user: UserPreset['Avatar'];
+    }
+
+    const { user }: Props = $props();
 </script>
 
 <header class="border-b-base-border bg-base dark:bg-base-dark border-b px-8 py-2">
@@ -13,7 +20,7 @@
         </div>
         <div class="flex items-center gap-2">
             <CreateActions />
-            <AuthenticatedHeaderPfp />
+            <AuthenticatedHeaderPfp {user} />
         </div>
     </nav>
 </header>

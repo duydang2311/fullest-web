@@ -11,3 +11,7 @@ export interface User {
     imageKey?: string;
     imageVersion?: number;
 }
+
+export type UserPreset = {
+    Avatar: Pick<User, 'name' | 'displayName' | 'imageKey' | 'imageVersion'>;
+};

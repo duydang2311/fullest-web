@@ -5,6 +5,7 @@ import { withRuntime } from '$lib/utils/runtime';
 import { redirect, type Handle, type ServerInit } from '@sveltejs/kit';
 import { Cacheable } from 'cacheable';
 import invariant from 'tiny-invariant';
+import type { User, UserPreset } from './lib/models/user';
 import { jsonify } from './lib/utils/http';
 import { trimEnd } from './lib/utils/string';
 import { withQueryParams } from './lib/utils/url';
@@ -56,9 +57,8 @@ export const handle: Handle = ({ event, resolve }) => {
         return resolve(event);
     }
 
-    
     let sessionToken: string | null = null;
-    event.locals.session = {user: {id: '', name: ''}}
+    event.locals.session = { user: { id: '', name: '' } };
     let isPrivateRoute = false;
     if (routeId.includes('(private)')) {
         isPrivateRoute = true;
@@ -84,7 +84,7 @@ export const handle: Handle = ({ event, resolve }) => {
         return event.locals.http
             .get(`/sessions/${sessionToken}`, {
                 query: {
-                    fields: 'User.Id,User.Name',
+                    fields: 'User.Id,User.Name,User.DisplayName,User.ImageKey,User.ImageVersion',
                     test: 'abc',
                 },
             })
@@ -115,7 +115,7 @@ export const handle: Handle = ({ event, resolve }) => {
                 }
 
                 const parsed = await jsonify(() =>
-                    fetchedSession.data.json<{ user: { id: string; name: string } }>()
+                    fetchedSession.data.json<{ user: Pick<User, 'id'> & UserPreset['Avatar'] }>()
                 );
                 if (!parsed.ok) {
                     if (isPrivateRoute) {
