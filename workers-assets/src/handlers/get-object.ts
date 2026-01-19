@@ -6,7 +6,13 @@ export const getObject = handler(async (req, env, ctx) => {
     const cacheKey = stripQueryParams(req.url);
     let response = await cache.match(cacheKey);
     if (response) {
-        return response;
+        return new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+            cf: response.cf,
+            webSocket: response.webSocket,
+        });
     }
 
     const path = getPath(req);
