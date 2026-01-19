@@ -18,15 +18,15 @@
 </script>
 
 <div class="flex gap-2">
-    <Avatar user={comment.author} class="size-avatar-sm shrink-0 rounded-full max-lg:hidden" />
-    <div class="border-base-border flex-1 overflow-auto rounded-lg border">
+    <Avatar user={comment.author} class="size-avatar-sm shrink-0 rounded-full translate-y-2" />
+    <div class="border-base-border flex-1 overflow-auto rounded-md border">
         <div
-            class="border-b-base-border bg-base-dark flex items-center gap-2 rounded-t-lg border-b px-4 py-2"
+            class="border-b-base-border bg-base-dark flex items-center gap-2 rounded-t-md border-b px-4 py-2"
         >
-            <Avatar user={comment.author} class="size-avatar-sm rounded-full lg:hidden" />
-            <span
-                ><strong class="text-base-fg-strong">{comment.author.name}</strong> created 2 days ago</span
-            >
+            <span>
+                <strong class="text-base-fg-strong">{comment.author.name}</strong>
+                <span class="ml-2 text-sm font-medium text-base-fg-dim">2 days ago</span>
+            </span>
             <div class="ml-auto">
                 <CommentActions {comment} bind:isEditing />
             </div>
@@ -39,7 +39,7 @@
                 }}
             />
         {:else}
-            <article class="prose max-w-none p-4">
+            <article class="prose max-w-none p-4 wrap-anywhere">
                 {#if comment?.contentJson && comment?.contentJson.length > 0}
                     {@html sanitizeHtml(renderToHTMLString(JSON.parse(comment.contentJson)))}
                 {:else}

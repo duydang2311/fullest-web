@@ -18,6 +18,7 @@
 
 <div class="overflow-hidden">
     <div
+    class="c-editor"
         {@attach (node) => {
             untrack(() => {
                 editor.current = createTextEditor({
@@ -26,8 +27,7 @@
                     placeholder: 'Enter your comment...',
                     editorProps: {
                         attributes: {
-                            class: 'prose max-w-none p-4 focus:outline-none wrap-anywhere overflow-auto max-h-96',
-                            style: 'wrap-word: normal;',
+                            class: 'c-editor--inner prose max-w-none',
                         },
                     },
                     onTransaction: (props) => {

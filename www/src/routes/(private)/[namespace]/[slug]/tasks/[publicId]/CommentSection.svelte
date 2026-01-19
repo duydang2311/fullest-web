@@ -17,10 +17,10 @@
     } = $props();
 </script>
 
-<section class="duration-150 animate-slide-in-from-b">
+<section>
     <h2 class="text-title-xs text-base-fg-strong font-semibold tracking-tight">Comments</h2>
     {#if comments.length > 0}
-        <ol class="mt-4 flex flex-col gap-4">
+        <ol class="mt-4 flex flex-col gap-4 animate-slide-in-from-b duration-300">
             {#each comments as comment (comment.id)}
                 <li>
                     <CommentItem {comment} />

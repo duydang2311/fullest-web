@@ -1,20 +1,29 @@
 .c-editor {
-	overflow: auto;
-	overflow-wrap: anywhere !important;
-	word-wrap: normal !important;
-	padding: --spacing(4);
-	transition: box-shadow var(--default-transition-duration) var(--default-transition-timing-function);
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    overflow-wrap: anywhere !important;
+    word-wrap: normal !important;
+    transition: box-shadow var(--default-transition-duration)
+        var(--default-transition-timing-function);
+}
 
-	&:where(:focus) {
-		outline: none;
-	}
+.c-editor--inner {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    padding: --spacing(4);
+    overflow-wrap: anywhere !important;
+    &:where(:focus) {
+        outline: none;
+    }
 }
 
 .c-editor--outlined {
-	border: 1px solid var(--color-base-border);
-	border-radius: var(--radius-lg);
+    border: 1px solid var(--color-base-border);
+    border-radius: var(--radius-lg);
 
-	&:where(:focus) {
-		@apply ring-focus-base-fg;
-	}
+    &:where(:focus-within) {
+        @apply ring-focus-base-fg;
+    }
 }

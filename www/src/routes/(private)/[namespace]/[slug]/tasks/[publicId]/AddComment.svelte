@@ -29,8 +29,7 @@
     <div class="flex gap-2">
         <Avatar {user} class="size-avatar-sm shrink-0 rounded-full" />
         <div
-            class="flex-1"
-            style="display: none;"
+            class="flex-1 c-editor--container c-editor--outlined min-h-36 max-h-96"
             {@attach (node) => {
                 untrack(() => {
                     node.style.display = '';
@@ -39,7 +38,7 @@
                         placeholder: 'Add a comment...',
                         editorProps: {
                             attributes: {
-                                class: 'c-editor c-editor--outlined min-h-36 max-h-96 prose max-w-none',
+                                class: 'c-editor--inner prose max-w-none',
                             },
                         },
                         onTransaction: (props) => {
@@ -50,12 +49,6 @@
                 });
             }}
         ></div>
-        <noscript class="flex-1">
-            <textarea
-                name="contentText"
-                class="c-editor c-editor--outlined prose max-h-96 min-h-36 w-full max-w-none overflow-auto"
-            ></textarea>
-        </noscript>
     </div>
     <div class="mt-2 flex justify-end gap-2">
         <input type="hidden" name="taskId" value={taskId} />
