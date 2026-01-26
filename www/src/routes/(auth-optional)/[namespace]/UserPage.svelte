@@ -15,7 +15,7 @@
 
 <div class="min-h-screen flex flex-col">
     {#if data.session}
-        <AuthenticatedHeader />
+        <AuthenticatedHeader user={data.session.user} />
     {:else}
         <header></header>
     {/if}

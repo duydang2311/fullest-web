@@ -14,27 +14,36 @@
 @custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
 
 @theme {
-    --color-base: oklch(99% 0.002 261.46);
-    --color-base-light: oklch(100% 0.002 261.46);
-    --color-base-dark: oklch(98% 0.002 261.46);
-    --color-base-hover: oklch(97.5% 0.008 261.46);
-    --color-base-active: oklch(96% 0.016 261.46);
-    --color-base-selected: oklch(97.5% 0.016 261.46);
-    --color-base-border: oklch(92% 0.002 261.46);
-    --color-base-border-strong: oklch(86% 0.002 261.46);
-    --color-base-border-weak: oklch(94% 0.002 261.46);
-    /* --color-base-fg: oklch(30% 0.002 261.46); */
-    --color-base-fg: oklch(32% 0.002 261.46);
-    --color-base-fg-weak: oklch(40% 0.002 261.46);
-    --color-base-fg-strong: oklch(20% 0.01 261.46);
-    --color-base-fg-dim: oklch(50% 0.002 261.46);
-    --color-base-fg-muted: oklch(70% 0.002 261.46);
+    --color-base: oklch(99% 0 260);
+    --color-base-light: oklch(100% 0 260);
+    --color-base-dark: oklch(98% 0 260);
+    --color-base-hover: oklch(96% 0 260);
+    --color-base-active: oklch(94% 0 260);
+    --color-base-selected: oklch(97.5% 0.016 260);
+    --color-base-border: oklch(92% 0 260);
+    --color-base-border-strong: oklch(86% 0 260);
+    --color-base-border-weak: oklch(94% 0 260);
+    /* --color-base-fg: oklch(30% 0 260); */
+    --color-base-fg: oklch(32% 0 260);
+    --color-base-fg-weak: oklch(40% 0 260);
+    --color-base-fg-strong: oklch(20% 0.01 260);
+    --color-base-fg-dim: oklch(50% 0 260);
+    --color-base-fg-muted: oklch(70% 0 260);
 
-    --color-primary: oklch(52.93% 0.2346 261.46);
+    --color-primary: oklch(52.93% 0.2231 260);
+    --color-primary-hover: oklch(55.93% 0.2231 260);
+    --color-primary-active: oklch(49.93% 0.2231 260);
+    --color-primary-border: oklch(47.93% 0.2231 260);
+    --color-primary-fg: oklch(98.9% 0.005 260);
+
+    /* --color-primary: oklch(52.93% 0.2346 261.46);
     --color-primary-hover: oklch(55.93% 0.2346 261.46);
     --color-primary-active: oklch(49.93% 0.2346 261.46);
     --color-primary-border: oklch(47.93% 0.2346 261.46);
-    --color-primary-fg: oklch(98.9% 0.005 261.46);
+    --color-primary-fg: oklch(98.9% 0.005 261.46); */
+
+    --color-secondary: oklch(94% 0.16 260);
+    --color-secondary-fg: oklch(32% 0 260);
 
     --color-negative: oklch(54.5% 0.1888 24.42);
     --color-negative-hover: oklch(58.5% 0.1888 24.42);
@@ -59,6 +68,7 @@
     --spacing-avatar-md: 64px;
     --spacing-avatar-lg: 128px;
     --spacing-avatar-lg: 256px;
+    --spacing-nbsp: 0.38ch;
 
     --text-display-lg: 3.5rem;
     --text-display-md: 3rem;
@@ -71,7 +81,7 @@
 
     --default-transition-duration: 75ms;
 
-    --default-font-family: 'Geist Variable', system-ui, sans-serif;
+    --default-font-family: 'Inter Variable', system-ui, sans-serif;
     --default-mono-font-family: 'Geist Mono Variable', monospace;
 }
 

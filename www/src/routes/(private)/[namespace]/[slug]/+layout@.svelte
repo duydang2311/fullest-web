@@ -48,7 +48,7 @@
 </script>
 
 <div class="flex min-h-screen flex-col">
-    <header>
+    <header class="bg-base">
         <nav class="pt-4">
             <div class="flex items-center justify-between gap-8 px-8">
                 <div class="flex items-center gap-4">

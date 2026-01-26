@@ -4,7 +4,7 @@
 	import { button } from '~/lib/utils/styles';
 </script>
 
-<footer class="border-t-base-border relative w-full border-t p-8">
+<footer class="border-t-base-border bg-base relative w-full border-t p-8">
 	<div class="max-w-container-xl mx-auto">
 		<LogoType />
 		<p class="mt-1">Public-first task management built for transparency and collaboration.</p>

@@ -12,7 +12,7 @@
     const { user }: Props = $props();
 </script>
 
-<header class="border-b-base-border bg-base dark:bg-base-dark border-b px-8 py-2">
+<header class="border-b-base-border bg-base-light dark:bg-base-dark border-b px-8 py-2">
     <nav class="max-w-container-xl mx-auto flex w-full items-center justify-between gap-8">
         <div class="flex items-center gap-2">
             <LogoType />

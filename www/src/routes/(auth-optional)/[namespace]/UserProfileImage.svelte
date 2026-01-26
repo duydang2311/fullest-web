@@ -99,13 +99,13 @@
             <div use:portal {...menu.api.getPositionerProps()}>
                 <ul
                     {...menu.api.getContentProps()}
-                    class="c-menu--content flex flex-col gap-1 text-sm"
+                    class="c-menu-content flex flex-col gap-1 text-sm"
                 >
                     <li>
                         <button
                             type="button"
                             {...menu.api.getItemProps({ value: 'upload' })}
-                            class="c-menu--item flex items-center gap-4 font-medium"
+                            class="c-menu-item flex items-center gap-4 font-medium"
                         >
                             <UploadOutline />
                             Upload
@@ -117,7 +117,7 @@
                             type="button"
                             disabled={user.imageKey == null || user.imageVersion == null}
                             {...menu.api.getItemProps({ value: 'delete' })}
-                            class="c-menu--item c-menu--item--negative flex items-center gap-4 font-medium disabled:pointer-events-none disabled:opacity-40"
+                            class="c-menu-item c-menu-item--negative flex items-center gap-4 font-medium disabled:pointer-events-none disabled:opacity-40"
                         >
                             <TrashOutline />
                             Delete

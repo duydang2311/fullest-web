@@ -1,3 +1,4 @@
+using Ardalis.GuardClauses;
 using FastEndpoints;
 using WebApp.Domain.Constants;
 using WebApp.Infrastructure.AccessControl;
@@ -13,10 +14,11 @@ public sealed class Authorize : IPreProcessor<Request>
             return;
         }
 
+        Guard.Against.Null(context.Request.ProjectId);
         var authorizer = context.HttpContext.Resolve<IAuthorizer>();
         var canCreate = await authorizer.HasProjectPermissionAsync(
             context.Request.CallerId,
-            context.Request.ProjectId,
+            context.Request.ProjectId.Value,
             Permit.CreateTask,
             ct
         );

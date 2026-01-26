@@ -29,13 +29,13 @@
         <Avatar {user} class="size-avatar-sm rounded-full" />
     </button>
     <div use:portal {...menu.api.getPositionerProps()}>
-        <ul {...menu.api.getContentProps()} class="c-menu--content flex flex-col gap-1">
+        <ul {...menu.api.getContentProps()} class="c-menu-content flex flex-col gap-1">
             {#each [{ icon: LogOutOutline, href: '/sign-out', label: 'Log out' }] as item (item.href)}
                 <li>
                     <a
                         {...menu.api.getItemProps({ value: item.href })}
                         href={item.href}
-                        class="c-menu--item flex items-center gap-4"
+                        class="c-menu-item flex items-center gap-4"
                     >
                         <item.icon />
                         <span>

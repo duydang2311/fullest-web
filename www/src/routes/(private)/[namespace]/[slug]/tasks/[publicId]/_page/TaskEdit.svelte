@@ -1,30 +1,34 @@
 <script lang="ts">
+    import { invalidate } from '$app/navigation';
+    import { page } from '$app/state';
     import { createRef } from '@duydang2311/svutils';
     import { Editor } from '@tiptap/core';
     import { untrack } from 'svelte';
     import { createTextEditor } from '~/lib/components/editor';
     import { CheckOutline, XOutline } from '~/lib/components/icons';
     import type { Comment } from '~/lib/models/comment';
-    import { editComment } from '~/lib/remotes/comment.remote';
     import { tsap } from '~/lib/utils/gsap';
     import { button } from '~/lib/utils/styles';
+    import { editComment } from './page.remote';
 
     const {
         comment,
         onCancel,
-    }: { comment?: Pick<Comment, 'id' | 'contentJson'>; onCancel: () => void } = $props();
+        onSave,
+    }: { comment?: Pick<Comment, 'id' | 'contentJson'>; onCancel: () => void; onSave: () => void } =
+        $props();
     const editor = createRef<Editor>();
 </script>
 
-<div class="overflow-hidden">
+<div class="overflow-hidden c-editor--outlined">
     <div
-    class="c-editor"
+        class="c-editor"
         {@attach (node) => {
             untrack(() => {
                 editor.current = createTextEditor({
                     element: node,
                     content: comment?.contentJson ? JSON.parse(comment.contentJson) : undefined,
-                    placeholder: 'Enter your comment...',
+                    placeholder: 'Enter task description...',
                     editorProps: {
                         attributes: {
                             class: 'c-editor--inner prose max-w-none',
@@ -65,13 +69,18 @@
                 outlined: true,
             })} flex items-center gap-2 rounded-none rounded-br-lg border-l-0 border-b-0 border-r-0"
             onclick={async () => {
-                if (!comment) {
+                if (!comment || !editor.current) {
                     return;
                 }
-                const edited = await editComment({
+
+                const contentJson = JSON.stringify(editor.current.getJSON());
+                comment.contentJson = contentJson;
+                await editComment({
                     id: comment.id,
-                    contentJson: JSON.stringify(editor.current?.getJSON()),
+                    contentJson,
                 });
+                onSave();
+                await invalidate(page.route.id!);
             }}
         >
             <CheckOutline />

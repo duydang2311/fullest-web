@@ -1,6 +1,3 @@
-import { stringify } from 'node:querystring';
-
-export const withQueryParams = (url: string, params: Record<string, number | string>) => {
-	url += (url.includes('?') ? '&' : '?') + stringify(params);
-	return url;
-};
+export function namespaceUrl(namespace: string) {
+    return `/${namespace}`;
+}

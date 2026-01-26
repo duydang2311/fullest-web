@@ -3,10 +3,14 @@ using System.Text.Json;
 using WebApp.Application.Data;
 using WebApp.Domain.Commands;
 using WebApp.Domain.Entities;
+using WebApp.Domain.Events;
 
-namespace WebApp.Application.Features.Statuses.Comments.Create;
+namespace WebApp.Application.Features.Comments.Create;
 
-public sealed class CreateCommentHandler(BaseDbContext db) : ICreateCommentHandler
+public sealed class CreateCommentHandler(
+    BaseDbContext db,
+    IEnumerable<ICommentCreatedHandler> commentCreatedHandlers
+) : ICreateCommentHandler
 {
     public async Task<Comment> HandleAsync(CreateComment command, CancellationToken ct)
     {
@@ -47,6 +51,13 @@ public sealed class CreateCommentHandler(BaseDbContext db) : ICreateCommentHandl
             ContentPreview = preview,
         };
         await db.AddAsync(comment, ct).ConfigureAwait(false);
+
+        var commentCreated = new CommentCreated(comment);
+        foreach (var handler in commentCreatedHandlers)
+        {
+            await handler.HandleAsync(commentCreated, ct).ConfigureAwait(false);
+        }
+
         await db.SaveChangesAsync(ct).ConfigureAwait(false);
         return comment;
     }

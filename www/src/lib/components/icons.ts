@@ -1,7 +1,7 @@
 export { default as GitHub } from '~icons/custom/github';
 export { default as Google } from '~icons/custom/google';
 export { default as Logo } from '~icons/custom/logo';
-export { default as MenuOutline } from '~icons/heroicons/bars-3';
+export { default as MenuOutline } from '~icons/lucide/ellipsis';
 export { default as CheckCircleOutline } from '~icons/heroicons/check-circle';
 export { default as ProjectOutline } from '~icons/heroicons/cube';
 export { default as Project } from '~icons/heroicons/cube-16-solid';

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using WebApp.Api.Common.Codecs;
+using WebApp.Api.Common.Patching;
 using WebApp.Api.Common.Projection;
 using WebApp.Domain.Entities;
 
@@ -51,11 +52,15 @@ public class ConfigureJsonOptions(
         options.SerializerOptions.Converters.Add(
             new EntityIdJsonConverter<CommentId>(numberEncoder)
         );
+        options.SerializerOptions.Converters.Add(
+            new EntityIdJsonConverter<ActivityId>(numberEncoder)
+        );
 
         options.SerializerOptions.Converters.Add(
             new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower)
         );
         options.SerializerOptions.Converters.Add(new ProjectableJsonConverter());
         options.SerializerOptions.Converters.Add(new ProblemJsonConverter(httpContextAccessor));
+        options.SerializerOptions.Converters.Add(new PatchableJsonConverter());
     }
 }

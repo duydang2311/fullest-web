@@ -8,7 +8,7 @@ import invariant from 'tiny-invariant';
 import type { User, UserPreset } from './lib/models/user';
 import { jsonify } from './lib/utils/http';
 import { trimEnd } from './lib/utils/string';
-import { withQueryParams } from './lib/utils/url';
+import { withQueryParams } from './lib/utils/url.server';
 
 let cache: Cache;
 

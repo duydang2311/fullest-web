@@ -8,7 +8,7 @@ using WebApp.Domain.Entities;
 namespace WebApp.Api.V1.Tasks.Create;
 
 public sealed record Request(
-    ProjectId ProjectId,
+    ProjectId? ProjectId,
     string? Title,
     JsonDocument? DescriptionJson,
     string? DescriptionText
@@ -24,6 +24,7 @@ public sealed class RequestValidator : AbstractValidator<Request>
 {
     public RequestValidator()
     {
+        RuleFor(a => a.ProjectId).NotNull().WithErrorCode(ErrorCodes.Required);
         RuleFor(x => x.NormalizedTitle)
             .NotEmpty()
             .WithErrorCode(ErrorCodes.Required)

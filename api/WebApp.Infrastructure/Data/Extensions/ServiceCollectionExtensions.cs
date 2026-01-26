@@ -1,5 +1,6 @@
 using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 using WebApp.Application.Data;
 using WebApp.Domain.Entities;

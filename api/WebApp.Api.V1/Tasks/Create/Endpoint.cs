@@ -7,6 +7,7 @@ using WebApp.Api.Common.Codecs;
 using WebApp.Api.Common.Http;
 using WebApp.Domain.Commands;
 using WebApp.Domain.Entities;
+using WebApp.Domain.Events;
 using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Tasks.Create;
@@ -15,12 +16,13 @@ public sealed class Endpoint(
     AppDbContext db,
     LinkGenerator linkGenerator,
     INumberEncoder numberEncoder,
-    ICreateCommentHandler createCommentHandler
+    ICreateCommentHandler createCommentHandler,
+    IEnumerable<ITaskCreatedHandler> taskCreatedHandlers
 ) : Endpoint<Request, Results<BadRequest<Problem>, NotFound<Problem>, Created<Response>>>
 {
     public override void Configure()
     {
-        Post("projects/{ProjectId}/tasks");
+        Post("tasks");
         PreProcessor<Authorize>();
         Version(1);
     }
@@ -29,12 +31,13 @@ public sealed class Endpoint(
         Results<BadRequest<Problem>, NotFound<Problem>, Created<Response>>
     > ExecuteAsync(Request req, CancellationToken ct)
     {
+        Guard.Against.Null(req.ProjectId);
         Guard.Against.Null(req.NormalizedTitle);
 
         await using var tx = await db.Database.BeginTransactionAsync(ct).ConfigureAwait(false);
         var task = new TaskEntity
         {
-            ProjectId = req.ProjectId,
+            ProjectId = req.ProjectId.Value,
             AuthorId = req.CallerId,
             Title = req.NormalizedTitle,
         };
@@ -64,6 +67,13 @@ public sealed class Endpoint(
             );
         }
 
+        var taskCreated = new TaskCreated(task);
+        foreach (var handler in taskCreatedHandlers)
+        {
+            await handler.HandleAsync(taskCreated, ct).ConfigureAwait(false);
+        }
+        await db.SaveChangesAsync(ct).ConfigureAwait(false);
+
         var comment = await createCommentHandler
             .HandleAsync(
                 new CreateComment(task.Id, req.CallerId)
@@ -78,7 +88,6 @@ public sealed class Endpoint(
             .Tasks.Where(a => a.Id == task.Id)
             .ExecuteUpdateAsync(a => a.SetProperty(b => b.InitialCommentId, comment.Id), ct)
             .ConfigureAwait(false);
-        await tx.CommitAsync(ct).ConfigureAwait(false);
 
         var url = linkGenerator.GetUriByName(
             HttpContext,
@@ -89,6 +98,8 @@ public sealed class Endpoint(
                 TaskId = numberEncoder.Encode(task.Id.Value),
             }
         );
+
+        await tx.CommitAsync(ct).ConfigureAwait(false);
         return TypedResults.Created(url, new Response(task.Id, task.PublicId));
     }
 }

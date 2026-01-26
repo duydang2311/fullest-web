@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Anonymous from './Anonymous.svelte';
-	import Authenticated from './Authenticated.svelte';
+    import Anonymous from './Anonymous.svelte';
+    import Authenticated from './Authenticated.svelte';
 
-	const { data } = $props();
+    const { data } = $props();
 </script>
 
 {#if data.session}
-	<Authenticated />
+    <Authenticated user={data.session.user} />
 {:else}
-	<Anonymous />
+    <Anonymous />
 {/if}

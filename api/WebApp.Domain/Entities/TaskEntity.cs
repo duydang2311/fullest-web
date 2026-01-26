@@ -25,4 +25,5 @@ public sealed record TaskEntity : ISoftDelete
     public string? DueTz { get; init; }
     public Instant? DeletedTime { get; init; }
     public ICollection<Label> Labels { get; init; } = null!;
+    public ICollection<Activity> Activities { get; init; } = null!;
 }

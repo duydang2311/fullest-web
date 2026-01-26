@@ -26,13 +26,13 @@
         <MenuOutline />
     </button>
     <div use:portal {...menu.api.getPositionerProps()}>
-        <ul {...menu.api.getContentProps()} class="c-menu--content flex flex-col gap-1">
+        <ul {...menu.api.getContentProps()} class="c-menu-content flex flex-col gap-1">
             {#each [{ href: '/sign-in', label: 'Sign in' }, { href: '/sign-up', label: 'Sign up' }] as item (item.href)}
                 <li>
                     <a
                         {...menu.api.getItemProps({ value: item.href })}
                         href={item.href}
-                        class="c-menu--item"
+                        class="c-menu-item"
                     >
                         {item.label}
                     </a>

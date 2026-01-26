@@ -80,5 +80,11 @@ public sealed class AppDbContext
         configurationBuilder
             .Properties<CommentId>()
             .HaveConversion<EntityIdConverter<CommentId, long>>();
+        configurationBuilder
+            .Properties<ActivityId>()
+            .HaveConversion<EntityIdConverter<ActivityId, long>>();
+        configurationBuilder
+            .Properties<ActivityKind>()
+            .HaveConversion<EnumToNumberConverter<ActivityKind, int>>();
     }
 }

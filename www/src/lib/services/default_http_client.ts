@@ -3,7 +3,7 @@ import { trimEnd, trimStart } from '$lib/utils/string';
 import { attempt } from '@duydang2311/attempt';
 import { isPlainObject } from 'is-what';
 import type { HttpClient, HttpRequestOptions } from './http_client';
-import { withQueryParams } from '../utils/url';
+import { withQueryParams } from '../utils/url.server';
 
 export interface CreateDefaultHttpClientOptions {
 	fetcher: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;

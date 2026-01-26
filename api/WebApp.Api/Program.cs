@@ -7,6 +7,7 @@ using WebApp.Api;
 using WebApp.Api.Middlewares;
 using WebApp.Api.Security;
 using WebApp.Api.Serialization;
+using WebApp.Api.V1.Activities.GetMany.ByTaskId.Hydration;
 using WebApp.Infrastructure.Data;
 using WebApp.Infrastructure.Integrations;
 using WebApp.Infrastructure.Jwts;
@@ -110,6 +111,7 @@ builder
     .AddStorageGroup()
     .AddIntegrationGroup();
 builder.Services.AddSingleton<ISlugHelper, SlugHelper>();
+builder.Services.AddSingleton<ActivityHydrator>();
 
 builder.Services.AddProblemDetails(a =>
 {
