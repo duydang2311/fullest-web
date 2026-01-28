@@ -73,6 +73,7 @@ export const load: PageServerLoad = async (e) => {
         streamedCommentList: fetchComments(task.id).then((fetched) =>
             fetched.pipe(attempt.unwrapOrElse(() => keysetList<never, never>()))
         ),
+        ts: Date.now()
     };
 };
 

@@ -6,13 +6,13 @@ using WebApp.Api.Common.Projection;
 using WebApp.Domain.Entities;
 using WebApp.Infrastructure.Data;
 
-namespace WebApp.Api.V1.Statuses.GetMany;
+namespace WebApp.Api.V1.Priorities.GetMany;
 
 public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<IPaginatedList<Projectable>>>
 {
     public override void Configure()
     {
-        Get("statuses");
+        Get("priorities");
         Version(1);
         PreProcessor<Authorize>();
     }
@@ -22,7 +22,7 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<IPaginatedL
         CancellationToken ct
     )
     {
-        var query = db.Statuses.AsQueryable();
+        var query = db.Priorities.AsQueryable();
         if (req.ProjectId.HasValue)
         {
             query = query.Where(a => a.ProjectId == req.ProjectId.Value);
@@ -30,7 +30,7 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<IPaginatedL
 
         if (!string.IsNullOrEmpty(req.Fields))
         {
-            query = query.Select(FieldProjector.Project<Status>(req.Fields));
+            query = query.Select(FieldProjector.Project<Priority>(req.Fields));
         }
 
         var totalCount = await query.CountAsync(ct).ConfigureAwait(false);

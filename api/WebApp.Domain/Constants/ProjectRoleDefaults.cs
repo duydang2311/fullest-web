@@ -13,7 +13,7 @@ public sealed class ProjectRoleDefaults(RoleId id, string name, int rank, string
         id: new RoleId(1),
         name: "Viewer",
         rank: 100,
-        permissions: [Permit.ReadTask, Permit.ReadStatus, Permit.ReadComment]
+        permissions: [Permit.ReadTask, Permit.ReadStatus, Permit.ReadComment, Permit.ReadPriority]
     );
     public static readonly ProjectRoleDefaults Contributor = new(
         id: new RoleId(2),

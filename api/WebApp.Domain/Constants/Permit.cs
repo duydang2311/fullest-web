@@ -16,4 +16,9 @@ public static class Permit
     public const string ReadComment = "comment:read";
     public const string UpdateComment = "comment:update";
     public const string DeleteComment = "comment:delete";
+
+    public const string CreatePriority = "priority:create";
+    public const string ReadPriority = "priority:read";
+    public const string UpdatePriority = "priority:update";
+    public const string DeletePriority = "priority:delete";
 }

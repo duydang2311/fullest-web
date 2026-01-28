@@ -2,11 +2,12 @@ import { command, form, getRequestEvent, query } from '$app/server';
 import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';
 import type { Activity } from '~/lib/models/activity';
-import { cursorList, type CursorList } from '~/lib/models/paginated';
+import { cursorList, offsetList, type CursorList, type OffsetList } from '~/lib/models/paginated';
+import type { Priority } from '~/lib/models/priority';
+import type { Status } from '~/lib/models/status';
 import type { User } from '~/lib/models/user';
 import { BadHttpResponse, enrichStep, ValidationError } from '~/lib/utils/errors';
 import { jsonify, parseHttpProblem } from '~/lib/utils/http';
-import { useRuntime } from '~/lib/utils/runtime';
 import { v } from '~/lib/utils/valibot';
 
 export const addComment = command(
@@ -101,9 +102,9 @@ export const deleteComment = command(
 );
 
 export const getActivities = query(v.string(), async (taskId) => {
-    const { http } = useRuntime();
+    const e = getRequestEvent();
     return (
-        await http.get('activities', {
+        await e.locals.http.get('activities', {
             query: {
                 taskId,
                 fields: 'Id,CreatedTime,Kind,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Data',
@@ -127,3 +128,101 @@ export const getActivities = query(v.string(), async (taskId) => {
         attempt.unwrapOrElse(() => cursorList())
     );
 });
+
+export const getStatuses = query(v.string(), async (projectId) => {
+    const e = getRequestEvent();
+    return (
+        await e.locals.http.get('statuses', {
+            query: {
+                projectId,
+                fields: 'Id,Name,Category,Color,Rank',
+                sort: 'Rank',
+                size: 20,
+            },
+        })
+    ).pipe(
+        attempt.flatMap((response) =>
+            jsonify(() =>
+                response.json<
+                    OffsetList<Pick<Status, 'id' | 'name' | 'category' | 'color' | 'rank'>>
+                >()
+            )
+        ),
+        attempt.unwrapOrElse(() => offsetList())
+    );
+});
+
+export const patchTaskStatus = command(
+    v.object({
+        taskId: v.string(),
+        statusId: v.string(),
+    }),
+    async (data) => {
+        const e = getRequestEvent();
+        const result = await e.locals.http.patch(`tasks/${data.taskId}`, {
+            body: {
+                patch: {
+                    statusId: data.statusId,
+                },
+            },
+        });
+        if (!result.ok) {
+            return result;
+        }
+
+        const response = result.data;
+        if (!response.ok) {
+            return attempt.fail(BadHttpResponse(response.status, response.statusText));
+        }
+
+        return attempt.ok<void>(void 0);
+    }
+);
+
+export const getPriorities = query(v.string(), async (projectId) => {
+    const e = getRequestEvent();
+    return (
+        await e.locals.http.get('priorities', {
+            query: {
+                projectId,
+                fields: 'Id,Name,Color,Rank',
+                sort: 'Rank',
+                size: 20,
+            },
+        })
+    ).pipe(
+        attempt.flatMap((response) =>
+            jsonify(() =>
+                response.json<OffsetList<Pick<Priority, 'id' | 'name' | 'color' | 'rank'>>>()
+            )
+        ),
+        attempt.unwrapOrElse(() => offsetList())
+    );
+});
+
+export const patchTaskPriority = command(
+    v.object({
+        taskId: v.string(),
+        priorityId: v.string(),
+    }),
+    async (data) => {
+        const e = getRequestEvent();
+        const result = await e.locals.http.patch(`tasks/${data.taskId}`, {
+            body: {
+                patch: {
+                    priorityId: data.priorityId,
+                },
+            },
+        });
+        if (!result.ok) {
+            return result;
+        }
+
+        const response = result.data;
+        if (!response.ok) {
+            return attempt.fail(BadHttpResponse(response.status, response.statusText));
+        }
+
+        return attempt.ok<void>(void 0);
+    }
+);

@@ -38,6 +38,7 @@
     &:where([data-highlighted]) {
         color: var(--_text-highlighted);
         background-color: var(--_bg-hover);
+        font-weight: 500;
     }
 
     &:where(:active) {

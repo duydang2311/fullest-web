@@ -30,7 +30,7 @@
         {:else}
             <div class="border-base-border overflow-auto rounded-lg border">
                 <table
-                    class="bg-base-light min-w-container-md grid grid-cols-[1fr_auto_auto_auto] content-start text-left"
+                    class="bg-base-light dark:bg-base min-w-container-md grid grid-cols-[1fr_auto_auto_auto] content-start text-left"
                 >
                     <thead class="col-span-full grid grid-cols-subgrid rounded-t-lg">
                         <tr

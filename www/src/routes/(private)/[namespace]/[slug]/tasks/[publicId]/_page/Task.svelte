@@ -1,6 +1,6 @@
 <script lang="ts">
     import { portal } from '@zag-js/svelte';
-    import sanitizeHtml from 'sanitize-html';
+    import DOMPurify from 'isomorphic-dompurify';
     import { createMenu } from '~/lib/components/builders.svelte';
     import { renderToHTMLString } from '~/lib/components/editor';
     import { MenuOutline, PencilOutline, TrashOutline } from '~/lib/components/icons';
@@ -102,7 +102,7 @@
         <hr class="border-base-border-weak mt-4 w-full" />
         <article class="prose max-w-none wrap-anywhere mt-4">
             {#if comment?.contentJson && comment?.contentJson.length > 0}
-                {@html sanitizeHtml(renderToHTMLString(JSON.parse(comment.contentJson)))}
+                {@html DOMPurify.sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
             {:else}
                 <i class="text-base-fg-muted">No description provided.</i>
             {/if}

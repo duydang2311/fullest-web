@@ -1,5 +1,5 @@
 <script lang="ts">
-    import sanitizeHtml from 'sanitize-html';
+    import DOMPurify from 'isomorphic-dompurify';
     import { renderToHTMLString } from '~/lib/components/editor';
     import RelativeDateTime from '~/lib/components/RelativeDateTime.svelte';
     import type { Activity } from '~/lib/models/activity';
@@ -36,7 +36,7 @@
 {#if comment}
     <div class="border-base-border flex-1 overflow-auto rounded-md border">
         <div
-            class="bg-base-dark border-b border-b-base-border flex items-center gap-nbsp rounded-t-md px-2 py-2"
+            class="bg-base-dark dark:bg-base-light border-b border-b-base-border flex items-center gap-nbsp rounded-t-md px-2 py-2"
         >
             <ActivityAvatar user={activity.actor} />
             <span>
@@ -53,7 +53,7 @@
         {:else}
             <article class="prose max-w-none p-4 wrap-anywhere">
                 {#if comment.contentJson && comment?.contentJson.length > 0}
-                    {@html sanitizeHtml(renderToHTMLString(JSON.parse(comment.contentJson)))}
+                    {@html DOMPurify.sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
                 {:else}
                     <i class="text-base-fg-muted">No description provided.</i>
                 {/if}
