@@ -5,10 +5,10 @@
     import invariant from 'tiny-invariant';
     import { createTextEditor } from '~/lib/components/editor';
     import { PlusOutline } from '~/lib/components/icons';
+    import { ActivityKind } from '~/lib/models/activity';
     import type { UserPreset } from '~/lib/models/user';
     import { button } from '~/lib/utils/styles';
     import { addComment, getActivities } from './page.remote';
-    import { ActivityKind } from '~/lib/models/activity';
 
     const { user, taskId }: { user: UserPreset['Avatar']; taskId: string } = $props();
     const editor = createRef<Editor>();
@@ -17,6 +17,7 @@
         invariant(editor.current, 'editor must not be null');
 
         const contentJson = editor.current.getJSON();
+        editor.current.commands.clearContent();
         await addComment({
             taskId,
             contentJson,
@@ -32,6 +33,7 @@
                         actor: user,
                         data: {
                             comment: {
+                                id: crypto.randomUUID(),
                                 contentJson: JSON.stringify(contentJson),
                             },
                         },
@@ -39,8 +41,6 @@
                 ],
             }))
         );
-
-        editor.current.commands.clearContent();
     }
 </script>
 
@@ -69,11 +69,10 @@
     <div class="mt-4 flex justify-end gap-2">
         <input type="hidden" name="taskId" value={taskId} />
         <button
-            disabled={editor.current == null || editor.current.isEmpty}
+            disabled={editor.current == null || editor.current.isEmpty || addComment.pending > 0}
             type="button"
             class="{button({
                 variant: 'primary',
-                outlined: true,
                 filled: true,
             })} flex items-center gap-2"
             onclick={handleSubmit}

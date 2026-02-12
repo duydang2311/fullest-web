@@ -4,42 +4,37 @@
     import RelativeDateTime from '~/lib/components/RelativeDateTime.svelte';
     import type { Activity } from '~/lib/models/activity';
     import type { User } from '~/lib/models/user';
-    import { v } from '~/lib/utils/valibot';
-    import { createValidator } from '~/lib/utils/validation';
+    import { namespaceUrl } from '~/lib/utils/url';
+    import type { PageData } from '../$types';
     import ActivityAvatar from './ActivityAvatar.svelte';
     import CommentActions from './CommentActions.svelte';
     import CommentEdit from './CommentEdit.svelte';
+    import { usePageData } from './context.svelte';
 
     const {
-        taskId,
         activity,
     }: {
-        taskId: string;
         activity: Pick<Activity, 'createdTime' | 'data'> & {
             actor: Pick<User, 'name' | 'displayName' | 'imageKey' | 'imageVersion'>;
+            data: { comment: { id: string; contentJson?: string } };
         };
     } = $props();
 
-    const validator = createValidator(
-        v.object({
-            comment: v.object({
-                id: v.string(),
-                contentJson: v.optional(v.string()),
-            }),
-        })
-    );
-    const validation = $derived(validator.parse(activity.data));
-    const comment = $derived(validation.ok ? validation.data.comment : null);
+    const taskId = $derived(usePageData<PageData>().task.id);
+    const comment = $derived(activity.data.comment);
     let isEditing = $state.raw(false);
 </script>
 
 {#if comment}
     <div class="border-base-border flex-1 overflow-auto rounded-md border">
         <div
-            class="bg-base-dark dark:bg-base-light border-b border-b-base-border flex items-center gap-nbsp rounded-t-md px-2 py-2"
+            class="bg-surface-subtle border-b border-b-base-border flex items-center gap-2 rounded-t-md px-2 py-2"
         >
             <ActivityAvatar user={activity.actor} />
             <span>
+                <a href={namespaceUrl(activity.actor.name)} class="c-link">
+                    <strong>{activity.actor.displayName ?? activity.actor.name}</strong>
+                </a>
                 <span class="text-sm font-medium text-base-fg-dim">
                     · <RelativeDateTime time={activity.createdTime} />
                 </span>

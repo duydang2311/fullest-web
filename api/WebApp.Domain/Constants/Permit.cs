@@ -6,6 +6,7 @@ public static class Permit
     public const string ReadTask = "task:read";
     public const string UpdateTask = "task:update";
     public const string DeleteTask = "task:delete";
+    public const string ManageTask = "task:manage";
 
     public const string CreateStatus = "status:create";
     public const string ReadStatus = "status:read";

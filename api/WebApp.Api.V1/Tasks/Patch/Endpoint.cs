@@ -4,13 +4,16 @@ using FastEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using NodaTime;
 using WebApp.Api.Common.Expressions;
 using WebApp.Domain.Entities;
+using WebApp.Domain.Events;
 using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Tasks.Patch;
 
-public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Results<NotFound, NoContent>>
+public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
+    : Endpoint<Request, Results<NotFound, NoContent>>
 {
     public override void Configure()
     {
@@ -26,18 +29,22 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Results<NotFou
     {
         Guard.Against.Null(req.Patch);
 
+        var mappings = new List<string>();
         var query = db.Tasks.Where(a => a.Id == req.TaskId && a.DeletedTime == null);
-
+        var changes = new List<TaskPropertyChanged>();
         Expression<
             Func<SetPropertyCalls<TaskEntity>, SetPropertyCalls<TaskEntity>>
         >? setPropertyCalls = null;
+
+        await using var tx = await db.Database.BeginTransactionAsync(ct).ConfigureAwait(false);
 
         if (req.Patch.TryGetValue(a => a.Title, out var title))
         {
             setPropertyCalls = ExpressionHelper.Append(
                 setPropertyCalls,
-                a => a.SetProperty(b => b.Title, title!)
+                a => a.SetProperty(b => b.Title, title)
             );
+            mappings.Add(nameof(TaskEntity.Title));
         }
 
         if (req.Patch.TryGetValue(a => a.StatusId, out var statusId))
@@ -46,6 +53,7 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Results<NotFou
                 setPropertyCalls,
                 a => a.SetProperty(b => b.StatusId, statusId)
             );
+            mappings.Add(nameof(TaskEntity.StatusId));
         }
 
         if (req.Patch.TryGetValue(a => a.PriorityId, out var priorityId))
@@ -54,6 +62,7 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Results<NotFou
                 setPropertyCalls,
                 a => a.SetProperty(b => b.PriorityId, priorityId)
             );
+            mappings.Add(nameof(TaskEntity.PriorityId));
         }
 
         if (req.Patch.TryGetValue(a => a.DueTime, out var dueTime))
@@ -62,6 +71,7 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Results<NotFou
                 setPropertyCalls,
                 a => a.SetProperty(b => b.DueTime, dueTime)
             );
+            mappings.Add(nameof(TaskEntity.DueTime));
         }
 
         if (req.Patch.TryGetValue(a => a.DueTz, out var dueTz))
@@ -70,16 +80,101 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Results<NotFou
                 setPropertyCalls,
                 a => a.SetProperty(b => b.DueTz, dueTz)
             );
+            mappings.Add(nameof(TaskEntity.DueTz));
         }
 
         Guard.Against.Null(setPropertyCalls);
 
+        if (mappings.Count > 0)
+        {
+            var snapshot = await db
+                .Tasks.Where(a => a.DeletedTime == null && a.Id == req.TaskId)
+                .Select(BuildSnapshotSelector<TaskEntity, TaskSnapshot>(mappings))
+                .FirstOrDefaultAsync(ct)
+                .ConfigureAwait(false);
+            if (snapshot is null)
+            {
+                return TypedResults.NotFound();
+            }
+            if (req.Patch.Has(a => a.StatusId))
+            {
+                changes.Add(
+                    new TaskStatusChanged(
+                        req.TaskId,
+                        req.CallerId,
+                        req.Patch.StatusId,
+                        snapshot.StatusId
+                    )
+                );
+            }
+            if (req.Patch.Has(a => a.PriorityId))
+            {
+                changes.Add(
+                    new TaskPriorityChanged(
+                        req.TaskId,
+                        req.CallerId,
+                        req.Patch.PriorityId,
+                        snapshot.PriorityId
+                    )
+                );
+            }
+            if (req.Patch.Has(a => a.DueTime) || req.Patch.Has(a => a.DueTz))
+            {
+                changes.Add(
+                    new TaskDueTimeChanged(
+                        req.TaskId,
+                        req.CallerId,
+                        req.Patch.DueTime,
+                        req.Patch.DueTz,
+                        snapshot.DueTime,
+                        snapshot.DueTz
+                    )
+                );
+            }
+        }
         var count = await query.ExecuteUpdateAsync(setPropertyCalls, ct).ConfigureAwait(false);
         if (count == 0)
         {
             return TypedResults.NotFound();
         }
 
+        if (changes.Count > 0)
+        {
+            await eventHub
+                .PublishAsync(new TaskUpdated(req.TaskId, changes), ct)
+                .ConfigureAwait(false);
+        }
+        await db.SaveChangesAsync(ct).ConfigureAwait(false);
+        await tx.CommitAsync(ct).ConfigureAwait(false);
+
         return TypedResults.NoContent();
+    }
+
+    private sealed record TaskSnapshot
+    {
+        public string? Title { get; init; }
+        public StatusId? StatusId { get; init; }
+        public PriorityId? PriorityId { get; init; }
+        public Instant? DueTime { get; init; }
+        public string? DueTz { get; init; }
+    }
+
+    private static Expression<Func<TEntity, TSnapshot>> BuildSnapshotSelector<TEntity, TSnapshot>(
+        IEnumerable<string> propertyNames
+    )
+        where TSnapshot : new()
+    {
+        var parameter = Expression.Parameter(typeof(TEntity));
+        var bindings = propertyNames.Select(name =>
+            Expression.Bind(
+                typeof(TSnapshot).GetProperty(name)!,
+                Expression.Property(parameter, name)
+            )
+        );
+
+        var newExpr = Expression.New(typeof(TSnapshot));
+        var memberInit = Expression.MemberInit(newExpr, bindings);
+
+        return Expression.Lambda<Func<TEntity, TSnapshot>>(memberInit, parameter);
     }
 }

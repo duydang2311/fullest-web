@@ -10,14 +10,12 @@
     --_text: var(--color-base-fg);
 
     &:where(.c-button--filled) {
-        --_bg: var(--color-base-light);
+        --_bg: var(--color-base);
         --_bg-hover: var(--color-base-hover);
         --_bg-active: var(--color-base-active);
     }
 
     &:where(.c-button--ghost) {
-        /* --_bg-hover: color-mix(in oklch, var(--color-base-fg) 5%, transparent); */
-        /* --_bg-active: color-mix(in oklch, var(--color-base-fg) 10%, transparent); */
         --_bg-hover: var(--color-base-hover);
         --_bg-active: var(--color-base-active);
         &:where(:disabled) {
@@ -29,6 +27,7 @@
 
     &:where([data-state='open']) {
         --_bg: var(--_bg-active);
+        --_bg-hover: var(--_bg-active);
     }
 
     &:where(.c-button--outlined) {
@@ -48,14 +47,10 @@
     --_text: var(--color-primary);
 
     &:where(.c-button--filled) {
-        --_text: var(--color-primary-fg);
+        --_text: var(--color-base-fg);
         --_bg: var(--color-primary);
         --_bg-hover: var(--color-primary-hover);
         --_bg-active: var(--color-primary-active);
-        &:where(:disabled) {
-            --_text: var(--color-base-fg-muted);
-            --_bg: color-mix(in oklch, var(--color-base-fg-muted) 20%, transparent);
-        }
     }
 
     &:where([data-state='open']) {
@@ -69,9 +64,6 @@
 
     &:where(.c-button--outlined) {
         --_border: var(--color-primary-border);
-        &:where(:disabled) {
-            --_border: transparent;
-        }
     }
 
     &:where(:focus-visible) {
@@ -143,13 +135,27 @@
 }
 
 .c-button {
+    &:where(:disabled) {
+        --_text: var(--color-base-fg);
+        &:where(.c-button--filled) {
+            --_bg: var(--color-base);
+        }
+        &:where(.c-button--outlined) {
+            --_border: var(--color-base-border);
+        }
+    }
+}
+
+.c-button {
     padding: --spacing(1.5) --spacing(3);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     border: 1px solid var(--_border);
     background-color: var(--_bg);
     color: var(--_text);
     font-weight: 500;
-    @apply transition;
+    transition-property: color, background-color, font-weight, box-shadow, border-color, opacity;
+    transition-duration: var(--default-transition-duration);
+    transition-timing-function: var(--default-transition-timing-function);
 
     &:where(.c-button--icon) {
         padding: --spacing(1);
@@ -169,6 +175,7 @@
     }
 
     &:where(:disabled) {
+        opacity: 0.4;
         pointer-events: none;
     }
 }

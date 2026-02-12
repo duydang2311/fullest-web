@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { invalidate } from '$app/navigation';
-    import { page } from '$app/state';
+    import { invalidateAll } from '$app/navigation';
     import { portal } from '@zag-js/svelte';
     import { createMenu } from '~/lib/components/builders.svelte';
+    import { SettingsOutline } from '~/lib/components/icons';
     import type { Status } from '~/lib/models/status';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
@@ -23,25 +23,26 @@
             await patchTaskStatus({
                 taskId: data.task.id,
                 statusId: details.value,
-            });
-            await invalidate(page.route.id!);
+            }).then(invalidateAll);
         },
     });
 
     let statuses = $state.raw<Pick<Status, 'id' | 'name'>[]>();
 </script>
 
-<div>
+<div class="text-sm">
     <button
         {...menu.api.getTriggerProps()}
         type="button"
         class="{C.button({
             variant: 'base',
             ghost: true,
-            outlined: true,
-        })} text-left c-help-text font-medium w-full"
+        })} text-left font-medium w-full flex items-center max-lg:flex-row-reverse max-lg:justify-end gap-2 lg:justify-between"
     >
-        {data.task.status?.name ?? 'No status'}
+        <span>
+            {data.task.status?.name ?? 'No status'}
+        </span>
+        <SettingsOutline />
     </button>
     <div use:portal {...menu.api.getPositionerProps()}>
         <ul

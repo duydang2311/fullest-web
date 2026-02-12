@@ -38,7 +38,7 @@ public sealed class ProjectRoleDefaults(RoleId id, string name, int rank, string
         id: new RoleId(4),
         name: "Manager",
         rank: 400,
-        permissions: [.. Member.Permissions, Permit.DeleteTask]
+        permissions: [.. Member.Permissions, Permit.DeleteTask, Permit.ManageTask]
     );
     public static readonly ProjectRoleDefaults Owner = new(
         id: new RoleId(5),

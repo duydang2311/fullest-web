@@ -22,7 +22,7 @@ public abstract class BaseDbContext : DbContext
     public DbSet<Namespace> Namespaces => Set<Namespace>();
     public DbSet<Tag> Tags => Set<Tag>();
     public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
-    public DbSet<TaskEntityAssignee> TaskAssignees => Set<TaskEntityAssignee>();
+    public DbSet<TaskAssignee> TaskAssignees => Set<TaskAssignee>();
     public DbSet<Status> Statuses => Set<Status>();
     public DbSet<Priority> Priorities => Set<Priority>();
     public DbSet<Comment> Comments => Set<Comment>();

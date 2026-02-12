@@ -8,7 +8,7 @@
         type="button"
         class="{button({
             variant: 'base',
-            filled: true,
+            ghost: true,
             outlined: true,
         })} flex p-0 text-sm tracking-tight"
     >
@@ -17,7 +17,7 @@
             <span>Watch</span>
         </div>
         <div
-            class="text-base-fg bg-base-dark/40 border-l border-l-base-border px-2 py-1 rounded-r-lg content-center"
+            class="text-base-fg border-l border-l-base-border px-2 py-1 rounded-r-lg content-center"
         >
             0
         </div>
@@ -26,7 +26,7 @@
         type="button"
         class="{button({
             variant: 'base',
-            filled: true,
+            ghost: true,
             outlined: true,
         })} flex p-0 text-sm"
     >
@@ -35,7 +35,7 @@
             <span>Star</span>
         </div>
         <div
-            class="text-base-fg bg-base-dark/40 border-l border-l-base-border px-2 py-1 rounded-r-lg content-center"
+            class="text-base-fg border-l border-l-base-border px-2 py-1 rounded-r-lg content-center"
         >
             0
         </div>

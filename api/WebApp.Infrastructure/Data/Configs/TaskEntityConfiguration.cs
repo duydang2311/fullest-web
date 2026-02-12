@@ -26,7 +26,7 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
         builder
             .HasMany(a => a.Assignees)
             .WithMany()
-            .UsingEntity<TaskEntityAssignee>(
+            .UsingEntity<TaskAssignee>(
                 r => r.HasOne(a => a.User).WithMany().HasForeignKey(a => a.UserId),
                 l => l.HasOne(a => a.Task).WithMany().HasForeignKey(a => a.TaskId)
             );

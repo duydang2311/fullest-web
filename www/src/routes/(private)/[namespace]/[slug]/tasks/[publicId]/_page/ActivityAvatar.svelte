@@ -6,7 +6,6 @@
     const { user }: { user: UserPreset['Avatar'] } = $props();
 </script>
 
-<a href={namespaceUrl(user.name)} class="flex gap-2 items-center c-link">
-    <Avatar {user} class="size-avatar-xs shrink-0 rounded-full" />
-    <span><strong>{user.displayName ?? user.name}</strong></span>
+<a href={namespaceUrl(user.name)}>
+    <Avatar {user} class="size-avatar-xs rounded-full" />
 </a>

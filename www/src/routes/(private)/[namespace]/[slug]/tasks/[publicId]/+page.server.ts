@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 import type { Comment } from '~/lib/models/comment';
 import { keysetList, type KeysetList } from '~/lib/models/paginated';
 import type { Task } from '~/lib/models/task';
-import type { User } from '~/lib/models/user';
+import type { User, UserPreset } from '~/lib/models/user';
 import { ErrorKind, ForbiddenError, NotFoundError, UnknownError } from '~/lib/utils/errors';
 import { jsonify } from '~/lib/utils/http';
 import { useRuntime } from '~/lib/utils/runtime';
@@ -20,6 +20,7 @@ export const load: PageServerLoad = async (e) => {
                     'Id,PublicId,Title,Status,Priority,CreatedTime,UpdatedTime,InitialCommentId,Author.Name',
                     'InitialComment.Id,InitialComment.ContentJson,InitialComment.CreatedTime,InitialComment.Author.Name',
                     'InitialComment.Author.DisplayName,InitialComment.Author.ImageKey,InitialComment.Author.ImageVersion',
+                    'Assignees.Id,Assignees.Name,Assignees.DisplayName,Assignees.ImageKey,Assignees.ImageVersion',
                 ].join(','),
             },
         }
@@ -56,6 +57,7 @@ export const load: PageServerLoad = async (e) => {
                             >;
                         };
                         author: Pick<User, 'name'>;
+                        assignees: (Pick<User, 'id'> & UserPreset['Avatar'])[];
                     }
                 >()
             );
@@ -73,7 +75,7 @@ export const load: PageServerLoad = async (e) => {
         streamedCommentList: fetchComments(task.id).then((fetched) =>
             fetched.pipe(attempt.unwrapOrElse(() => keysetList<never, never>()))
         ),
-        ts: Date.now()
+        ts: Date.now(),
     };
 };
 

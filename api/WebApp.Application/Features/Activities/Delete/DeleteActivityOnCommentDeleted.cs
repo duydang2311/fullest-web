@@ -10,8 +10,7 @@ public sealed class DeleteActivityOnCommentDeleted(BaseDbContext db) : ICommentD
     public async Task HandleAsync(CommentDeleted deleted, CancellationToken ct)
     {
         await db
-            .Activities
-            .Where(a =>
+            .Activities.Where(a =>
                 a.Kind == ActivityKind.Commented
                 && a.Data != null
                 && a.Data.RootElement.GetProperty("CommentId").GetInt64() == deleted.CommentId.Value

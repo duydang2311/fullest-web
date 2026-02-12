@@ -16,7 +16,7 @@
     const menu = createMenu({ id });
 </script>
 
-<div>
+<div class="shrink-0 flex items-center py-0.5">
     <button
         {...menu.api.getTriggerProps()}
         class="{button({
@@ -24,7 +24,7 @@
             icon: true,
             outlined: true,
             ghost: true,
-        })} rounded-full p-0.5"
+        })} rounded-full p-0"
     >
         <Avatar {user} class="size-avatar-sm rounded-full" />
     </button>

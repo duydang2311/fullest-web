@@ -19,4 +19,7 @@ export enum ActivityKind {
 
     Commented = 'commented',
     Assigned = 'assigned',
+    Unassigned = 'unassigned',
+    StatusChanged = 'status_changed',
+    PriorityChanged = 'priority_changed',
 }

@@ -110,8 +110,7 @@
                 href="/"
                 class={button({
                     variant: 'base',
-                    filled: true,
-                    outlined: true,
+                    ghost: true,
                 })}
             >
                 <span>Cancel</span>
@@ -121,11 +120,10 @@
                 class="{button({
                     variant: 'primary',
                     filled: true,
-                    outlined: true,
                 })} flex items-center gap-2"
             >
                 <PlusOutline />
-                <span>Create project</span>
+                <span>Create</span>
             </button>
         </div>
     </form>

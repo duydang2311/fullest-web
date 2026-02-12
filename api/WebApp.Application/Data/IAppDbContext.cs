@@ -17,6 +17,6 @@ public interface IAppDbContext
     DbSet<Namespace> Namespaces { get; }
     DbSet<Tag> Tags { get; }
     DbSet<TaskEntity> Tasks { get; }
-    DbSet<TaskEntityAssignee> TaskAssignees { get; }
+    DbSet<TaskAssignee> TaskAssignees { get; }
     DbSet<Status> Statuses { get; }
 }

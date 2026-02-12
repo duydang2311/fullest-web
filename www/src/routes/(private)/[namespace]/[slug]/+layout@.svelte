@@ -1,17 +1,15 @@
 <script lang="ts">
-    import { CheckCircleOutline } from '~/lib/components/icons';
-    import ProjectActions from './ProjectActions.svelte';
-    import Tabs from './Tabs.svelte';
     import { goto, onNavigate } from '$app/navigation';
-    import { gsap } from '~/lib/utils/gsap';
+    import { page } from '$app/state';
     import { Flip } from 'gsap/dist/Flip';
-    import LogoType from '~/lib/components/LogoType.svelte';
     import AuthenticatedHeaderCreateActions from '~/lib/components/AuthenticatedHeaderCreateActions.svelte';
     import AuthenticatedHeaderPfp from '~/lib/components/AuthenticatedHeaderPfp.svelte';
     import Footer from '~/lib/components/Footer.svelte';
     import { createTabs } from '~/lib/components/builders.svelte';
-    import { page } from '$app/state';
+    import { ChevronRightOutline } from '~/lib/components/icons';
+    import { gsap } from '~/lib/utils/gsap';
     import { indexOf } from '~/lib/utils/string';
+    import Tabs from './Tabs.svelte';
 
     const { data, children } = $props();
     const id = $props.id();
@@ -48,31 +46,34 @@
 </script>
 
 <div class="flex min-h-screen flex-col">
-    <header class="bg-base">
-        <nav class="pt-4">
-            <div class="flex items-center justify-between gap-8 px-8">
-                <div class="flex items-center gap-4">
-                    <LogoType />
-                    <div class="flex items-center gap-1">
+    <header class="text-sm bg-surface-subtle">
+        <nav>
+            <div
+                class="flex divide-x divide-surface-border overflow-auto border-b border-b-surface-border"
+            >
+                <div class="flex items-center gap-4 px-8">
+                    <div class="flex items-center gap-2">
                         <a href="/{data.namespace.user.name}" class="c-link">
-                            {data.namespace.kind === 'user' ? data.namespace.user.name : ''}
+                            {data.namespace.kind === 'user'
+                                ? (data.namespace.user.displayName ?? data.namespace.user.name)
+                                : 'Organization'}
                         </a>
-                        <span class="text-base-fg-muted">/</span>
+                        <ChevronRightOutline class="text-base-fg-muted size-4" />
                         <a
                             href="/{data.namespace.user.name}/{data.project.identifier}"
-                            class="c-link not-hover:text-base-fg-strong font-bold"
+                            class="c-link font-normal"
                         >
                             {data.project.name}
                         </a>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex-1">
+                    <Tabs {tabs} />
+                </div>
+                <div class="flex items-center justify-end gap-4 px-8 shrink-0">
                     <AuthenticatedHeaderCreateActions />
                     <AuthenticatedHeaderPfp user={data.user} />
                 </div>
-            </div>
-            <div class="mt-2">
-                <Tabs {tabs} />
             </div>
         </nav>
     </header>

@@ -18,7 +18,20 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(a => a.DeletedTime);
 
         builder.Property(a => a.DeletedTime);
-        builder.HasIndex(a => a.Name).IsUnique();
+        builder
+            .HasIndex(a => a.Name, "ix_users_name_unique")
+            .IsUnique()
+            .HasDatabaseName("ix_users_name_unique");
+        builder
+            .HasIndex(a => a.Name, "ix_users_name_trgm")
+            .HasMethod("gin")
+            .HasOperators("gin_trgm_ops")
+            .HasDatabaseName("ix_users_name_trgm");
+        builder
+            .HasIndex(a => a.DisplayName, "ix_users_display_name_trgm")
+            .HasMethod("gin")
+            .HasOperators("gin_trgm_ops")
+            .HasDatabaseName("ix_users_display_name_trgm");
         builder.HasIndex(a => a.DeletedTime);
         builder.HasKey(a => a.Id);
     }

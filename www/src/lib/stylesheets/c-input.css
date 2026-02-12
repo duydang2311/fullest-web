@@ -6,9 +6,9 @@
 }
 
 .c-input {
-    --_text: var(--color-base-fg);
-    --_bg: var(--color-base-light);
-    --_border: color-mix(in oklch, var(--color-base-border) 60%, var(--color-base-border-strong));
+    /* --_text: var(--color-base-fg); */
+    --_bg: var(--color-surface);
+    --_border: var(--color-base-border);
     --_border-invalid: color-mix(in oklch, var(--color-negative-border) 60%, transparent);
 }
 
@@ -16,7 +16,7 @@
     width: 100%;
     padding: --spacing(1.5) --spacing(3);
     border: 1px solid var(--_border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     background-color: var(--_bg);
     color: var(--_text);
     @apply transition;

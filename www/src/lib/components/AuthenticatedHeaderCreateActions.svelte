@@ -24,8 +24,7 @@
     class="{button({
         variant: 'base',
         icon: true,
-        outlined: true,
-        filled: true,
+        ghost: true
     })} flex items-center gap-1"
 >
     <PlusOutline />

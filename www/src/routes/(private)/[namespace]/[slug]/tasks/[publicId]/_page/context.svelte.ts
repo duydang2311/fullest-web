@@ -1,6 +1,12 @@
 import { page } from '$app/state';
-import { getContext } from 'svelte';
 
 export function usePageData<T>() {
-    return getContext<T>(page.route.id);
+    return new Proxy(
+        {},
+        {
+            get(_, p) {
+                return page.data[p as keyof typeof page.data];
+            },
+        }
+    ) as T;
 }

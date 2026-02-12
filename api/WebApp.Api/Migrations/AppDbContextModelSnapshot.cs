@@ -542,6 +542,25 @@ namespace WebApp.Api.Migrations
                     b.ToTable("tags", (string)null);
                 });
 
+            modelBuilder.Entity("WebApp.Domain.Entities.TaskAssignee", b =>
+                {
+                    b.Property<long>("TaskId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("task_id");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("TaskId", "UserId")
+                        .HasName("pk_task_assignees");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_task_assignees_user_id");
+
+                    b.ToTable("task_assignees", (string)null);
+                });
+
             modelBuilder.Entity("WebApp.Domain.Entities.TaskEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -628,25 +647,6 @@ namespace WebApp.Api.Migrations
                     b.ToTable("tasks", (string)null);
                 });
 
-            modelBuilder.Entity("WebApp.Domain.Entities.TaskEntityAssignee", b =>
-                {
-                    b.Property<long>("TaskId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("task_id");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("TaskId", "UserId")
-                        .HasName("pk_task_assignees");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_task_assignees_user_id");
-
-                    b.ToTable("task_assignees", (string)null);
-                });
-
             modelBuilder.Entity("WebApp.Domain.Entities.TaskLabel", b =>
                 {
                     b.Property<long>("LabelId")
@@ -708,9 +708,21 @@ namespace WebApp.Api.Migrations
                     b.HasIndex("DeletedTime")
                         .HasDatabaseName("ix_users_deleted_time");
 
-                    b.HasIndex("Name")
+                    b.HasIndex(new[] { "DisplayName" }, "ix_users_display_name_trgm")
+                        .HasDatabaseName("ix_users_display_name_trgm");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex(new[] { "DisplayName" }, "ix_users_display_name_trgm"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex(new[] { "DisplayName" }, "ix_users_display_name_trgm"), new[] { "gin_trgm_ops" });
+
+                    b.HasIndex(new[] { "Name" }, "ix_users_name_trgm")
+                        .HasDatabaseName("ix_users_name_trgm");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex(new[] { "Name" }, "ix_users_name_trgm"), "gin");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex(new[] { "Name" }, "ix_users_name_trgm"), new[] { "gin_trgm_ops" });
+
+                    b.HasIndex(new[] { "Name" }, "ix_users_name_unique")
                         .IsUnique()
-                        .HasDatabaseName("ix_users_name");
+                        .HasDatabaseName("ix_users_name_unique");
 
                     b.ToTable("users", (string)null);
                 });
@@ -986,6 +998,27 @@ namespace WebApp.Api.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("WebApp.Domain.Entities.TaskAssignee", b =>
+                {
+                    b.HasOne("WebApp.Domain.Entities.TaskEntity", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_task_assignees_tasks_task_id");
+
+                    b.HasOne("WebApp.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_task_assignees_users_user_id");
+
+                    b.Navigation("Task");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WebApp.Domain.Entities.TaskEntity", b =>
                 {
                     b.HasOne("WebApp.Domain.Entities.User", "Author")
@@ -1026,27 +1059,6 @@ namespace WebApp.Api.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("WebApp.Domain.Entities.TaskEntityAssignee", b =>
-                {
-                    b.HasOne("WebApp.Domain.Entities.TaskEntity", "Task")
-                        .WithMany()
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_task_assignees_tasks_task_id");
-
-                    b.HasOne("WebApp.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_task_assignees_users_user_id");
-
-                    b.Navigation("Task");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WebApp.Domain.Entities.TaskLabel", b =>

@@ -107,6 +107,7 @@ builder
     .AddCodecsGroup()
     .AddHashingGroup()
     .AddAccessControlGroup()
+    .AddEventsGroup()
     .AddEventHandlersGroup()
     .AddStorageGroup()
     .AddIntegrationGroup();

@@ -1,7 +1,5 @@
 <script lang="ts">
     import { page } from '$app/state';
-    import { sineInOut } from 'svelte/easing';
-    import { fly } from 'svelte/transition';
     import { Tabs } from '~/lib/components/builders.svelte';
     import { button } from '~/lib/utils/styles';
 
@@ -17,28 +15,23 @@
     ];
 </script>
 
-<div {...tabs.getRootProps()}>
-    <div
-        {...tabs.getListProps()}
-        class="border-b-base-border flex items-center border-b px-8 *:basis-28"
-    >
-        {#each tabItems as item}
+<div {...tabs.getRootProps()} class="h-full">
+    <div {...tabs.getListProps()} class="flex items-center h-full">
+        {#each tabItems as item (item.href)}
             <button
                 {...tabs.getTriggerProps({ value: item.href })}
-                class="focus-visible:ring-focus-base-fg rounded-t-lg group relative focus-visible:outline-none overflow-hidden min-w-max"
+                class="focus-visible:ring-focus-base-fg group relative focus-visible:outline-none min-w-max px-0 h-full overflow-hidden"
             >
                 {#if tabs.value === item.href}
                     <div
-                        class="bg-secondary absolute inset-0 rounded-t-lg animate-slide-in-from-b duration-300"
-                        out:fly={{ y: '100%', duration: 300, easing: sineInOut }}
+                        class="bg-base-active absolute size-full animate-slide-in-from-b duration-300"
                     ></div>
                 {/if}
                 <a
                     href={item.href}
                     class="{button({
                         variant: 'base',
-                        ghost: true,
-                    })} relative active:translate-y-0.5 rounded-b-none group-data-selected:bg-transparent group-data-selected:text-base-fg-strong block group-data-selected:font-bold"
+                    })} content-center font-normal px-4 py-2 h-full tracking-tight relative text-base-fg-muted hover:text-base-fg rounded-b-none group-data-selected:bg-transparent group-data-selected:text-base-fg-strong block group-data-selected:font-bold"
                 >
                     {item.label}
                 </a>

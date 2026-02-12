@@ -1,6 +1,6 @@
 namespace WebApp.Domain.Entities;
 
-public sealed record TaskEntityAssignee
+public sealed record TaskAssignee
 {
     public TaskId TaskId { get; init; }
     public TaskEntity Task { get; init; } = null!;

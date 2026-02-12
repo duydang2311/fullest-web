@@ -48,7 +48,7 @@ async function fetchNamespace(namespace: string) {
     const { http } = useRuntime();
     const ns = await http.get(`namespaces/${namespace}`, {
         query: {
-            fields: 'Id,Kind,User.Id,User.Name',
+            fields: 'Id,Kind,User.Id,User.Name,User.DisplayName',
         },
     });
     return await ns.pipe(
@@ -60,7 +60,7 @@ async function fetchNamespace(namespace: string) {
                             id: string;
                         } & {
                             kind: 'user';
-                            user: { id: string; name: string };
+                            user: { id: string; name: string; displayName: string };
                         }
                     >()
                 );

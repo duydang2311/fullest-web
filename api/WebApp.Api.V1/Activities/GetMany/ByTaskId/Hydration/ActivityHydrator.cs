@@ -14,11 +14,16 @@ public sealed class ActivityHydrator(
         Func<IServiceScopeFactory, IOptions<JsonOptions>, IHydratorStrategy>
     > stratInits = new()
     {
-        {
-            ActivityKind.Commented,
-            (serviceScopeFactory, jsonOptions) =>
-                new CommentedHydratorStrategy(serviceScopeFactory, jsonOptions)
-        },
+        [ActivityKind.Commented] = (serviceScopeFactory, jsonOptions) =>
+            new CommentedHydratorStrategy(serviceScopeFactory, jsonOptions),
+        [ActivityKind.StatusChanged] = (serviceScopeFactory, jsonOptions) =>
+            new StatusChangedHydratorStrategy(serviceScopeFactory, jsonOptions),
+        [ActivityKind.PriorityChanged] = (serviceScopeFactory, jsonOptions) =>
+            new PriorityChangedHydratorStrategy(serviceScopeFactory, jsonOptions),
+        [ActivityKind.Assigned] = (serviceScopeFactory, jsonOptions) =>
+            new AssignedHydratorStrategy(serviceScopeFactory, jsonOptions),
+        [ActivityKind.Unassigned] = (serviceScopeFactory, jsonOptions) =>
+            new UnassignedHydratorStrategy(serviceScopeFactory, jsonOptions),
     };
 
     public async Task<List<Activity>> GetHydratedActivitiesAsync(

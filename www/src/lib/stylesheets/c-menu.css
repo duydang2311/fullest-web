@@ -32,10 +32,10 @@
     background-color: var(--_bg);
     padding: --spacing(1) --spacing(2);
     border-radius: var(--radius-md);
-    cursor: default;
     @apply transition duration-75;
 
-    &:where([data-highlighted]) {
+    &:where([data-highlighted]),
+    &:where([data-state='checked']) {
         color: var(--_text-highlighted);
         background-color: var(--_bg-hover);
         font-weight: 500;

@@ -1,5 +1,7 @@
 import * as fileUpload from '@zag-js/file-upload';
+import * as listbox from '@zag-js/listbox';
 import * as menu from '@zag-js/menu';
+import * as popover from '@zag-js/popover';
 import { normalizeProps, useMachine } from '@zag-js/svelte';
 import * as tabs from '@zag-js/tabs';
 
@@ -98,12 +100,46 @@ class Menu {
     }
 }
 
+export function createListbox<T>(props: listbox.Props<T>) {
+    return new Listbox(props);
+}
+
+export function createPopover(props: popover.Props) {
+    return new Popover(props);
+}
+
 class FileUpload {
     readonly #api: fileUpload.Api;
 
     constructor(props: fileUpload.Props) {
         const service = useMachine(fileUpload.machine as never, props) as fileUpload.Service;
         this.#api = $derived(fileUpload.connect(service, normalizeProps));
+    }
+
+    get api() {
+        return this.#api;
+    }
+}
+
+class Listbox {
+    readonly #api: listbox.Api;
+
+    constructor(props: listbox.Props) {
+        const service = useMachine(listbox.machine as any, props) as listbox.Service;
+        this.#api = $derived(listbox.connect(service, normalizeProps));
+    }
+
+    get api() {
+        return this.#api;
+    }
+}
+
+class Popover {
+    readonly #api: popover.Api;
+
+    constructor(props: popover.Props) {
+        const service = useMachine(popover.machine as any, props) as popover.Service;
+        this.#api = $derived(popover.connect(service, normalizeProps));
     }
 
     get api() {

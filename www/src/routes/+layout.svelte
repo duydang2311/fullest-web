@@ -1,7 +1,8 @@
 <script lang="ts">
-    import '../app.css';
     import '@fontsource-variable/geist-mono';
     import '@fontsource-variable/inter';
+    import '../app.css';
+
     import favicon from '$lib/assets/favicon.svg';
 
     const { children } = $props();
