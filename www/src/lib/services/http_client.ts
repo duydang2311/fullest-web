@@ -3,7 +3,7 @@ import { type Attempt } from '@duydang2311/attempt';
 
 export type HttpRequestOptions = Omit<RequestInit, 'body'> & {
 	body?: Record<string, unknown> | Array<unknown> | BodyInit | null;
-	query?: Record<string, number | string>;
+	query?: Record<string, number | string | null | undefined>;
 };
 
 export interface HttpClient {

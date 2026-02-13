@@ -2,20 +2,19 @@ import { mapFetchException } from '$lib/utils/errors';
 import { trimEnd, trimStart } from '$lib/utils/string';
 import { attempt } from '@duydang2311/attempt';
 import { isPlainObject } from 'is-what';
-import { withQueryParams } from '../utils/url.server';
 import type { HttpClient, HttpRequestOptions } from './http_client';
 
-export interface CreateDefaultHttpClientOptions {
+export interface CreateBrowserHttpClientOptions {
     fetcher: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
     prefix?: string;
     suffix?: string;
     headers?: HeadersInit;
 }
 
-export class DefaultHttpClient implements HttpClient {
-    #options: CreateDefaultHttpClientOptions;
+export class BrowserHttpClient implements HttpClient {
+    #options: CreateBrowserHttpClientOptions;
 
-    constructor(options: CreateDefaultHttpClientOptions) {
+    constructor(options: CreateBrowserHttpClientOptions) {
         this.#options = options;
     }
 
@@ -33,7 +32,7 @@ export class DefaultHttpClient implements HttpClient {
 
         url = this.#normalizeUrl(url);
         if (query) {
-            url = withQueryParams(url, query);
+            url = this.#withQueryParams(url, query);
         }
         return this.#options.fetcher(url, {
             ...opts,
@@ -97,5 +96,14 @@ export class DefaultHttpClient implements HttpClient {
                   ? Object.fromEntries(b)
                   : b
         );
+    }
+
+    #withQueryParams(url: string, params: Record<string, number | string | null | undefined>) {
+        const search = Object.entries(params)
+            .filter(([_, v]) => v)
+            .map(([k, v]) => `${k}=${encodeURIComponent(v as NonNullable<typeof v>)}`)
+            .join('&');
+        url += (url.includes('?') ? '&' : '?') + search;
+        return url;
     }
 }

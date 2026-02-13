@@ -7,7 +7,7 @@ export interface Comment {
 	id: string;
 	authorId: string;
 	author: User;
-	contentJson?: string;
-	contentPreview?: string;
-	deletedTime?: string;
+	contentJson: string | null;
+	contentPreview: string | null;
+	deletedTime: string | null;
 }

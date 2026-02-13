@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using NodaTime;
-using WebApp.Api.Common.Expressions;
 using WebApp.Domain.Entities;
 using WebApp.Domain.Events;
 using WebApp.Infrastructure.Data;
@@ -32,58 +31,41 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         var mappings = new List<string>();
         var query = db.Tasks.Where(a => a.Id == req.TaskId && a.DeletedTime == null);
         var changes = new List<TaskPropertyChanged>();
-        Expression<
-            Func<SetPropertyCalls<TaskEntity>, SetPropertyCalls<TaskEntity>>
-        >? setPropertyCalls = null;
+        Action<UpdateSettersBuilder<TaskEntity>>? updateBuilder = null;
 
         await using var tx = await db.Database.BeginTransactionAsync(ct).ConfigureAwait(false);
 
         if (req.Patch.TryGetValue(a => a.Title, out var title))
         {
-            setPropertyCalls = ExpressionHelper.Append(
-                setPropertyCalls,
-                a => a.SetProperty(b => b.Title, title)
-            );
+            updateBuilder += a => a.SetProperty(b => b.Title, title);
             mappings.Add(nameof(TaskEntity.Title));
         }
 
         if (req.Patch.TryGetValue(a => a.StatusId, out var statusId))
         {
-            setPropertyCalls = ExpressionHelper.Append(
-                setPropertyCalls,
-                a => a.SetProperty(b => b.StatusId, statusId)
-            );
+            updateBuilder += a => a.SetProperty(b => b.StatusId, statusId);
             mappings.Add(nameof(TaskEntity.StatusId));
         }
 
         if (req.Patch.TryGetValue(a => a.PriorityId, out var priorityId))
         {
-            setPropertyCalls = ExpressionHelper.Append(
-                setPropertyCalls,
-                a => a.SetProperty(b => b.PriorityId, priorityId)
-            );
+            updateBuilder += a => a.SetProperty(b => b.PriorityId, priorityId);
             mappings.Add(nameof(TaskEntity.PriorityId));
         }
 
         if (req.Patch.TryGetValue(a => a.DueTime, out var dueTime))
         {
-            setPropertyCalls = ExpressionHelper.Append(
-                setPropertyCalls,
-                a => a.SetProperty(b => b.DueTime, dueTime)
-            );
+            updateBuilder += a => a.SetProperty(b => b.DueTime, dueTime);
             mappings.Add(nameof(TaskEntity.DueTime));
         }
 
         if (req.Patch.TryGetValue(a => a.DueTz, out var dueTz))
         {
-            setPropertyCalls = ExpressionHelper.Append(
-                setPropertyCalls,
-                a => a.SetProperty(b => b.DueTz, dueTz)
-            );
+            updateBuilder += a => a.SetProperty(b => b.DueTz, dueTz);
             mappings.Add(nameof(TaskEntity.DueTz));
         }
 
-        Guard.Against.Null(setPropertyCalls);
+        Guard.Against.Null(updateBuilder);
 
         if (mappings.Count > 0)
         {
@@ -132,7 +114,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
                 );
             }
         }
-        var count = await query.ExecuteUpdateAsync(setPropertyCalls, ct).ConfigureAwait(false);
+        var count = await query.ExecuteUpdateAsync(updateBuilder, ct).ConfigureAwait(false);
         if (count == 0)
         {
             return TypedResults.NotFound();

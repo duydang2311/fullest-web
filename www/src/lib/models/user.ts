@@ -4,11 +4,11 @@ export interface User {
     createdTime: string;
     id: string;
     name: string;
-    deletedTime?: string;
+    deletedTime?: string | null;
     projects: Project[];
     projectMembers: ProjectMember[];
-    displayName?: string;
-    imageKey?: string;
+    displayName?: string |  null;
+    imageKey?: string | null;
     imageVersion?: number;
 }
 

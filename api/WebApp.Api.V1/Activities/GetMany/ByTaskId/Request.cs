@@ -6,13 +6,12 @@ using WebApp.Domain.Entities;
 
 namespace WebApp.Api.V1.Activities.GetMany.ByTaskId;
 
-public sealed record Request : ICursorPagination<ActivityId?>, IOrderable
+public sealed record Request
 {
     public TaskId? TaskId { get; init; }
     public string? Fields { get; init; }
-    public ActivityId? Cursor { get; init; }
+    public ActivityId? After { get; init; }
     public int Size { get; init; } = 20;
-    public string Sort { get; init; } = string.Empty;
 
     [FromClaim(ClaimTypes.NameIdentifier)]
     public UserId CallerId { get; init; }

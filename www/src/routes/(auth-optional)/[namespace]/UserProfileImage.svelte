@@ -30,10 +30,6 @@
                 method: 'POST',
             })
                 .then((a) => a.json<{ accessToken: string; key: string }>())
-                .then(a => {
-                console.log('a', a);
-                    return a;
-                })
                 .then((result) =>
                     fetch(`${env.PUBLIC_ASSET_API_ORIGIN}${result.key}`, {
                         method: 'PUT',

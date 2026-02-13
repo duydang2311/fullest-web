@@ -12,8 +12,8 @@
         activity: Pick<Activity, 'createdTime' | 'data'> & {
             actor: Pick<User, 'name' | 'displayName' | 'imageKey' | 'imageVersion'>;
             data: {
-                status?: Pick<Status, 'name'>;
-                oldStatus?: Pick<Status, 'name'>;
+                status?: Pick<Status, 'name'> | null;
+                oldStatus?: Pick<Status, 'name'> | null;
             };
         };
     } = $props();

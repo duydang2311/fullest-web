@@ -125,13 +125,13 @@
                                 </div>
                             </td>
                             <td class="min-w-32">
-                                <span>Backlog</span>
+                                <span>{task.status?.name ?? 'No status'}</span>
                                 <!-- <div
                                         class="border-base-border border-3 absolute bottom-0 right-0 size-0 border-l-transparent border-t-transparent"
                                     ></div> -->
                             </td>
                             <td class="min-w-32">
-                                <span>Medium</span>
+                                <span>{task.priority?.name ?? 'No priority'}</span>
                                 <!-- <div
                                         class="border-base-border border-3 absolute bottom-0 right-0 size-0 border-l-transparent border-t-transparent"
                                     ></div> -->

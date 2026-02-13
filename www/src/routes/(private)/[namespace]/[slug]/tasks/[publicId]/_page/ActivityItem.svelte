@@ -8,7 +8,7 @@
     import PriorityChangedActivity from './PriorityChangedActivity.svelte';
     import StatusChangedActivity from './StatusChangedActivity.svelte';
     import UnassignedActivity from './UnassignedActivity.svelte';
-    import { validators } from './activity';
+    import { validators } from './utils.svelte';
 
     const {
         activity,

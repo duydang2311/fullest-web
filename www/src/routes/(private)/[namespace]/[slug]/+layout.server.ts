@@ -4,7 +4,7 @@ import invariant from 'tiny-invariant';
 import type { Project } from '~/lib/models/project';
 import { enrichStep, NotFoundError, ValidationError } from '~/lib/utils/errors';
 import { jsonify, parseHttpError } from '~/lib/utils/http';
-import { useRuntime } from '~/lib/utils/runtime';
+import { useRuntime } from '~/lib/utils/runtime.server';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async (e) => {

@@ -4,28 +4,17 @@
     import { createMenu } from '~/lib/components/builders.svelte';
     import { renderToHTMLString } from '~/lib/components/editor';
     import { MenuOutline, PencilOutline, TrashOutline } from '~/lib/components/icons';
-    import type { Comment } from '~/lib/models/comment';
-    import type { Task } from '~/lib/models/task';
-    import type { User } from '~/lib/models/user';
     import { button, C } from '~/lib/utils/styles';
     import { deleteTask } from './page.remote';
+    import SelectAssignees from './SelectAssignees.svelte';
     import SelectPriority from './SelectPriority.svelte';
     import SelectStatus from './SelectStatus.svelte';
     import TaskEdit from './TaskEdit.svelte';
-    import SelectAssignees from './SelectAssignees.svelte';
+    import { usePageContext } from './utils.svelte';
 
-    const {
-        task,
-        comment,
-    }: {
-        task: Pick<Task, 'id' | 'title' | 'publicId'> & {
-            author: Pick<User, 'name' | 'displayName'>;
-        };
-        comment: Pick<Comment, 'id' | 'contentJson'> & {
-            author: Pick<User, 'name' | 'displayName' | 'imageKey' | 'imageVersion'>;
-        };
-    } = $props();
     let isEditing = $state.raw(false);
+    const ctx = usePageContext();
+    const comment = $derived(ctx.task.initialComment);
     const id = $props.id();
     const menu = createMenu({
         id,
@@ -40,7 +29,9 @@
 <div>
     <div class="border-b border-b-surface-border pb-4 px-4 lg:px-8">
         <div class="flex justify-between items-center gap-8 max-w-container-lg mx-auto">
-            <p class="c-help-text px-2 bg-surface-subtle border border-surface-border rounded-sm">#{task.publicId}</p>
+            <p class="c-help-text px-2 bg-surface-subtle border border-surface-border rounded-sm">
+                #{ctx.task.publicId}
+            </p>
             <div class="mt-4">
                 <button
                     type="button"
@@ -65,7 +56,7 @@
                         </li>
                         <li>
                             <form {...deleteTask}>
-                                <input {...deleteTask.fields.id.as('hidden', task.id)} />
+                                <input {...deleteTask.fields.id.as('hidden', ctx.task.id)} />
                                 <button
                                     type="submit"
                                     {...menu.api.getItemProps({ value: 'delete' })}
@@ -83,8 +74,10 @@
                 </div>
             </div>
         </div>
-        <h1 class="leading-none text-title-sm text-base-fg-strong font-bold max-w-container-lg mx-auto">
-            {task.title}
+        <h1
+            class="leading-none text-title-sm text-base-fg-strong font-bold max-w-container-lg mx-auto"
+        >
+            {ctx.task.title}
         </h1>
         <div class="mt-6 flex flex-wrap gap-x-2 gap-y-2 *:basis-40 *:flex-1 lg:hidden">
             <SelectStatus />

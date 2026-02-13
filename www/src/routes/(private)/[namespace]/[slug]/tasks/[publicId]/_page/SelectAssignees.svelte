@@ -3,18 +3,24 @@
     import { LiteDebouncer } from '@tanstack/pacer-lite';
     import { ListCollection } from '@zag-js/collection';
     import { portal } from '@zag-js/svelte';
+    import invariant from 'tiny-invariant';
     import Avatar from '~/lib/components/Avatar.svelte';
     import { createListbox, createPopover } from '~/lib/components/builders.svelte';
     import { SettingsOutline } from '~/lib/components/icons';
+    import { ActivityKind } from '~/lib/models/activity';
     import type { User, UserPreset } from '~/lib/models/user';
+    import { usePageData } from '~/lib/utils/kit';
+    import { useRuntime } from '~/lib/utils/runtime';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
-    import { usePageData } from './context.svelte';
     import { assignTask, searchUsers, unassignTask } from './page.remote';
+    import { usePageContext } from './utils.svelte';
 
     const data = usePageData<PageData>();
+    const ctx = usePageContext();
     const id = $props.id();
     let users = $state.raw<(Pick<User, 'id'> & UserPreset['Avatar'])[]>();
+    const { http } = useRuntime();
     const popover = createPopover({
         id: `popover-${id}`,
         onOpenChange: async (details) => {
@@ -23,9 +29,9 @@
             }
         },
     });
-    const assigneeIds = $derived.by(() => new Set(data.task.assignees.map((a) => a.id)));
+    const assigneeIds = $derived.by(() => new Set(ctx.task.assignees.map((a) => a.id)));
     const listboxUsers = $derived([
-        ...data.task.assignees,
+        ...ctx.task.assignees,
         ...(users ?? []).filter((a) => !assigneeIds.has(a.id)),
     ]);
     const listbox = createListbox({
@@ -38,31 +44,86 @@
             });
         },
         get value() {
-            return data.task.assignees.map((a) => a.id);
+            return ctx.task.assignees.map((a) => a.id);
         },
-        onValueChange: async (details) => {
-            const assignees = new Set(data.task.assignees.map((a) => a.id));
+        onValueChange: (details) => {
+            const assignees = new Set(ctx.task.assignees.map((a) => a.id));
             const current = new Set(details.value);
-            let needInvalidate = false;
-            for (const userId of current.difference(assignees)) {
-                needInvalidate = true;
-                await assignTask({
-                    taskId: data.task.id,
-                    userId: userId,
-                });
-            }
-            for (const userId of assignees.difference(current)) {
-                needInvalidate = true;
-                await unassignTask({
-                    taskId: data.task.id,
-                    userId: userId,
-                });
-            }
-            if (needInvalidate) {
-                await invalidateAll();
-            }
+            const assigned = current.difference(assignees);
+            const unassigned = assignees.difference(current);
+
+            updateAssignees({ assigned, unassigned });
         },
     });
+
+    async function updateAssignees({
+        assigned,
+        unassigned,
+    }: {
+        assigned: Set<string>;
+        unassigned: Set<string>;
+    }) {
+        const users = $state.snapshot(listboxUsers);
+
+        const oldTask = $state.snapshot(ctx.task);
+        const oldActivityList = $state.snapshot(ctx.activityList);
+        invariant(oldTask, 'oldTask must not be null');
+        invariant(oldActivityList, 'oldActivityList must not be null');
+
+        ctx.activityList = {
+            ...oldActivityList,
+            items: [
+                ...oldActivityList.items,
+                ...Array.from(assigned).map((a) => {
+                    const user = users.find((b) => b.id === a);
+                    invariant(user, 'user must not be null');
+                    return {
+                        id: self.crypto.randomUUID(),
+                        actor: data.user,
+                        createdTime: new Date().toISOString(),
+                        kind: ActivityKind.Assigned,
+                        data: {
+                            assignee: user,
+                        },
+                    };
+                }),
+                ...Array.from(unassigned).map((a) => {
+                    const user = users.find((b) => b.id === a);
+                    invariant(user, 'user must not be null');
+                    return {
+                        id: self.crypto.randomUUID(),
+                        actor: data.user,
+                        createdTime: new Date().toISOString(),
+                        kind: ActivityKind.Unassigned,
+                        data: {
+                            assignee: user,
+                        },
+                    };
+                }),
+            ],
+        };
+        ctx.task = {
+            ...oldTask,
+            assignees: [
+                ...ctx.task.assignees.filter((a) => unassigned.has(a.id)),
+                ...users.filter((a) => assigned.has(a.id)),
+            ],
+        };
+        await Promise.all([
+            ...Array.from(assigned).map((userId) =>
+                assignTask({
+                    taskId: ctx.task.id,
+                    userId,
+                })
+            ),
+            ...Array.from(unassigned).map((userId) =>
+                unassignTask({
+                    taskId: ctx.task.id,
+                    userId,
+                })
+            ),
+        ]).finally(invalidateAll);
+    }
     const debouncedSearchUser = new LiteDebouncer(
         async (value: string) => {
             users = await searchUsers({ query: value }).then((a) => a.items);
@@ -85,14 +146,14 @@
         <span
             class="lg:hidden ml-auto bg-primary rounded-sm size-5 leading-none text-xs font-bold flex justify-center items-center"
         >
-            {data.task.assignees.length}
+            {ctx.task.assignees.length}
         </span>
         <span>Assignees</span>
         <SettingsOutline />
     </button>
-    {#if data.task.assignees.length}
+    {#if ctx.task.assignees.length}
         <ul class="mt-2 flex flex-col gap-2 px-2 max-lg:hidden">
-            {#each data.task.assignees as assignee (assignee.id)}
+            {#each ctx.task.assignees as assignee (assignee.id)}
                 <div class="flex items-center gap-2">
                     <Avatar
                         user={assignee}

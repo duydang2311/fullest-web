@@ -4,7 +4,7 @@ import type { Namespace } from '~/lib/models/namespace';
 import type { User } from '~/lib/models/user';
 import { BadHttpResponse, ErrorKind, NotFoundError } from '~/lib/utils/errors';
 import { jsonify } from '~/lib/utils/http';
-import { useRuntime } from '~/lib/utils/runtime';
+import { useRuntime } from '~/lib/utils/runtime.server';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (e) => {

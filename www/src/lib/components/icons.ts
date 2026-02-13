@@ -16,6 +16,7 @@ export { default as MenuOutline } from '~icons/lucide/ellipsis';
 export { default as ExternalLinkOutline } from '~icons/lucide/external-link';
 export { default as EyeOutline } from '~icons/lucide/eye';
 export { default as GlobeOutline } from '~icons/lucide/globe';
+export { default as Loader } from '~icons/lucide/loader';
 export { default as LogOutOutline } from '~icons/lucide/log-out';
 export { default as MessageSquareOutline } from '~icons/lucide/message-square';
 export { default as ArrowRightOutline } from '~icons/lucide/move-right';

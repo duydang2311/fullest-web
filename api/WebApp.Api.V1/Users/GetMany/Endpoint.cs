@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -51,9 +50,9 @@ public sealed class Endpoint(AppDbContext db)
         {
             query = query.SortOrDefault(Orderable.From(req), a => a.OrderBy(a => a.Id));
         }
-        if (req.Cursor.HasValue)
+        if (req.After.HasValue)
         {
-            query = query.Where(a => a.Id > req.Cursor.Value);
+            query = query.Where(a => a.Id > req.After.Value);
         }
         if (!string.IsNullOrEmpty(req.Fields))
         {
@@ -70,7 +69,7 @@ public sealed class Endpoint(AppDbContext db)
         return TypedResults.Ok(
             CursorList.From(
                 users.Take(req.Size).Select(a => a.ToProjectable(req.Fields)),
-                req.Cursor,
+                (UserId?)users[^1].Id,
                 users.Count > req.Size
             )
         );

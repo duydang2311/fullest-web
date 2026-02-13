@@ -1,33 +1,75 @@
 <script lang="ts">
     import { invalidateAll } from '$app/navigation';
     import { portal } from '@zag-js/svelte';
+    import invariant from 'tiny-invariant';
     import { createMenu } from '~/lib/components/builders.svelte';
     import { SettingsOutline } from '~/lib/components/icons';
-    import type { Status } from '~/lib/models/status';
+    import { ActivityKind } from '~/lib/models/activity';
+    import type { Priority } from '~/lib/models/priority';
+    import { usePageData } from '~/lib/utils/kit';
+    import { useRuntime } from '~/lib/utils/runtime';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
-    import { usePageData } from './context.svelte';
     import { getPriorities, patchTaskPriority } from './page.remote';
+    import { invalidateActivityList, usePageContext } from './utils.svelte';
 
     const data = usePageData<PageData>();
+    const ctx = usePageContext();
     const id = $props.id();
+    const { http } = useRuntime();
     const menu = createMenu({
         id,
         onOpenChange: async (details) => {
             if (details.open) {
-                menu.api.setHighlightedValue(data.task.priority?.id ?? '');
-                statuses = await getPriorities(data.project.id).then((a) => a.items);
+                menu.api.setHighlightedValue(ctx.task.priority?.id ?? '');
+                priorities = await getPriorities(data.project.id).then((a) => a.items);
             }
         },
-        onSelect: async (details) => {
-            await patchTaskPriority({
-                taskId: data.task.id,
-                priorityId: details.value,
-            }).then(invalidateAll);
-        },
+        onSelect: (details) => updatePriority(details.value),
     });
 
-    let statuses = $state.raw<Pick<Status, 'id' | 'name'>[]>();
+    async function updatePriority(priorityId: string) {
+        const oldTask = $state.snapshot(ctx.task);
+        const oldActivityList = $state.snapshot(ctx.activityList);
+        invariant(oldTask, 'oldTask must not be null');
+        invariant(oldActivityList, 'oldActivityList must not be null');
+
+        const priority = priorities?.find((a) => a.id === priorityId);
+        invariant(priority, 'priority must not be null');
+
+        ctx.activityList = {
+            ...oldActivityList,
+            items: [
+                ...oldActivityList.items,
+                {
+                    id: self.crypto.randomUUID(),
+                    actor: data.user,
+                    createdTime: new Date().toISOString(),
+                    kind: ActivityKind.PriorityChanged,
+                    data: {
+                        priority: {
+                            id: priorityId,
+                            name: priority.name,
+                        },
+                        oldPriority: {
+                            id: oldTask.priority?.id,
+                            name: oldTask.priority?.name ?? 'No priority',
+                        },
+                    },
+                },
+            ],
+        };
+        ctx.task = {
+            ...oldTask,
+            priority,
+        };
+        await patchTaskPriority({
+            taskId: ctx.task.id,
+            priorityId,
+        }).finally(invalidateAll);
+    }
+
+    let priorities = $state.raw<Pick<Priority, 'id' | 'name'>[]>();
 </script>
 
 <div class="text-sm">
@@ -40,7 +82,7 @@
         })} text-left font-medium w-full flex items-center max-lg:flex-row-reverse max-lg:justify-end gap-2 lg:justify-between"
     >
         <span>
-            {data.task.priority?.name ?? 'No priority'}
+            {ctx.task.priority?.name ?? 'No priority'}
         </span>
         <SettingsOutline />
     </button>
@@ -49,7 +91,7 @@
             {...menu.api.getContentProps()}
             class="{C.menu({ part: 'content' })} flex flex-col gap-1 w-(--reference-width)"
         >
-            {#each statuses as priority (priority.id)}
+            {#each priorities as priority (priority.id)}
                 <li>
                     <button
                         {...menu.api.getItemProps({ value: priority.id })}

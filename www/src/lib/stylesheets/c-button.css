@@ -51,6 +51,9 @@
         --_bg: var(--color-primary);
         --_bg-hover: var(--color-primary-hover);
         --_bg-active: var(--color-primary-active);
+        @variant dark {
+            --_text: var(--color-primary-fg);
+        }
     }
 
     &:where([data-state='open']) {

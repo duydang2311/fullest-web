@@ -7,11 +7,6 @@
     const tabItems = [
         { label: 'Overview', href: `/${page.params.namespace}/${page.params.slug}` },
         { label: 'Tasks', href: `/${page.params.namespace}/${page.params.slug}/tasks` },
-        { label: 'Activity', href: `/${page.params.namespace}/${page.params.slug}/activity` },
-        {
-            label: 'Contributors',
-            href: `/${page.params.namespace}/${page.params.slug}/contributors`,
-        },
     ];
 </script>
 

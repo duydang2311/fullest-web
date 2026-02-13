@@ -15,7 +15,7 @@
 	const fieldErrors = $derived(form?.errors ?? {});
 </script>
 
-<div class="max-w-container-xl mx-auto w-full px-8 py-4">
+<div class="max-w-container-md mx-auto w-full px-8 py-4">
 	<form
 		method="post"
 		use:enhance={(e) => {

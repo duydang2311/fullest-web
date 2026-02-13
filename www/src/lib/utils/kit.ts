@@ -10,3 +10,14 @@ export function usePageData<T>() {
         }
     ) as T;
 }
+
+export function usePageState<T>() {
+    return new Proxy(
+        {},
+        {
+            get(_, p) {
+                return page.state[p as keyof typeof page.state];
+            },
+        }
+    ) as T;
+}

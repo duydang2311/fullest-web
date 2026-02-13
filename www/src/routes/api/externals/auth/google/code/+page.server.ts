@@ -14,7 +14,7 @@ import {
 } from '$lib/utils/errors';
 import { jsonify, parseHttpProblem } from '$lib/utils/http';
 import { problemDetailsValidator } from '$lib/utils/problem';
-import { useRuntime } from '$lib/utils/runtime';
+import { useRuntime } from '~/lib/utils/runtime.server';
 import pipe from '@bitty/pipe';
 import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';

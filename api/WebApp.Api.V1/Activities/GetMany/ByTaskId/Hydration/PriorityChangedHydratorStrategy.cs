@@ -13,7 +13,7 @@ public sealed class PriorityChangedHydratorStrategy(
 ) : IHydratorStrategy
 {
     private Dictionary<ActivityId, DataBag>? activityIdToBag;
-    private List<PriorityId>? priorityIds;
+    private HashSet<PriorityId>? priorityIds;
     private Dictionary<PriorityId, Priority>? priorities;
 
     public void CollectId(Activity activity)

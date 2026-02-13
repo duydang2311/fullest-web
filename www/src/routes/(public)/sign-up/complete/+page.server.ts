@@ -1,6 +1,6 @@
 import { GenericError, ValidationError } from '$lib/utils/errors';
 import { jsonify, parseHttpProblem } from '$lib/utils/http';
-import { useRuntime } from '$lib/utils/runtime';
+import { useRuntime } from '~/lib/utils/runtime.server';
 import { createValidator } from '$lib/utils/validation';
 import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';

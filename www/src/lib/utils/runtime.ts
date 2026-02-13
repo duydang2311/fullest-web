@@ -1,19 +1,10 @@
-import { AsyncLocalStorage } from 'node:async_hooks';
+import { createContext } from 'svelte';
+import type { HttpClient } from '../services/http_client';
 
-type Runtime = App.Locals;
+export interface Runtime {
+    http: HttpClient;
+}
 
-const storage = new AsyncLocalStorage<Runtime>();
+const [useRuntime, setRuntime] = createContext<Runtime>();
 
-export const withRuntime =
-	(locals: Runtime) =>
-	<T, TArgs extends unknown[]>(f: (...args: TArgs) => MaybePromise<T>, ...args: TArgs) => {
-		return storage.run(locals, () => f(...args));
-	};
-
-export const useRuntime = () => {
-	const store = storage.getStore();
-	if (!store) {
-		throw new Error('useRuntime() called outside withRuntime');
-	}
-	return store;
-};
+export { useRuntime, setRuntime };

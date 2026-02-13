@@ -1,12 +1,12 @@
 import { attempt } from '@duydang2311/attempt';
 import { error } from '@sveltejs/kit';
 import type { Comment } from '~/lib/models/comment';
-import { keysetList, type KeysetList } from '~/lib/models/paginated';
+import type { Priority } from '~/lib/models/priority';
+import type { Status } from '~/lib/models/status';
 import type { Task } from '~/lib/models/task';
 import type { User, UserPreset } from '~/lib/models/user';
 import { ErrorKind, ForbiddenError, NotFoundError, UnknownError } from '~/lib/utils/errors';
 import { jsonify } from '~/lib/utils/http';
-import { useRuntime } from '~/lib/utils/runtime';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (e) => {
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async (e) => {
         {
             query: {
                 fields: [
-                    'Id,PublicId,Title,Status,Priority,CreatedTime,UpdatedTime,InitialCommentId,Author.Name',
+                    'Id,PublicId,Title,Status.Id,Status.Name,Priority.Id,Priority.Name,CreatedTime,UpdatedTime,InitialCommentId,Author.Name',
                     'InitialComment.Id,InitialComment.ContentJson,InitialComment.CreatedTime,InitialComment.Author.Name',
                     'InitialComment.Author.DisplayName,InitialComment.Author.ImageKey,InitialComment.Author.ImageVersion',
                     'Assignees.Id,Assignees.Name,Assignees.DisplayName,Assignees.ImageKey,Assignees.ImageVersion',
@@ -44,12 +44,12 @@ export const load: PageServerLoad = async (e) => {
                         | 'id'
                         | 'publicId'
                         | 'title'
-                        | 'status'
-                        | 'priority'
                         | 'createdTime'
                         | 'updatedTime'
                         | 'initialCommentId'
                     > & {
+                        priority: Pick<Priority, 'id' | 'name'>;
+                        status: Pick<Status, 'id' | 'name'>;
                         initialComment: Pick<Comment, 'id' | 'contentJson' | 'createdTime'> & {
                             author: Pick<
                                 User,
@@ -72,39 +72,5 @@ export const load: PageServerLoad = async (e) => {
 
     return {
         task,
-        streamedCommentList: fetchComments(task.id).then((fetched) =>
-            fetched.pipe(attempt.unwrapOrElse(() => keysetList<never, never>()))
-        ),
-        ts: Date.now(),
     };
 };
-
-async function fetchComments(taskId: string) {
-    const { http } = useRuntime();
-    return (
-        await http.get('comments/keyset', {
-            query: {
-                taskId,
-                fields: 'Id,ContentJson,CreatedTime,Author.Name,Author.DisplayName,Author.ImageKey,Author.ImageVersion',
-                sort: 'Id',
-                size: 20,
-            },
-        })
-    ).pipe(
-        attempt.flatMap((response) =>
-            jsonify(() =>
-                response.json<
-                    KeysetList<
-                        Pick<Comment, 'id' | 'contentJson' | 'createdTime'> & {
-                            author: Pick<
-                                User,
-                                'name' | 'displayName' | 'imageKey' | 'imageVersion'
-                            >;
-                        },
-                        string
-                    >
-                >()
-            )
-        )
-    );
-}

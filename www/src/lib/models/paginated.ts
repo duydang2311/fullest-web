@@ -17,7 +17,7 @@ export interface KeysetList<T, TKey> {
 
 export interface CursorList<T, TKey> {
     items: T[];
-    cursor?: TKey;
+    cursor: TKey | null;
     hasMore: boolean;
 }
 
@@ -85,7 +85,7 @@ export function cursorList<T, TKey>(
 ): CursorList<T, TKey> {
     return {
         items: items ?? [],
-        cursor,
+        cursor: cursor ?? null,
         hasMore: hasMore ?? false,
     };
 }

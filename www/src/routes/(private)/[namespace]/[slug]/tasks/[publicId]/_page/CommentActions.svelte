@@ -1,14 +1,15 @@
 <script lang="ts">
+    import { invalidateAll } from '$app/navigation';
+    import invariant from 'tiny-invariant';
     import { MenuOutline, PencilOutline, TrashOutline } from '~/lib/components/icons';
     import type { Comment } from '~/lib/models/comment';
     import { button } from '~/lib/utils/styles';
-    import { deleteComment, getActivities } from './page.remote';
+    import { deleteComment } from './page.remote';
+    import { usePageContext, validators } from './utils.svelte';
 
-    let {
-        taskId,
-        comment,
-        isEditing = $bindable(),
-    }: { taskId: string; comment: Pick<Comment, 'id'>; isEditing: boolean } = $props();
+    let { comment, isEditing = $bindable() }: { comment: Pick<Comment, 'id'>; isEditing: boolean } =
+        $props();
+    const ctx = usePageContext();
 </script>
 
 <div class="flex gap-2">
@@ -37,12 +38,16 @@
             })} hidden lg:block"
             title="Delete"
             onclick={async () => {
-                await deleteComment({ id: comment.id }).updates(
-                    getActivities(taskId).withOverride((a) => ({
-                        ...a,
-                        items: a.items.filter((b) => b.id !== comment.id),
-                    }))
-                );
+                const oldActivityList = ctx.activityList;
+                invariant(oldActivityList, 'oldActivityList must not be null');
+                ctx.activityList = {
+                    ...oldActivityList,
+                    items: oldActivityList.items.filter(
+                        (a) =>
+                            !validators.commented.check(a.data) || a.data.comment.id !== comment.id
+                    ),
+                };
+                await deleteComment({ id: comment.id }).finally(invalidateAll);
             }}
         >
             <TrashOutline />

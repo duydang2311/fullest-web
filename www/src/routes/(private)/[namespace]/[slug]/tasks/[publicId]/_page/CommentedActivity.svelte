@@ -4,19 +4,19 @@
     import RelativeDateTime from '~/lib/components/RelativeDateTime.svelte';
     import type { Activity } from '~/lib/models/activity';
     import type { User } from '~/lib/models/user';
+    import { usePageData } from '~/lib/utils/kit';
     import { namespaceUrl } from '~/lib/utils/url';
     import type { PageData } from '../$types';
     import ActivityAvatar from './ActivityAvatar.svelte';
     import CommentActions from './CommentActions.svelte';
     import CommentEdit from './CommentEdit.svelte';
-    import { usePageData } from './context.svelte';
 
     const {
         activity,
     }: {
         activity: Pick<Activity, 'createdTime' | 'data'> & {
             actor: Pick<User, 'name' | 'displayName' | 'imageKey' | 'imageVersion'>;
-            data: { comment: { id: string; contentJson?: string } };
+            data: { comment: { id: string; contentJson: string | null } };
         };
     } = $props();
 
@@ -40,7 +40,7 @@
                 </span>
             </span>
             <div class="ml-auto">
-                <CommentActions {taskId} {comment} bind:isEditing />
+                <CommentActions {comment} bind:isEditing />
             </div>
         </div>
         {#if isEditing}

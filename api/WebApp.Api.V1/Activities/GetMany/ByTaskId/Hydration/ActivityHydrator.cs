@@ -45,7 +45,15 @@ public sealed class ActivityHydrator(
             }
             strat.CollectId(activity);
         }
-        await Task.WhenAll(strats.Select(a => a.Value.QueryAsync(ct)));
+
+        // BUG: randomly causes 2 seconds freeze
+        await Task.WhenAll(strats.Select(a => a.Value.QueryAsync(ct))).ConfigureAwait(false);
+        // ALTERNATIVE:
+        // foreach (var strat in strats)
+        // {
+        //     await strat.Value.QueryAsync(ct).ConfigureAwait(false);
+        // }
+
         var results = new List<Activity>(activities.Count);
         foreach (var a in activities)
         {

@@ -77,7 +77,7 @@
             </div>
         </nav>
     </header>
-    <main class="bg-base-light dark:bg-base-dark flex flex-1 flex-col">
+    <main class="bg-surface flex flex-1 flex-col">
         <!-- <div
 			{...tabs.getContentProps({ value: tabs.value! })}
 			class="max-w-container-xl mx-auto flex w-full flex-1 flex-col"

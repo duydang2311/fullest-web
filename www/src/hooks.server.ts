@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/private';
 import { MemoryCache, type Cache } from '$lib/services/cache';
 import { DefaultHttpClient } from '$lib/services/default_http_client';
-import { withRuntime } from '$lib/utils/runtime';
+import { withRuntime } from '~/lib/utils/runtime.server';
 import { redirect, type Handle, type ServerInit } from '@sveltejs/kit';
 import { Cacheable } from 'cacheable';
 import invariant from 'tiny-invariant';
@@ -15,8 +15,8 @@ let cache: Cache;
 export const init: ServerInit = () => {
     invariant(env.API_URL_PREFIX, 'expect API_URL_PREFIX');
     invariant(env.API_URL_SUFFIX, 'expect API_URL_SUFFIX');
-    // invariant(env.GOOGLE_OAUTH_CLIENT_ID, 'expect GOOGLE_OAUTH_CLIENT_ID');
-    // invariant(env.GOOGLE_OAUTH_CLIENT_SECRET, 'expect GOOGLE_OAUTH_CLIENT_SECRET');
+    invariant(env.GOOGLE_OAUTH_CLIENT_ID, 'expect GOOGLE_OAUTH_CLIENT_ID');
+    invariant(env.GOOGLE_OAUTH_CLIENT_SECRET, 'expect GOOGLE_OAUTH_CLIENT_SECRET');
     cache = new MemoryCache(new Cacheable({ ttl: '30m' }));
 };
 
@@ -36,20 +36,23 @@ export const handle: Handle = ({ event, resolve }) => {
         pathname.charCodeAt(5) === CODE_I &&
         pathname.charCodeAt(6) === CODE_SLASH
     ) {
-        const request = new Request(
-            `${env.API_URL_PREFIX}/${trimEnd(pathname.substring(7), CODE_SLASH)}/${env.API_URL_SUFFIX}`,
-            event.request
-        );
-        if (!request.headers.has('Authorization')) {
+        const searchIndex = event.request.url.indexOf('?');
+        const search = searchIndex === -1 ? '' : event.request.url.substring(searchIndex);
+        const headers = new Headers(event.request.headers);
+        headers.delete('Cookie');
+        headers.delete('Host');
+        headers.delete('Origin');
+        headers.delete('Referrer');
+        if (!headers.has('Authorization')) {
             const token = event.cookies.get('session_token');
             if (token) {
-                request.headers.set(
-                    'Authorization',
-                    `Bearer ${event.cookies.get('session_token')}`
-                );
+                headers.set('Authorization', `Bearer ${event.cookies.get('session_token')}`);
             }
         }
-        return fetch(request);
+        return fetch(
+            `${env.API_URL_PREFIX}/${trimEnd(pathname.substring(7), CODE_SLASH)}/${env.API_URL_SUFFIX}${search}`,
+            new Request(event.request, { headers })
+        );
     }
 
     const routeId = event.route.id;
@@ -58,7 +61,6 @@ export const handle: Handle = ({ event, resolve }) => {
     }
 
     let sessionToken: string | null = null;
-    event.locals.session = { user: { id: '', name: '' } };
     let isPrivateRoute = false;
     if (routeId.includes('(private)')) {
         isPrivateRoute = true;

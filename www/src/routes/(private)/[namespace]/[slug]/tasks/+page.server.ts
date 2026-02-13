@@ -1,6 +1,7 @@
 import { attempt } from '@duydang2311/attempt';
 import { error } from '@sveltejs/kit';
 import type { OffsetList } from '~/lib/models/paginated';
+import type { Priority } from '~/lib/models/priority';
 import type { Status } from '~/lib/models/status';
 import type { Task } from '~/lib/models/task';
 import type { UserPreset } from '~/lib/models/user';
@@ -35,7 +36,7 @@ export const load: PageServerLoad = async (e) => {
             .get('tasks', {
                 query: {
                     projectId: parent.project.id,
-                    fields: 'Id,PublicId,Title,Author.Name,Author.DisplayName,Author.ImageKey,Author.ImageVersion',
+                    fields: 'Id,PublicId,Title,Author.Name,Author.DisplayName,Author.ImageKey,Author.ImageVersion,Status.Name,Priority.Name',
                     sort: '-Id',
                 },
             })
@@ -48,6 +49,8 @@ export const load: PageServerLoad = async (e) => {
                                       OffsetList<
                                           Pick<Task, 'id' | 'publicId' | 'title'> & {
                                               author: UserPreset['Avatar'];
+                                              status?: Pick<Status, 'name'>;
+                                              priority?: Pick<Priority, 'name'>;
                                           }
                                       >
                                   >()

@@ -28,14 +28,12 @@ public sealed class Endpoint(AppDbContext db, ActivityHydrator activityHydrator)
         {
             query = query.Where(a => a.TaskId == req.TaskId.Value);
         }
-        if (req.Cursor.HasValue)
+        if (req.After.HasValue)
         {
-            query = query.Where(a => a.Id > req.Cursor.Value);
+            query = query.Where(a => a.Id > req.After.Value).OrderBy(a => a.Id);
         }
 
-        query = query
-            .SortOrDefault(Orderable.From(req), a => a.OrderBy(b => b.Id))
-            .Take(req.Size + 1);
+        query = query.Take(req.Size + 1);
 
         if (!string.IsNullOrEmpty(req.Fields))
         {
@@ -43,15 +41,16 @@ public sealed class Endpoint(AppDbContext db, ActivityHydrator activityHydrator)
         }
 
         var items = await query.ToListAsync(ct).ConfigureAwait(false);
+        var hasMore = items.Count > req.Size;
         var hydrated = await activityHydrator.GetHydratedActivitiesAsync(
-            [.. items.Take(req.Size)],
+            hasMore ? [.. items.Take(req.Size)] : items,
             ct
         );
         return TypedResults.Ok(
             CursorList.From(
                 hydrated.Select(Projectable.From<Activity>(null)),
-                req.Cursor,
-                items.Count > req.Size
+                (ActivityId?)hydrated[^1].Id,
+                hasMore
             )
         );
     }

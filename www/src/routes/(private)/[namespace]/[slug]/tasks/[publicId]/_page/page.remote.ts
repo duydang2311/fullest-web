@@ -9,6 +9,7 @@ import type { User, UserPreset } from '~/lib/models/user';
 import { BadHttpResponse, enrichStep, ValidationError } from '~/lib/utils/errors';
 import { jsonify, parseHttpProblem } from '~/lib/utils/http';
 import { v } from '~/lib/utils/valibot';
+import type { PageData } from '../$types';
 
 export const addComment = command(
     v.object({
@@ -101,33 +102,63 @@ export const deleteComment = command(
     }
 );
 
-export const getActivities = query(v.string(), async (taskId) => {
-    const e = getRequestEvent();
-    return (
-        await e.locals.http.get('activities', {
+export const getTask = query(
+    v.object({
+        taskId: v.string(),
+    }),
+    async (data) => {
+        const e = getRequestEvent();
+        const result = await e.locals.http.get(`tasks/${data.taskId}`, {
             query: {
-                taskId,
-                fields: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Data',
-                sort: 'Id',
-                size: 20,
+                fields: [
+                    'Id,PublicId,Title,Status.Id,Status.Name,Priority.Id,Priority.Name,CreatedTime,UpdatedTime,InitialCommentId,Author.Name',
+                    'InitialComment.Id,InitialComment.ContentJson,InitialComment.CreatedTime,InitialComment.Author.Name',
+                    'InitialComment.Author.DisplayName,InitialComment.Author.ImageKey,InitialComment.Author.ImageVersion',
+                    'Assignees.Id,Assignees.Name,Assignees.DisplayName,Assignees.ImageKey,Assignees.ImageVersion',
+                ].join(','),
             },
-        })
-    ).pipe(
-        attempt.flatMap((response) =>
-            jsonify(() =>
-                response.json<
-                    CursorList<
-                        Pick<Activity, 'id' | 'createdTime' | 'kind' | 'data'> & {
-                            actor: Pick<User, 'id'> & UserPreset['Avatar'];
-                        },
-                        string
-                    >
-                >()
-            )
-        ),
-        attempt.unwrapOrElse(() => cursorList())
-    );
-});
+        });
+        return await result.pipe(
+            attempt.flatMap((response) => jsonify(() => response.json<PageData['task']>()))
+        );
+    }
+);
+
+export const getActivities = query(
+    v.object({
+        taskId: v.string(),
+        size: v.nullish(v.number()),
+        cursor: v.nullish(v.string()),
+    }),
+    async (data) => {
+        const e = getRequestEvent();
+        return (
+            await e.locals.http.get('activities', {
+                query: {
+                    taskId: data.taskId,
+                    cursor: data.cursor,
+                    fields: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Data',
+                    sort: 'Id',
+                    size: data.size ?? 20,
+                },
+            })
+        ).pipe(
+            attempt.flatMap((response) =>
+                jsonify(() =>
+                    response.json<
+                        CursorList<
+                            Pick<Activity, 'id' | 'createdTime' | 'kind' | 'data'> & {
+                                actor: Pick<User, 'id'> & UserPreset['Avatar'];
+                            },
+                            string
+                        >
+                    >()
+                )
+            ),
+            attempt.unwrapOrElse(() => cursorList())
+        );
+    }
+);
 
 export const getStatuses = query(v.string(), async (projectId) => {
     const e = getRequestEvent();
@@ -244,10 +275,6 @@ export const searchUsers = query(
             attempt.flatMap((a) =>
                 jsonify(() => a.json<CursorList<Pick<User, 'id'> & UserPreset['Avatar'], string>>())
             ),
-            attempt.map((a) => {
-                console.log(a);
-                return a;
-            }),
             attempt.unwrapOrElse((e) => {
                 console.error(e);
                 return cursorList();

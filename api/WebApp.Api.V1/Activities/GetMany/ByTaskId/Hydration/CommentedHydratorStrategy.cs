@@ -13,7 +13,7 @@ public sealed class CommentedHydratorStrategy(
 ) : IHydratorStrategy
 {
     private Dictionary<ActivityId, CommentId>? activityIdToCommentId;
-    private List<CommentId>? commentIds;
+    private HashSet<CommentId>? commentIds;
     private Dictionary<CommentId, Comment>? comments;
 
     public void CollectId(Activity activity)

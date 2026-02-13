@@ -12,8 +12,8 @@
         activity: Pick<Activity, 'createdTime' | 'data'> & {
             actor: Pick<User, 'name' | 'displayName' | 'imageKey' | 'imageVersion'>;
             data: {
-                priority?: Pick<Priority, 'name'>;
-                oldPriority?: Pick<Priority, 'name'>;
+                priority: Pick<Priority, 'name'> | null;
+                oldPriority: Pick<Priority, 'name'> | null;
             };
         };
     } = $props();

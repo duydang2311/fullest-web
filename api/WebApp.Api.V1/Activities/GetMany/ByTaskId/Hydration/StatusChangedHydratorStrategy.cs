@@ -13,7 +13,7 @@ public sealed class StatusChangedHydratorStrategy(
 ) : IHydratorStrategy
 {
     private Dictionary<ActivityId, DataBag>? activityIdToBag;
-    private List<StatusId>? statusIds;
+    private HashSet<StatusId>? statusIds;
     private Dictionary<StatusId, Status>? statuses;
 
     public void CollectId(Activity activity)

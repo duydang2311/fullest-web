@@ -6,8 +6,10 @@
     import { CheckOutline } from '~/lib/components/icons';
     import type { Comment } from '~/lib/models/comment';
     import { tsap } from '~/lib/utils/gsap';
+    import { usePageState } from '~/lib/utils/kit';
     import { button } from '~/lib/utils/styles';
     import { editComment, getActivities } from './page.remote';
+    import type { PageState } from './types';
 
     let {
         taskId,
@@ -18,6 +20,7 @@
         comment: Pick<Comment, 'id' | 'contentJson'>;
         isEditing: boolean;
     } = $props();
+    const pageState = usePageState<PageState>();
     const editor = createRef<Editor>();
 </script>
 
@@ -79,7 +82,10 @@
                     id: comment.id,
                     contentJson,
                 }).updates(
-                    getActivities(taskId).withOverride((a) => ({
+                    getActivities({
+                        taskId,
+                        cursor: pageState.cursor,
+                    }).withOverride((a) => ({
                         ...a,
                         items: a.items.map((b) =>
                             b.id === comment.id ? { ...b, contentJson } : b

@@ -7,7 +7,7 @@ public sealed record Request : ICursorPagination<UserId?>, IOrderable
 {
     public string? Search { get; init; }
     public string? Fields { get; init; }
-    public UserId? Cursor { get; init; }
+    public UserId? After { get; init; }
     public int Size { get; init; } = 20;
     public string? Sort { get; init; }
 }

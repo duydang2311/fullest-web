@@ -13,7 +13,7 @@ public sealed class AssignedHydratorStrategy(
 ) : IHydratorStrategy
 {
     private Dictionary<ActivityId, UserId>? activityIdToAssigneeId;
-    private List<UserId>? assigneeIds;
+    private HashSet<UserId>? assigneeIds;
     private Dictionary<UserId, User>? assignees;
 
     public void CollectId(Activity activity)

@@ -67,7 +67,6 @@ class AsyncValibotValidator<T> implements AsyncValidator<T> {
 const transformValibotIssues = (issues: v.BaseIssue<unknown>[]) => {
     return ValidationError(
         issues.reduce<Record<string, string[]>>((acc, cur) => {
-            console.log('issue', cur);
             const path = v.getDotPath(cur) ?? '$';
             let type = cur.received === 'undefined' ? 'required' : cur.type;
             if (cur.requirement) {

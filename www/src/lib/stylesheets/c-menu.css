@@ -1,12 +1,21 @@
 .c-menu-content {
     background-color: var(--color-base-light);
-    border-radius: var(--radius-lg);
     border: 1px solid var(--color-base-border);
+    @variant dark {
+        background-color: var(--color-base);
+        border-top-color: var(--color-base-border-strong);
+    }
+    border-radius: var(--radius-lg);
     padding: --spacing(1);
-    @apply shadow-xs;
+    @apply shadow-sm;
 
     &:where(:focus-visible) {
         outline: none;
+    }
+
+    &:where([data-state='open']) {
+        --slide-distance: -0.5rem;
+        animation: slide-in 150ms forwards;
     }
 }
 
@@ -16,6 +25,9 @@
     --_bg: var(--color-base-light);
     --_bg-hover: var(--color-base-hover);
     --_bg-active: var(--color-base-active);
+    @variant dark {
+        --_bg: var(--color-base);
+    }
 }
 
 .c-menu-item--negative {
@@ -24,6 +36,9 @@
     --_bg: var(--color-base-light);
     --_bg-hover: color-mix(in oklch, var(--_text) 5%, transparent);
     --_bg-active: color-mix(in oklch, var(--_text) 10%, transparent);
+    @variant dark {
+        --_bg: var(--color-base);
+    }
 }
 
 .c-menu-item {

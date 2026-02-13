@@ -218,8 +218,8 @@
 
     --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
 
-    --default-font-family: 'Inter Variable', system-ui, sans-serif;
-    --default-mono-font-family: 'Geist Mono Variable', monospace;
+    --default-font-family: system-ui, sans-serif;
+    --default-mono-font-family: monospace;
 }
 
 @utility slide-* {
@@ -232,6 +232,9 @@
 
     --animate-slide-in-from-b: slide-in-from-b
         var(--tw-duration, var(--default-transition-duration))
+        var(--tw-ease, var(--default-transition-timing-function));
+
+    --animate-slide-in: slide-in-from-b var(--tw-duration, var(--default-transition-duration))
         var(--tw-ease, var(--default-transition-timing-function));
 
     @keyframes fade-in {
@@ -261,35 +264,55 @@
 @layer base {
     [data-theme='dark'],
     [data-theme='dark'] * {
+        --color-neutral-950: oklch(18% 0 0);
         --color-surface: var(--static-black);
-        --color-surface-subtle: var(--color-neutral-900);
-        --color-surface-emph: var(--color-neutral-800);
-        --color-surface-border: var(--color-neutral-850);
+        --color-surface-subtle: var(--color-neutral-950);
+        --color-surface-emph: var(--color-neutral-900);
+        --color-surface-border: var(--color-neutral-900);
 
-        --color-base: oklch(16% 0 255);
-        --color-base-light: oklch(20% 0 255);
-        --color-base-dark: oklch(12% 0 255);
-        --color-base-hover: oklch(24% 0 255);
-        --color-base-active: oklch(26% 0 255);
-        --color-base-selected: oklch(26% 0.016 55);
-        --color-base-border: oklch(24% 0 255);
-        --color-base-border-strong: oklch(28% 0 255);
-        --color-base-border-weak: oklch(22% 0 255);
+        --color-base: var(--color-neutral-950);
+        --color-base-light: var(--color-neutral-900);
+        --color-base-dark: var(--color-neutral-850);
+        --color-base-hover: var(--color-neutral-900);
+        --color-base-active: var(--color-neutral-850);
+        --color-base-selected: var(--color-neutral-800);
+        --color-base-border: var(--color-neutral-850);
+        --color-base-border-strong: var(--color-neutral-800);
+        --color-base-border-weak: var(--color-neutral-900);
+        --color-base-fg: var(--color-neutral-300);
+        --color-base-fg-weak: var(--color-neutral-300);
+        --color-base-fg-strong: var(--color-neutral-300);
+        --color-base-fg-dim: var(--color-neutral-500);
+        --color-base-fg-muted: var(--color-neutral-600);
 
-        --color-base-fg: oklch(80.5% 0 255);
-        --color-base-fg-weak: oklch(72.5% 0 255);
-        --color-base-fg-strong: oklch(92.5% 0 255);
-        --color-base-fg-dim: oklch(62.5% 0 255);
-        --color-base-fg-muted: oklch(42.5% 0 255);
+        --color-primary: oklch(80% 0.0626 230);
+        --color-primary-hover: oklch(82% 0.0726 230);
+        --color-primary-active: oklch(84% 0.0826 230);
+        --color-primary-border: oklch(76% 0.0626 230);
+        --color-primary-fg: var(--color-neutral-950);
 
-        --color-primary: oklch(61.41% 0.2 255);
-        --color-primary-hover: oklch(63.72% 0.2 255);
-        --color-primary-active: oklch(55.72% 0.2 255);
-        --color-primary-border: oklch(55.72% 0.2 255);
-        --color-primary-fg: oklch(3% 0.005 255);
+        /* --color-primary: oklch(52.93% 0.2346 261.46);
+    --color-primary-hover: oklch(55.93% 0.2346 261.46);
+    --color-primary-active: oklch(49.93% 0.2346 261.46);
+    --color-primary-border: oklch(47.93% 0.2346 261.46);
+    --color-primary-fg: oklch(98.9% 0.005 261.46); */
 
-        --color-secondary: oklch(32% 0.08 255);
-        --color-secondary-fg: oklch(32% 0 255);
+        --color-secondary: oklch(94% 0.16 260);
+        --color-secondary-fg: oklch(32% 0 260);
+
+        --color-negative: oklch(54.5% 0.1888 24.42);
+        --color-negative-hover: oklch(58.5% 0.1888 24.42);
+        --color-negative-active: oklch(52.5% 0.1888 24.42);
+        --color-negative-fg: oklch(98.9% 0.005 24.42);
+        --color-negative-border: oklch(49.5% 0.1888 24.42);
+
+        --color-positive: oklch(50.49% 0.1717 142.5);
+        --color-positive-fg: oklch(96% 0.005 142.5);
+        --color-positive-border: oklch(45.49% 0.1717 142.5);
+
+        --color-info: oklch(52.19% 0.1978 258.63);
+        --color-info-hover: oklch(55.19% 0.1978 258.63);
+        --color-info-fg: oklch(98.9% 0.005 258.63);
     }
 
     [data-theme='accent'],
