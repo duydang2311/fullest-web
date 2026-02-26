@@ -55,6 +55,9 @@ public class ConfigureJsonOptions(
         options.SerializerOptions.Converters.Add(
             new EntityIdJsonConverter<ActivityId>(numberEncoder)
         );
+        options.SerializerOptions.Converters.Add(
+            new EntityIdJsonConverter<EntityId>(numberEncoder)
+        );
 
         options.SerializerOptions.Converters.Add(
             new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower)

@@ -7,22 +7,20 @@
     import { ActivityKind } from '~/lib/models/activity';
     import type { Priority } from '~/lib/models/priority';
     import { usePageData } from '~/lib/utils/kit';
-    import { useRuntime } from '~/lib/utils/runtime';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
     import { getPriorities, patchTaskPriority } from './page.remote';
-    import { invalidateActivityList, usePageContext } from './utils.svelte';
+    import { usePageContext } from './utils.svelte';
 
     const data = usePageData<PageData>();
     const ctx = usePageContext();
     const id = $props.id();
-    const { http } = useRuntime();
     const menu = createMenu({
         id,
         onOpenChange: async (details) => {
             if (details.open) {
                 menu.api.setHighlightedValue(ctx.task.priority?.id ?? '');
-                priorities = await getPriorities(data.project.id).then((a) => a.items);
+                priorities = await getPriorities(data.project.id).run().then((a) => a.items);
             }
         },
         onSelect: (details) => updatePriority(details.value),
@@ -46,7 +44,7 @@
                     actor: data.user,
                     createdTime: new Date().toISOString(),
                     kind: ActivityKind.PriorityChanged,
-                    data: {
+                    metadata: {
                         priority: {
                             id: priorityId,
                             name: priority.name,

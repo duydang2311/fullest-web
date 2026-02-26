@@ -13,10 +13,11 @@ public sealed class CreateTaskStatusChangedActivity(BaseDbContext db)
         await db.Activities.AddAsync(
             new Activity
             {
-                TaskId = changed.TaskId,
                 ActorId = changed.ActorId,
                 Kind = ActivityKind.StatusChanged,
-                Data = JsonSerializer.SerializeToDocument(
+                ProjectId = changed.ProjectId,
+                TaskId = changed.TaskId,
+                Metadata = JsonSerializer.Serialize(
                     new
                     {
                         StatusId = changed.StatusId?.Value,

@@ -55,7 +55,7 @@
     ];
 </script>
 
-<section id="features" class="bg-base text-base-fg relative min-h-screen p-8" data-theme="accent">
+<section id="features" class="bg-base text-fg relative min-h-screen p-8" data-theme="accent">
     <svg
         viewBox="0 0 900 600"
         xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +95,7 @@
         ></path>
     </svg>
     <div class="max-w-container-xl mx-auto mt-4">
-        <h2 class="text-base-fg-strong font-medium leading-none tracking-tighter text-title-md">
+        <h2 class="text-fg-emph font-medium leading-none tracking-tighter text-title-md">
             Everything you need to manage tasks effectively
         </h2>
         <p class="mt-4">
@@ -107,7 +107,7 @@
             class="xl:col-span-2 relative border-blue-500/20 hover:border-blue-500/30 rounded-2xl border p-6 transition hover:shadow-sm flex justify-between items-center gap-8 overflow-hidden"
         >
             <div>
-                <h3 class="text-base-fg-strong font-medium mt-2 text-title-sm">
+                <h3 class="text-fg-emph font-medium mt-2 text-title-sm">
                     {features[0].title}
                 </h3>
                 <p class="mt-2 text-pretty max-w-[80ch]">{features[0].description}</p>
@@ -130,7 +130,7 @@
                 >
                     <StarOutline class="relative text-pink-500 size-full" />
                 </div>
-                <h3 class="text-base-fg-strong font-medium mt-4 text-title-sm">
+                <h3 class="text-fg-emph font-medium mt-4 text-title-sm">
                     {features[1].title}
                 </h3>
                 <p class="mt-2 text-pretty max-w-[80ch]">{features[1].description}</p>
@@ -151,22 +151,22 @@
             <div class="relative">
                 <div class="flex gap-2 *:-ml-4 pl-4">
                     <div
-                        class="size-10 rounded-full p-1 bg-fuchsia-500/20 border-4 border-base flex items-center justify-center text-base-fg-strong"
+                        class="size-10 rounded-full p-1 bg-fuchsia-500/20 border-4 border-base flex items-center justify-center text-fg-emph"
                     >
                         JD
                     </div>
                     <div
-                        class="size-10 rounded-full p-1 bg-pink-500/20 border-4 border-base flex items-center justify-center text-base-fg-strong"
+                        class="size-10 rounded-full p-1 bg-pink-500/20 border-4 border-base flex items-center justify-center text-fg-emph"
                     >
                         AS
                     </div>
                     <div
-                        class="size-10 rounded-full p-1 bg-sky-500/20 border-4 border-base flex items-center justify-center text-base-fg-strong"
+                        class="size-10 rounded-full p-1 bg-sky-500/20 border-4 border-base flex items-center justify-center text-fg-emph"
                     >
                         +3
                     </div>
                 </div>
-                <h3 class="text-base-fg-strong font-medium text-title-sm mt-4">
+                <h3 class="text-fg-emph font-medium text-title-sm mt-4">
                     {features[2].title}
                 </h3>
                 <p class="mt-2 text-pretty max-w-[80ch]">{features[2].description}</p>
@@ -176,7 +176,7 @@
             class="xl:col-span-2 relative border-sky-500/20 hover:border-sky-500/30 rounded-2xl border p-6 transition hover:shadow-sm flex justify-between items-center gap-8 overflow-hidden"
         >
             <div>
-                <h3 class="text-base-fg-strong font-medium mt-2 text-title-sm">
+                <h3 class="text-fg-emph font-medium mt-2 text-title-sm">
                     {features[3].title}
                 </h3>
                 <p class="mt-2 text-pretty max-w-[80ch]">{features[3].description}</p>
@@ -202,7 +202,7 @@
                 >
                     <ShieldOutline class="relative text-green-500 size-full" />
                 </div>
-                <h3 class="text-base-fg-strong font-medium mt-2 text-title-sm">
+                <h3 class="text-fg-emph font-medium mt-2 text-title-sm">
                     {features[4].title}
                 </h3>
                 <p class="mt-2 text-pretty max-w-[80ch]">{features[4].description}</p>
@@ -220,7 +220,7 @@
                 >
                     <ChartColumnOutline class="text-indigo-500 size-full" />
                 </div>
-                <h3 class="text-base-fg-strong font-medium mt-4 text-title-sm">
+                <h3 class="text-fg-emph font-medium mt-4 text-title-sm">
                     {features[5].title}
                 </h3>
                 <p class="mt-2 text-pretty max-w-[80ch]">{features[5].description}</p>
@@ -238,7 +238,7 @@
                 class="relative border-base-border hover:border-base-border-emph rounded-2xl border p-6 transition hover:shadow-sm flex items-center gap-8 overflow-hidden"
             >
                 <div>
-                    <h3 class="text-base-fg-strong font-medium mt-2 text-title-sm">
+                    <h3 class="text-fg-emph font-medium mt-2 text-title-sm">
                         {feature.title}
                     </h3>
                     <p class="mt-2 text-pretty">{feature.description}</p>

@@ -24,20 +24,34 @@ public sealed class Endpoint(AppDbContext db, ActivityHydrator activityHydrator)
     > ExecuteAsync(Request req, CancellationToken ct)
     {
         var query = db.Activities.AsQueryable();
+        if (req.ProjectId.HasValue)
+        {
+            query = query.Where(a => a.ProjectId == req.ProjectId);
+        }
         if (req.TaskId.HasValue)
         {
-            query = query.Where(a => a.TaskId == req.TaskId.Value);
+            query = query.Where(a => a.TaskId == req.TaskId);
+        }
+        if (req.ForUserId.HasValue)
+        {
+            query = query.Where(a =>
+                db.ProjectMembers.Any(b =>
+                    b.UserId == req.ForUserId.Value && b.ProjectId == a.ProjectId
+                )
+            );
         }
         if (req.After.HasValue)
         {
             query = query.Where(a => a.Id > req.After.Value);
         }
 
-        query = query.OrderBy(a => a.Id).Take(req.Size + 1);
+        query = query
+            .SortOrDefault(Orderable.From(req), a => a.OrderByDescending(b => b.Id))
+            .Take(req.Size + 1);
 
-        if (!string.IsNullOrEmpty(req.Fields))
+        if (!string.IsNullOrEmpty(req.Select))
         {
-            query = query.Select(FieldProjector.Project<Activity>(req.Fields));
+            query = query.Select(FieldProjector.Project<Activity>(req.Select));
         }
 
         var items = await query.ToListAsync(ct).ConfigureAwait(false);
@@ -48,7 +62,7 @@ public sealed class Endpoint(AppDbContext db, ActivityHydrator activityHydrator)
         );
         return TypedResults.Ok(
             CursorList.From(
-                hydrated.Select(Projectable.From<Activity>(null)),
+                hydrated.Select(Projectable.From<HydratedActivity>(req.Select)),
                 (ActivityId?)hydrated[^1].Id,
                 hasMore
             )

@@ -2,6 +2,11 @@ namespace WebApp.Domain.Constants;
 
 public static class Permit
 {
+    public const string CreateProject = "project:create";
+    public const string ReadProject = "project:read";
+    public const string UpdateProject = "project:update";
+    public const string DeleteProject = "project:delete";
+
     public const string CreateTask = "task:create";
     public const string ReadTask = "task:read";
     public const string UpdateTask = "task:update";

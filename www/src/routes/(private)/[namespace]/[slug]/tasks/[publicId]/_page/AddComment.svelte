@@ -33,7 +33,7 @@
                     kind: ActivityKind.Commented,
                     createdTime: new Date().toISOString(),
                     actor: data.user,
-                    data: {
+                    metadata: {
                         comment: {
                             id: crypto.randomUUID(),
                             contentJson: JSON.stringify(contentJson),

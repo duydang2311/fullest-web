@@ -76,7 +76,7 @@ public sealed class Endpoint(
 
         var comment = await createCommentHandler
             .HandleAsync(
-                new CreateComment(task.Id, req.CallerId)
+                new CreateComment(req.ProjectId.Value, task.Id, req.CallerId)
                 {
                     ContentJson = req.DescriptionJson,
                     ContentText = req.DescriptionText,

@@ -15,7 +15,7 @@
         {#each tabItems as item (item.href)}
             <button
                 {...tabs.getTriggerProps({ value: item.href })}
-                class="focus-visible:ring-focus-base-fg group relative focus-visible:outline-none min-w-max px-0 h-full overflow-hidden"
+                class="focus-visible:ring-focus-fg group relative focus-visible:outline-none min-w-max px-0 h-full overflow-hidden"
             >
                 {#if tabs.value === item.href}
                     <div
@@ -26,7 +26,7 @@
                     href={item.href}
                     class="{button({
                         variant: 'base',
-                    })} content-center font-normal px-4 py-2 h-full tracking-tight relative text-base-fg-muted hover:text-base-fg rounded-b-none group-data-selected:bg-transparent group-data-selected:text-base-fg-strong block group-data-selected:font-bold"
+                    })} content-center font-normal px-4 py-2 h-full tracking-tight relative text-fg-muted hover:text-fg rounded-b-none group-data-selected:bg-transparent group-data-selected:text-fg-emph block group-data-selected:font-bold"
                 >
                     {item.label}
                 </a>

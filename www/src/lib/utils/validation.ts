@@ -7,6 +7,9 @@ export interface Validator<TInput, TOutput> {
     parse(value: unknown): Attempt<TOutput, ValidationError>;
 }
 
+export type InferOutput<T extends Validator<unknown, unknown>> =
+    T extends Validator<unknown, infer TOutput> ? TOutput : never;
+
 export interface AsyncValidator<T> {
     parseAsync(value: unknown): Promise<Attempt<T, ValidationError>>;
 }

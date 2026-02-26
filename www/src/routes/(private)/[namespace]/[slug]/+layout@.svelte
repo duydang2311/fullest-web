@@ -58,7 +58,7 @@
                                 ? (data.namespace.user.displayName ?? data.namespace.user.name)
                                 : 'Organization'}
                         </a>
-                        <ChevronRightOutline class="text-base-fg-muted size-4" />
+                        <ChevronRightOutline class="text-fg-muted size-4" />
                         <a
                             href="/{data.namespace.user.name}/{data.project.identifier}"
                             class="c-link font-normal"

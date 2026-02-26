@@ -2,7 +2,6 @@ using System.Security.Cryptography;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.Extensions.Options;
-using Npgsql;
 using Slugify;
 using WebApp.Api;
 using WebApp.Api.Middlewares;

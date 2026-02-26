@@ -28,6 +28,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
     {
         Guard.Against.Null(req.Patch);
 
+        var projectId = (ProjectId)HttpContext.Items["ProjectId"]!;
         var mappings = new List<string>();
         var query = db.Tasks.Where(a => a.Id == req.TaskId && a.DeletedTime == null);
         var changes = new List<TaskPropertyChanged>();
@@ -82,6 +83,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
             {
                 changes.Add(
                     new TaskStatusChanged(
+                        projectId,
                         req.TaskId,
                         req.CallerId,
                         req.Patch.StatusId,
@@ -93,6 +95,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
             {
                 changes.Add(
                     new TaskPriorityChanged(
+                        projectId,
                         req.TaskId,
                         req.CallerId,
                         req.Patch.PriorityId,
@@ -104,6 +107,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
             {
                 changes.Add(
                     new TaskDueTimeChanged(
+                        projectId,
                         req.TaskId,
                         req.CallerId,
                         req.Patch.DueTime,
@@ -123,7 +127,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         if (changes.Count > 0)
         {
             await eventHub
-                .PublishAsync(new TaskUpdated(req.TaskId, changes), ct)
+                .PublishAsync(new TaskUpdated(projectId, req.TaskId, changes), ct)
                 .ConfigureAwait(false);
         }
         await db.SaveChangesAsync(ct).ConfigureAwait(false);

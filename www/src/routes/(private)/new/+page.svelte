@@ -28,12 +28,12 @@
     >
         <div class="p-4 flex justify-between gap-4">
             <div>
-                <h1 class="text-title-xs text-base-fg-strong font-bold">Create a new project</h1>
-                <p class="text-base-fg-dim text-body-sm mt-1">
+                <h1 class="text-title-xs text-fg-emph font-bold">Create a new project</h1>
+                <p class="text-fg-dim text-body-sm mt-1">
                     Required fields are marked with an asterisk (*).
                 </p>
             </div>
-            <PlusOutline class="size-8 text-base-fg-strong" />
+            <PlusOutline class="size-8 text-fg-emph" />
         </div>
         <div class="p-4">
             <fieldset class="space-y-4">

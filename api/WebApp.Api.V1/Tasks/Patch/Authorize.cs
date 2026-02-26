@@ -43,6 +43,8 @@ public sealed class Authorize : IPreProcessor<Request>
         if (!canPatch)
         {
             await context.HttpContext.Response.SendForbiddenAsync(ct);
+            return;
         }
+        context.HttpContext.Items["ProjectId"] = task.ProjectId;
     }
 }

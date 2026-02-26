@@ -14,29 +14,28 @@
 @custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
 
 @theme {
-    --color-surface: oklch(99% 0 260);
-    --color-surface-subtle: oklch(97.5% 0 260);
-    --color-surface-emph: oklch(96% 0 260);
-    --color-surface-border: oklch(94% 0 260);
+    --color-surface: oklch(100% 0 240);
+    --color-surface-subtle: oklch(99% 0 240);
+    --color-surface-emph: oklch(97% 0 240);
+    --color-surface-border: oklch(94% 0 240);
 
-    --color-base: oklch(96% 0 260);
-    --color-base-subtle: oklch(94.5% 0 260);
-    --color-base-emph: oklch(93% 0 260);
-    --color-base-border: oklch(91% 0 260);
-    --color-base-border-emph: oklch(89% 0 260);
+    --color-base: oklch(95% 0 240);
+    --color-base-subtle: oklch(93.5% 0 240);
+    --color-base-emph: oklch(92% 0 240);
+    --color-base-border: oklch(90% 0 240);
+    --color-base-border-emph: oklch(88% 0 240);
 
-    /* --color-base-fg: oklch(260% 0 20)260*/
-    --color-base-fg: oklch(32% 0 260);
-    --color-base-fg-weak: oklch(40% 0 260);
-    --color-base-fg-strong: oklch(20% 0.01 260);
-    --color-base-fg-dim: oklch(50% 0 260);
-    --color-base-fg-muted: oklch(70% 0 260);
+    --color-fg: oklch(32% 0 240);
+    --color-fg-weak: oklch(40% 0 240);
+    --color-fg-emph: oklch(20% 0.01 240);
+    --color-fg-dim: oklch(48% 0 240);
+    --color-fg-muted: oklch(58% 0 240);
 
-    --color-primary: oklch(97% 0.04 260);
-    --color-primary-subtle: oklch(95.5% 0.06 260);
-    --color-primary-emph: oklch(94% 0.08 260);
-    --color-primary-border: oklch(92% 0.06 260);
-    --color-primary-fg: oklch(46.6% 0.15 260);
+    --color-primary: oklch(95% 0.04 240);
+    --color-primary-subtle: oklch(93.5% 0.06 240);
+    --color-primary-emph: oklch(92% 0.08 240);
+    --color-primary-border: oklch(90% 0.04 240);
+    --color-primary-fg: oklch(52.5% 0.17 225);
 
     /* --color-primary: oklch(52.93% 0.2346 261.46);
     --color-primary-subtle: oklch(55.93% 0.2346 261.46);
@@ -44,8 +43,8 @@
     --color-primary-border: oklch(47.93% 0.2346 261.46);
     --color-primary-fg: oklch(98.9% 0.005 261.46); */
 
-    --color-secondary: oklch(94% 0.16 260);
-    --color-secondary-fg: oklch(32% 0 260);
+    --color-secondary: oklch(94% 0.16 240);
+    --color-secondary-fg: oklch(32% 0 240);
 
     --color-negative: oklch(54.5% 0.1888 24.42);
     --color-negative-hover: oklch(58.5% 0.1888 24.42);
@@ -65,11 +64,10 @@
     --spacing-container-lg: 1024px;
     --spacing-container-md: 768px;
     --spacing-container-sm: 640px;
-    --spacing-avatar-xs: 24px;
-    --spacing-avatar-sm: 32px;
-    --spacing-avatar-md: 64px;
-    --spacing-avatar-lg: 128px;
-    --spacing-avatar-lg: 256px;
+    --spacing-avatar-xs: 16px;
+    --spacing-avatar-sm: 24px;
+    --spacing-avatar-md: 32px;
+    --spacing-avatar-lg: 48px;
     --spacing-nbsp: 0.38ch;
 
     --text-display-lg: 3.5rem;
@@ -85,8 +83,11 @@
 
     --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
 
-    --default-font-family: system-ui, sans-serif;
-    --default-mono-font-family: monospace;
+    --default-font-family:
+        'DM Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica,
+        Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    --default-mono-font-family:
+        ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
 }
 
 @utility slide-* {
@@ -146,11 +147,11 @@
         --color-base-border: var(--color-neutral-850);
         --color-base-border-emph: var(--color-neutral-800);
         --color-surface-border: var(--color-neutral-900);
-        --color-base-fg: var(--color-neutral-300);
-        --color-base-fg-weak: var(--color-neutral-300);
-        --color-base-fg-strong: var(--color-neutral-300);
-        --color-base-fg-dim: var(--color-neutral-500);
-        --color-base-fg-muted: var(--color-neutral-600);
+        --color-fg: var(--color-neutral-300);
+        --color-fg-weak: var(--color-neutral-300);
+        --color-fg-emph: var(--color-neutral-300);
+        --color-fg-dim: var(--color-neutral-500);
+        --color-fg-muted: var(--color-neutral-600);
 
         --color-primary: oklch(80% 0.0626 230);
         --color-primary-subtle: oklch(82% 0.0726 230);
@@ -164,8 +165,8 @@
     --color-primary-border: oklch(47.93% 0.2346 261.46);
     --color-primary-fg: oklch(98.9% 0.005 261.46); */
 
-        --color-secondary: oklch(94% 0.16 260);
-        --color-secondary-fg: oklch(32% 0 260);
+        --color-secondary: oklch(94% 0.16 240);
+        --color-secondary-fg: oklch(32% 0 240);
 
         --color-negative: oklch(54.5% 0.1888 24.42);
         --color-negative-hover: oklch(58.5% 0.1888 24.42);
@@ -193,11 +194,11 @@
         --color-base-border: oklch(32% 0.06 261.46);
         --color-base-border-emph: oklch(36% 0.06 261.46);
         --color-surface-border: oklch(30% 0.06 261.46);
-        --color-base-fg: oklch(70% 0.02 261.46);
-        --color-base-fg-strong: oklch(100% 0.02 261.46);
-        --color-base-fg-weak: oklch(60% 0.02 261.46);
-        --color-base-fg-dim: oklch(55% 0.02 261.46);
-        --color-base-fg-muted: oklch(50% 0.02 261.46);
+        --color-fg: oklch(70% 0.02 261.46);
+        --color-fg-emph: oklch(100% 0.02 261.46);
+        --color-fg-weak: oklch(60% 0.02 261.46);
+        --color-fg-dim: oklch(55% 0.02 261.46);
+        --color-fg-muted: oklch(50% 0.02 261.46);
     }
 }
 
@@ -205,7 +206,7 @@
     :root {
         font-size: 14px;
         font-weight: 400;
-        color: var(--color-base-fg);
+        color: var(--color-fg);
         line-height: 1.5;
     }
 
@@ -218,21 +219,31 @@
         font-size: var(--text-body-sm);
     }
 
-    button:not(:disabled),
+    /* button:not(:disabled),
     [role='button']:not(:disabled) {
         cursor: pointer;
-    }
+    } */
 
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-        animation-duration: 75ms;
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-weight: 500;
     }
 }
 
 @layer components {
+    .c-avatar {
+        background-color: var(--color-surface);
+        outline: 1px solid var(--color-base-border);
+        border-radius: calc(infinity * 1px);
+    }
+
     .c-avatar--fallback {
         background-color: var(--color-surface);
-        border: 2px solid var(--color-base-border);
+        border: 1px solid var(--color-base-border);
         border-radius: calc(infinity * 1px);
     }
 }
@@ -241,8 +252,8 @@
     @apply ring-2 ring-primary/20;
 }
 
-@utility ring-focus-base-fg {
-    @apply ring-2 ring-base-fg/15;
+@utility ring-focus-fg {
+    @apply ring-2 ring-fg/15;
 }
 
 @utility ring-focus-negative {
@@ -250,7 +261,7 @@
 }
 
 .tiptap p.is-editor-empty:first-child::before {
-    color: var(--color-base-fg-muted);
+    color: var(--color-fg-muted);
     content: attr(data-placeholder);
     float: left;
     height: 0;
@@ -275,19 +286,19 @@
 }
 
 @utility prose {
-    --tw-prose-body: var(--color-base-fg);
-    --tw-prose-headings: var(--color-base-fg-strong);
+    --tw-prose-body: var(--color-fg);
+    --tw-prose-headings: var(--color-fg-emph);
     --tw-prose-lead: var(--color-pink-700);
     --tw-prose-links: var(--color-info);
-    --tw-prose-bold: var(--color-base-fg-strong);
-    --tw-prose-counters: var(--color-base-fg-muted);
-    --tw-prose-bullets: var(--color-base-fg-muted);
+    --tw-prose-bold: var(--color-fg-emph);
+    --tw-prose-counters: var(--color-fg-muted);
+    --tw-prose-bullets: var(--color-fg-muted);
     --tw-prose-hr: var(--color-base-border);
-    --tw-prose-quotes: var(--color-base-fg-muted);
+    --tw-prose-quotes: var(--color-fg-muted);
     --tw-prose-quote-borders: var(--color-surface-border);
     --tw-prose-captions: var(--color-pink-700);
-    --tw-prose-code: var(--color-base-fg);
-    --tw-prose-pre-code: var(--color-base-fg);
+    --tw-prose-code: var(--color-fg);
+    --tw-prose-pre-code: var(--color-fg);
     --tw-prose-pre-bg: var(--color-base-subtle);
     --tw-prose-th-borders: var(--color-base-border);
     --tw-prose-td-borders: var(--color-base-border);

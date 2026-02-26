@@ -1,6 +1,6 @@
 <script lang="ts">
     import { invalidateAll } from '$app/navigation';
-    import { LiteDebouncer } from '@tanstack/pacer-lite';
+    import { liteDebounce } from '@tanstack/pacer-lite';
     import { ListCollection } from '@zag-js/collection';
     import { portal } from '@zag-js/svelte';
     import invariant from 'tiny-invariant';
@@ -8,9 +8,7 @@
     import { createListbox, createPopover } from '~/lib/components/builders.svelte';
     import { SettingsOutline } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
-    import type { User, UserPreset } from '~/lib/models/user';
     import { usePageData } from '~/lib/utils/kit';
-    import { useRuntime } from '~/lib/utils/runtime';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
     import { assignTask, searchUsers, unassignTask } from './page.remote';
@@ -19,8 +17,10 @@
     const data = usePageData<PageData>();
     const ctx = usePageContext();
     const id = $props.id();
-    let users = $state.raw<(Pick<User, 'id'> & UserPreset['Avatar'])[]>();
-    const { http } = useRuntime();
+    let searchQuery = $state.raw('');
+    let users = $derived(
+        searchQuery ? await searchUsers({ query: searchQuery }).then((a) => a.items) : []
+    );
     const popover = createPopover({
         id: `popover-${id}`,
         onOpenChange: async (details) => {
@@ -82,7 +82,7 @@
                         actor: data.user,
                         createdTime: new Date().toISOString(),
                         kind: ActivityKind.Assigned,
-                        data: {
+                        metadata: {
                             assignee: user,
                         },
                     };
@@ -95,7 +95,7 @@
                         actor: data.user,
                         createdTime: new Date().toISOString(),
                         kind: ActivityKind.Unassigned,
-                        data: {
+                        metadata: {
                             assignee: user,
                         },
                     };
@@ -124,9 +124,9 @@
             ),
         ]).finally(invalidateAll);
     }
-    const debouncedSearchUser = new LiteDebouncer(
-        async (value: string) => {
-            users = await searchUsers({ query: value }).then((a) => a.items);
+    const updateSearchQueryDebounced = liteDebounce(
+        (value: string) => {
+            searchQuery = value;
         },
         {
             wait: 200,
@@ -175,10 +175,10 @@
                 placeholder="Search users..."
                 oninput={(e) => {
                     if (e.currentTarget.value.length === 0) {
-                        debouncedSearchUser.cancel();
+                        updateSearchQueryDebounced.cancel();
                         users = [];
                     } else {
-                        debouncedSearchUser.maybeExecute(e.currentTarget.value);
+                        updateSearchQueryDebounced.maybeExecute(e.currentTarget.value);
                     }
                 }}
             />

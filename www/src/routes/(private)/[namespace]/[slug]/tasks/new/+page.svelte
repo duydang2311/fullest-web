@@ -27,8 +27,8 @@
 			e.formData.set('description_json', JSON.stringify(json));
 		}}
 	>
-		<h1 class="text-title-xs font-semibold tracking-tight">Create new task</h1>
-		<p class="text-base-fg-dim c-help-text italic">
+		<h1 class="text-title-xs tracking-tight">Create new task</h1>
+		<p class="text-fg-dim c-help-text italic">
 			Required fields are marked with an asterisk (*).
 		</p>
 		<fieldset class="mt-4 space-y-4">

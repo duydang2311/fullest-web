@@ -137,7 +137,7 @@ export const getActivities = query(
                 query: {
                     taskId: data.taskId,
                     cursor: data.cursor,
-                    fields: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Data',
+                    select: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Data',
                     sort: 'Id',
                     size: data.size ?? 20,
                 },
@@ -147,7 +147,7 @@ export const getActivities = query(
                 jsonify(() =>
                     response.json<
                         CursorList<
-                            Pick<Activity, 'id' | 'createdTime' | 'kind' | 'data'> & {
+                            Pick<Activity, 'id' | 'createdTime' | 'kind' | 'metadata'> & {
                                 actor: Pick<User, 'id'> & UserPreset['Avatar'];
                             },
                             string

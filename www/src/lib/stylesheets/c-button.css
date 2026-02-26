@@ -7,7 +7,7 @@
 }
 
 .c-button--base {
-    --_text: var(--color-base-fg);
+    --_text: var(--color-fg);
 
     &:where(.c-button--filled) {
         --_bg: var(--color-base);
@@ -18,8 +18,8 @@
     &:where(.c-button--ghost) {
         --_bg-hover: var(--color-base-subtle);
         --_bg-active: var(--color-base-emph);
-        &:where(:disabled) {
-            --_text: var(--color-base-fg-muted);
+        &:where(:disabled, [data-disabled]) {
+            --_text: var(--color-fg-muted);
             --_bg-hover: transparent;
             --_bg-active: transparent;
         }
@@ -31,23 +31,19 @@
     }
 
     &:where(.c-button--outlined) {
-        --_border: color-mix(
-            in oklch,
-            var(--color-base-border) 60%,
-            var(--color-base-border-emph)
-        );
+        --_border: color-mix(in oklch, var(--color-base-border) 60%, var(--color-base-border-emph));
     }
 
     &:where(:focus-visible) {
-        @apply ring-focus-base-fg;
+        @apply ring-focus-fg;
     }
 }
 
 .c-button--primary {
-    --_text: var(--color-primary);
+    --_text: var(--color-primary-fg);
 
     &:where(.c-button--filled) {
-        --_text: var(--color-base-fg);
+        --_text: var(--color-fg);
         --_bg: var(--color-primary);
         --_bg-hover: var(--color-primary-subtle);
         --_bg-active: var(--color-primary-emph);
@@ -82,9 +78,9 @@
         --_bg: var(--color-primary);
         --_bg-hover: var(--color-primary-subtle);
         --_bg-active: var(--color-primary-emph);
-        &:where(:disabled) {
-            --_text: var(--color-base-fg-muted);
-            --_bg: color-mix(in oklch, var(--color-base-fg-muted) 20%, transparent);
+        &:where(:disabled, [data-disabled]) {
+            --_text: var(--color-fg-muted);
+            --_bg: color-mix(in oklch, var(--color-fg-muted) 20%, transparent);
         }
     }
 
@@ -99,7 +95,7 @@
 
     &:where(.c-button--outlined) {
         --_border: var(--color-primary-border);
-        &:where(:disabled) {
+        &:where(:disabled, [data-disabled]) {
             --_border: transparent;
         }
     }
@@ -138,8 +134,8 @@
 }
 
 .c-button {
-    &:where(:disabled) {
-        --_text: var(--color-base-fg);
+    &:where(:disabled, [data-disabled]) {
+        --_text: var(--color-fg);
         &:where(.c-button--filled) {
             --_bg: var(--color-base);
         }
@@ -177,7 +173,7 @@
         outline: none;
     }
 
-    &:where(:disabled) {
+    &:where(:disabled, [data-disabled]) {
         opacity: 0.4;
         pointer-events: none;
     }

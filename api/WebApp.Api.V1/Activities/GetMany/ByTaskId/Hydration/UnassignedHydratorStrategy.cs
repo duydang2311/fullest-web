@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -18,9 +19,14 @@ public sealed class UnassignedHydratorStrategy(
 
     public void CollectId(Activity activity)
     {
+        if (activity.Metadata is null)
+        {
+            return;
+        }
+
+        using var metadata = JsonDocument.Parse(activity.Metadata);
         if (
-            activity.Data is not null
-            && activity.Data.RootElement.TryGetProperty("AssigneeId", out var assigneeIdElement)
+            metadata.RootElement.TryGetProperty("AssigneeId", out var assigneeIdElement)
             && assigneeIdElement.TryGetInt64(out var assigneeIdValue)
         )
         {
@@ -40,14 +46,14 @@ public sealed class UnassignedHydratorStrategy(
         }
 
         await using var scope = serviceScopeFactory.CreateAsyncScope();
-        await using var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         assignees = await db
             .Users.Where(a => assigneeIds.Contains(a.Id))
             .ToDictionaryAsync(a => a.Id, ct)
             .ConfigureAwait(false);
     }
 
-    public Activity Hydrate(Activity activity)
+    public JsonObject? HydrateMetadata(Activity activity)
     {
         if (
             assignees is null
@@ -56,12 +62,12 @@ public sealed class UnassignedHydratorStrategy(
             || !assignees.TryGetValue(assigneeId, out var assignee)
         )
         {
-            return activity;
+            return null;
         }
-        return activity with
+        return new JsonObject
         {
-            Data = JsonSerializer.SerializeToDocument(
-                new { Assignee = assignee },
+            ["assignee"] = JsonSerializer.SerializeToNode(
+                assignee,
                 jsonOptions.Value.SerializerOptions
             ),
         };

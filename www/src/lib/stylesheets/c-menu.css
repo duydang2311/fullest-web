@@ -7,7 +7,7 @@
     }
     border-radius: var(--radius-lg);
     padding: --spacing(1);
-    @apply shadow-sm;
+    @apply shadow-xs;
 
     &:where(:focus-visible) {
         outline: none;
@@ -20,8 +20,8 @@
 }
 
 .c-menu-item {
-    --_text: var(--color-base-fg);
-    --_text-highlighted: var(--color-base-fg-strong);
+    --_text: var(--color-fg);
+    --_text-highlighted: var(--color-fg-emph);
     --_bg: var(--color-surface);
     --_bg-hover: var(--color-base-subtle);
     --_bg-active: var(--color-base-emph);

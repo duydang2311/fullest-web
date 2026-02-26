@@ -45,10 +45,10 @@
 <div>
 	{#if tabs.value === '/sign-in'}
 		<h1 class="text-title-md font-bold capitalize">Sign in</h1>
-		<p class="text-base-fg-dim">Fill in your credentials or sign in with other accounts.</p>
+		<p class="text-fg-dim">Fill in your credentials or sign in with other accounts.</p>
 	{:else if tabs.value === '/sign-up'}
 		<h1 class="text-title-md font-bold capitalize">Sign up</h1>
-		<p class="text-base-fg-dim">Create a new account or sign up with other accounts.</p>
+		<p class="text-fg-dim">Create a new account or sign up with other accounts.</p>
 	{/if}
 </div>
 <div {...tabs.getRootProps()} class="mt-8 flex flex-1 flex-col">
@@ -65,7 +65,7 @@
 			>
 				{#if tabs.value === tab.value}
 					<div
-						class="active-tab bg-base-emph group-focus-visible:ring-focus-base-fg absolute inset-0 rounded-xl transition-[box-shadow]"
+						class="active-tab bg-base-emph group-focus-visible:ring-focus-fg absolute inset-0 rounded-xl transition-[box-shadow]"
 						data-flip-id="active-tab"
 					></div>
 				{/if}

@@ -62,11 +62,13 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
             );
         }
 
+        var projectId = (ProjectId)HttpContext.Items["ProjectId"]!;
         await eventHub
             .PublishAsync(
                 new TaskUpdated(
+                    projectId,
                     req.TaskId.Value,
-                    [new TaskAssigned(req.TaskId.Value, req.CallerId, req.UserId.Value)]
+                    [new TaskAssigned(projectId, req.TaskId.Value, req.CallerId, req.UserId.Value)]
                 ),
                 ct
             )

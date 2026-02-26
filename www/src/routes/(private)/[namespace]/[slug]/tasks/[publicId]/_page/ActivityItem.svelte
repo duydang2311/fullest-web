@@ -13,7 +13,7 @@
     const {
         activity,
     }: {
-        activity: Pick<Activity, 'createdTime' | 'kind' | 'data'> & {
+        activity: Pick<Activity, 'createdTime' | 'kind' | 'metadata'> & {
             actor: Pick<User, 'id'> & UserPreset['Avatar'];
         };
     } = $props();
@@ -23,7 +23,7 @@
     <li class="relative">
         {@render children()}
         <div
-            class="absolute w-px h-6 left-0 bottom-0 translate-y-full translate-x-5.5 bg-base-border"
+            class="absolute w-px h-full left-0 bottom-0 translate-y-full translate-x-4 bg-base-border"
         ></div>
     </li>
 {/snippet}
@@ -34,33 +34,37 @@
     {/snippet}
     {@render li(children)}
 {:else if activity.kind === ActivityKind.Commented}
-    {@const data = activity.data}
-    {#if validators[activity.kind].check(data)}
-        {#snippet children()}<CommentedActivity activity={{ ...activity, data }} />{/snippet}
+    {@const metadata = activity.metadata}
+    {#if validators[activity.kind].check(metadata)}
+        {#snippet children()}<CommentedActivity activity={{ ...activity, metadata }} />{/snippet}
         {@render li(children)}
     {/if}
 {:else if activity.kind === ActivityKind.StatusChanged}
-    {@const data = activity.data}
-    {#if validators[activity.kind].check(data)}
-        {#snippet children()}<StatusChangedActivity activity={{ ...activity, data }} />{/snippet}
+    {@const metadata = activity.metadata}
+    {#if validators[activity.kind].check(metadata)}
+        {#snippet children()}
+            <StatusChangedActivity activity={{ ...activity, metadata }} />
+        {/snippet}
         {@render li(children)}
     {/if}
 {:else if activity.kind === ActivityKind.PriorityChanged}
-    {@const data = activity.data}
-    {#if validators[activity.kind].check(data)}
-        {#snippet children()}<PriorityChangedActivity activity={{ ...activity, data }} />{/snippet}
+    {@const metadata = activity.metadata}
+    {#if validators[activity.kind].check(metadata)}
+        {#snippet children()}
+            <PriorityChangedActivity activity={{ ...activity, metadata }} />
+        {/snippet}
         {@render li(children)}
     {/if}
 {:else if activity.kind === ActivityKind.Assigned}
-    {@const data = activity.data}
-    {#if validators[activity.kind].check(data)}
-        {#snippet children()}<AssignedActivity activity={{ ...activity, data }} />{/snippet}
+    {@const metadata = activity.metadata}
+    {#if validators[activity.kind].check(metadata)}
+        {#snippet children()}<AssignedActivity activity={{ ...activity, metadata }} />{/snippet}
         {@render li(children)}
     {/if}
 {:else if activity.kind === ActivityKind.Unassigned}
-    {@const data = activity.data}
-    {#if validators[activity.kind].check(data)}
-        {#snippet children()}<UnassignedActivity activity={{ ...activity, data }} />{/snippet}
+    {@const metadata = activity.metadata}
+    {#if validators[activity.kind].check(metadata)}
+        {#snippet children()}<UnassignedActivity activity={{ ...activity, metadata }} />{/snippet}
         {@render li(children)}
     {/if}
 {/if}

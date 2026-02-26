@@ -17,7 +17,7 @@
             <span>Watch</span>
         </div>
         <div
-            class="text-base-fg border-l border-l-base-border px-2 py-1 rounded-r-lg content-center"
+            class="text-fg border-l border-l-base-border px-2 py-1 rounded-r-lg content-center"
         >
             0
         </div>
@@ -35,7 +35,7 @@
             <span>Star</span>
         </div>
         <div
-            class="text-base-fg border-l border-l-base-border px-2 py-1 rounded-r-lg content-center"
+            class="text-fg border-l border-l-base-border px-2 py-1 rounded-r-lg content-center"
         >
             0
         </div>

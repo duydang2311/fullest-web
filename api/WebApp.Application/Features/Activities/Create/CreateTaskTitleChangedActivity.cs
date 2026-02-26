@@ -13,10 +13,11 @@ public sealed class CreateTaskTitleChangedActivity(BaseDbContext db)
         await db.Activities.AddAsync(
             new Activity
             {
-                TaskId = changed.TaskId,
                 ActorId = changed.ActorId,
+                ProjectId = changed.ProjectId,
+                TaskId = changed.TaskId,
                 Kind = ActivityKind.TitleChanged,
-                Data = JsonSerializer.SerializeToDocument(new { changed.Title, changed.OldTitle }),
+                Metadata = JsonSerializer.Serialize(new { changed.Title, changed.OldTitle }),
             },
             ct
         );

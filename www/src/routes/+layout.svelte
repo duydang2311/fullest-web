@@ -1,13 +1,10 @@
 <script lang="ts">
-    import '@fontsource-variable/geist-mono';
-    import '@fontsource-variable/inter';
+    import '@fontsource-variable/dm-sans';
     import '../app.css';
 
     import favicon from '$lib/assets/favicon.svg';
-    import { QueryClientProvider } from '@tanstack/svelte-query';
-    import { useQueryClient } from '~/lib/utils/query';
-    import { setRuntime } from '~/lib/utils/runtime';
     import { BrowserHttpClient } from '~/lib/services/browser_http_client';
+    import { setRuntime } from '~/lib/utils/runtime';
 
     const { children } = $props();
 
@@ -23,6 +20,4 @@
     <link rel="icon" href={favicon} />
 </svelte:head>
 
-<QueryClientProvider client={useQueryClient()}>
-    {@render children?.()}
-</QueryClientProvider>
+{@render children?.()}

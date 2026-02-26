@@ -22,7 +22,7 @@
         </a>
         <span class="text-sm">
             <span>created the task</span>
-            <span class="text-sm font-medium text-base-fg-dim">
+            <span class="text-sm font-medium text-fg-dim">
                 · <RelativeDateTime time={activity.createdTime} />
             </span>
         </span>

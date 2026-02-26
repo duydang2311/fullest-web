@@ -52,6 +52,19 @@ public static class FastEndpointsConfiguration
         config.Binding.ValueParserForEntityId<PriorityId>(numberEncoder);
         config.Binding.ValueParserForEntityId<CommentId>(numberEncoder);
         config.Binding.ValueParserForEntityId<ActivityId>(numberEncoder);
+        config.Binding.ValueParserForEntityId<EntityId>(numberEncoder);
+        config.Binding.ValueParserFor<Direction>(static values =>
+        {
+            var str = values.FirstOrDefault();
+            if (string.IsNullOrEmpty(str))
+            {
+                return new ParseResult(true, new Direction());
+            }
+            return new ParseResult(
+                true,
+                new Direction(str.Equals("desc", StringComparison.OrdinalIgnoreCase))
+            );
+        });
     }
 }
 

@@ -7,7 +7,7 @@
 </script>
 
 <h1 class="font-bold">Complete Registration</h1>
-<p class="text-base-fg-dim">Fill in the required information to create your new account.</p>
+<p class="text-fg-dim">Fill in the required information to create your new account.</p>
 <form method="post" use:enhance class="mt-4">
 	<fieldset class="space-y-4">
 		<div class={field()}>

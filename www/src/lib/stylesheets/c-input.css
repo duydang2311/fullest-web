@@ -6,7 +6,7 @@
 }
 
 .c-input {
-    /* --_text: var(--color-base-fg); */
+    /* --_text: var(--color-fg); */
     --_bg: var(--color-surface);
     --_border: var(--color-base-border);
     --_border-invalid: color-mix(in oklch, var(--color-negative-border) 60%, transparent);
@@ -22,13 +22,13 @@
     @apply transition;
 
     &:where(::placeholder) {
-        color: var(--color-base-fg-muted);
+        color: var(--color-fg-muted);
     }
 
     &:where(:focus-visible) {
         outline: none;
         --_border: var(--color-base-border-emph);
-        @apply ring-focus-base-fg;
+        @apply ring-focus-fg;
     }
 
     &:where([aria-invalid='true']) {

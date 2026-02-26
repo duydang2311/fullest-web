@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -18,14 +19,15 @@ public sealed class StatusChangedHydratorStrategy(
 
     public void CollectId(Activity activity)
     {
-        if (activity.Data is null)
+        if (activity.Metadata is null)
         {
             return;
         }
 
+        using var metadata = JsonDocument.Parse(activity.Metadata);
         var bag = new DataBag();
         if (
-            activity.Data.RootElement.TryGetProperty("StatusId", out var statusIdElement)
+            metadata.RootElement.TryGetProperty("StatusId", out var statusIdElement)
             && statusIdElement.ValueKind == JsonValueKind.Number
             && statusIdElement.TryGetInt64(out var statusIdValue)
         )
@@ -36,7 +38,7 @@ public sealed class StatusChangedHydratorStrategy(
             bag.StatusId = statusId;
         }
         if (
-            activity.Data.RootElement.TryGetProperty("OldStatusId", out statusIdElement)
+            metadata.RootElement.TryGetProperty("OldStatusId", out statusIdElement)
             && statusIdElement.ValueKind == JsonValueKind.Number
             && statusIdElement.TryGetInt64(out statusIdValue)
         )
@@ -59,14 +61,14 @@ public sealed class StatusChangedHydratorStrategy(
         }
 
         await using var scope = serviceScopeFactory.CreateAsyncScope();
-        await using var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         statuses = await db
             .Statuses.Where(a => statusIds.Contains(a.Id))
             .ToDictionaryAsync(a => a.Id, ct)
             .ConfigureAwait(false);
     }
 
-    public Activity Hydrate(Activity activity)
+    public JsonObject? HydrateMetadata(Activity activity)
     {
         if (
             statuses is null
@@ -74,17 +76,21 @@ public sealed class StatusChangedHydratorStrategy(
             || !activityIdToBag.TryGetValue(activity.Id, out var bag)
         )
         {
-            return activity;
+            return null;
         }
 
         var status = bag.StatusId.HasValue ? statuses.GetValueOrDefault(bag.StatusId.Value) : null;
         var oldStatus = bag.OldStatusId.HasValue
             ? statuses.GetValueOrDefault(bag.OldStatusId.Value)
             : null;
-        return activity with
+        return new JsonObject
         {
-            Data = JsonSerializer.SerializeToDocument(
-                new { Status = status, OldStatus = oldStatus },
+            ["status"] = JsonSerializer.SerializeToNode(
+                status,
+                jsonOptions.Value.SerializerOptions
+            ),
+            ["oldStatus"] = JsonSerializer.SerializeToNode(
+                oldStatus,
                 jsonOptions.Value.SerializerOptions
             ),
         };

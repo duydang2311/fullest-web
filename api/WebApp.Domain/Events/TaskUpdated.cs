@@ -3,38 +3,58 @@ using WebApp.Domain.Entities;
 
 namespace WebApp.Domain.Events;
 
-public sealed record TaskUpdated(TaskId TaskId, IReadOnlyCollection<TaskPropertyChanged> Changes);
+public sealed record TaskUpdated(
+    ProjectId ProjectId,
+    TaskId TaskId,
+    IReadOnlyCollection<TaskPropertyChanged> Changes
+);
 
-public abstract record TaskPropertyChanged(TaskId TaskId, UserId ActorId);
+public abstract record TaskPropertyChanged(ProjectId ProjectId, TaskId TaskId, UserId ActorId);
 
-public sealed record TaskAssigned(TaskId TaskId, UserId ActorId, UserId AssigneeId)
-    : TaskPropertyChanged(TaskId, ActorId);
+public sealed record TaskAssigned(
+    ProjectId ProjectId,
+    TaskId TaskId,
+    UserId ActorId,
+    UserId AssigneeId
+) : TaskPropertyChanged(ProjectId, TaskId, ActorId);
 
 public sealed record TaskStatusChanged(
+    ProjectId ProjectId,
     TaskId TaskId,
     UserId ActorId,
     StatusId? StatusId,
     StatusId? OldStatusId
-) : TaskPropertyChanged(TaskId, ActorId);
+) : TaskPropertyChanged(ProjectId, TaskId, ActorId);
 
 public sealed record TaskPriorityChanged(
+    ProjectId ProjectId,
     TaskId TaskId,
     UserId ActorId,
     PriorityId? PriorityId,
     PriorityId? OldPriorityId
-) : TaskPropertyChanged(TaskId, ActorId);
+) : TaskPropertyChanged(ProjectId, TaskId, ActorId);
 
 public sealed record TaskDueTimeChanged(
+    ProjectId ProjectId,
     TaskId TaskId,
     UserId ActorId,
     Instant? DueTime,
     string? DueTz,
     Instant? OldDueTime,
     string? OldDueTz
-) : TaskPropertyChanged(TaskId, ActorId);
+) : TaskPropertyChanged(ProjectId, TaskId, ActorId);
 
-public sealed record TaskTitleChanged(TaskId TaskId, UserId ActorId, string Title, string OldTitle)
-    : TaskPropertyChanged(TaskId, ActorId);
+public sealed record TaskTitleChanged(
+    ProjectId ProjectId,
+    TaskId TaskId,
+    UserId ActorId,
+    string Title,
+    string OldTitle
+) : TaskPropertyChanged(ProjectId, TaskId, ActorId);
 
-public sealed record TaskUnassigned(TaskId TaskId, UserId ActorId, UserId AssigneeId)
-    : TaskPropertyChanged(TaskId, ActorId);
+public sealed record TaskUnassigned(
+    ProjectId ProjectId,
+    TaskId TaskId,
+    UserId ActorId,
+    UserId AssigneeId
+) : TaskPropertyChanged(ProjectId, TaskId, ActorId);

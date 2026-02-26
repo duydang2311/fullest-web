@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -18,14 +19,15 @@ public sealed class PriorityChangedHydratorStrategy(
 
     public void CollectId(Activity activity)
     {
-        if (activity.Data is null)
+        if (activity.Metadata is null)
         {
             return;
         }
 
+        using var metadata = JsonDocument.Parse(activity.Metadata);
         var bag = new DataBag();
         if (
-            activity.Data.RootElement.TryGetProperty("PriorityId", out var priorityIdElement)
+            metadata.RootElement.TryGetProperty("PriorityId", out var priorityIdElement)
             && priorityIdElement.ValueKind == JsonValueKind.Number
             && priorityIdElement.TryGetInt64(out var priorityIdValue)
         )
@@ -36,7 +38,7 @@ public sealed class PriorityChangedHydratorStrategy(
             bag.PriorityId = priorityId;
         }
         if (
-            activity.Data.RootElement.TryGetProperty("OldPriorityId", out priorityIdElement)
+            metadata.RootElement.TryGetProperty("OldPriorityId", out priorityIdElement)
             && priorityIdElement.ValueKind == JsonValueKind.Number
             && priorityIdElement.TryGetInt64(out priorityIdValue)
         )
@@ -59,14 +61,14 @@ public sealed class PriorityChangedHydratorStrategy(
         }
 
         await using var scope = serviceScopeFactory.CreateAsyncScope();
-        await using var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         priorities = await db
             .Priorities.Where(a => priorityIds.Contains(a.Id))
             .ToDictionaryAsync(a => a.Id, ct)
             .ConfigureAwait(false);
     }
 
-    public Activity Hydrate(Activity activity)
+    public JsonObject? HydrateMetadata(Activity activity)
     {
         if (
             priorities is null
@@ -74,7 +76,7 @@ public sealed class PriorityChangedHydratorStrategy(
             || !activityIdToBag.TryGetValue(activity.Id, out var bag)
         )
         {
-            return activity;
+            return null;
         }
 
         var priority = bag.PriorityId.HasValue
@@ -83,10 +85,15 @@ public sealed class PriorityChangedHydratorStrategy(
         var oldPriority = bag.OldPriorityId.HasValue
             ? priorities.GetValueOrDefault(bag.OldPriorityId.Value)
             : null;
-        return activity with
+
+        return new JsonObject
         {
-            Data = JsonSerializer.SerializeToDocument(
-                new { Priority = priority, OldPriority = oldPriority },
+            ["priority"] = JsonSerializer.SerializeToNode(
+                priority,
+                jsonOptions.Value.SerializerOptions
+            ),
+            ["oldPriority"] = JsonSerializer.SerializeToNode(
+                oldPriority,
                 jsonOptions.Value.SerializerOptions
             ),
         };

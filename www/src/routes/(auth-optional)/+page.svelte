@@ -1,12 +1,21 @@
 <script lang="ts">
+    import { untrack } from 'svelte';
+    import { setPageContext } from './_page/utils.svelte';
     import Anonymous from './Anonymous.svelte';
-    import Authenticated from './Authenticated.svelte';
 
     const { data } = $props();
+
+    untrack(() => {
+        if (data.session) {
+            setPageContext({
+                projectList: data.projectList,
+            });
+        }
+    });
 </script>
 
 {#if data.session}
-    <Authenticated user={data.session.user} />
+    <data.Authenticated />
 {:else}
     <Anonymous />
 {/if}

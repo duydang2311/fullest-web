@@ -1,25 +1,23 @@
-import type { Task } from './task';
 import type { User } from './user';
 
 export interface Activity {
     createdTime: string;
     id: string;
-    taskId?: string;
-    task?: Task;
     kind: ActivityKind;
     actorId: string;
     actor: User;
-    data?: unknown;
+    projectId: string | null;
+    taskId: string | null;
+    metadata: unknown | null;
 }
 
 export enum ActivityKind {
     Created = 'created',
-
-    TitleUpdated = 'title_updated',
 
     Commented = 'commented',
     Assigned = 'assigned',
     Unassigned = 'unassigned',
     StatusChanged = 'status_changed',
     PriorityChanged = 'priority_changed',
+    TitleChanged = 'title_changed',
 }

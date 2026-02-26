@@ -1,18 +1,13 @@
 import { attempt } from '@duydang2311/attempt';
-import { createInfiniteQuery, createQuery } from '@tanstack/svelte-query';
 import { getContext, setContext } from 'svelte';
 import { ActivityKind, type Activity } from '~/lib/models/activity';
 import type { CursorList } from '~/lib/models/paginated';
 import type { User, UserPreset } from '~/lib/models/user';
 import type { HttpClient } from '~/lib/services/http_client';
 import { jsonify } from '~/lib/utils/http';
-import { usePageData } from '~/lib/utils/kit';
-import { QueryKey } from '~/lib/utils/query';
-import { useRuntime } from '~/lib/utils/runtime';
 import { v } from '~/lib/utils/valibot';
 import { createValidator } from '~/lib/utils/validation';
 import type { PageData } from '../$types';
-import { getTask } from './page.remote';
 
 export const validators = {
     [ActivityKind.Commented]: createValidator(
@@ -61,7 +56,7 @@ export function fetchActivityList(http: HttpClient) {
             query: {
                 taskId,
                 after,
-                fields: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Data',
+                select: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Metadata',
                 size: size ?? 20,
                 sort: 'Id',
             },
@@ -71,7 +66,7 @@ export function fetchActivityList(http: HttpClient) {
                 jsonify(() =>
                     resp.json<
                         CursorList<
-                            Pick<Activity, 'id' | 'createdTime' | 'kind' | 'data'> & {
+                            Pick<Activity, 'id' | 'createdTime' | 'kind' | 'metadata'> & {
                                 actor: Pick<User, 'id'> & UserPreset['Avatar'];
                             },
                             string
@@ -79,7 +74,7 @@ export function fetchActivityList(http: HttpClient) {
                     >()
                 )
             ),
-            attempt.map(a => {
+            attempt.map((a) => {
                 console.log(a);
                 return a;
             }),
@@ -93,7 +88,7 @@ const key = {};
 export function setPageContext(options: {
     task: PageData['task'];
     activityList?: CursorList<
-        Pick<Activity, 'id' | 'createdTime' | 'kind' | 'data'> & {
+        Pick<Activity, 'id' | 'createdTime' | 'kind' | 'metadata'> & {
             actor: Pick<User, 'id'> & UserPreset['Avatar'];
         },
         string
@@ -102,7 +97,7 @@ export function setPageContext(options: {
     let task = $state.raw(options.task);
     let activityList = $state.raw<
         | CursorList<
-              Pick<Activity, 'id' | 'createdTime' | 'kind' | 'data'> & {
+              Pick<Activity, 'id' | 'createdTime' | 'kind' | 'metadata'> & {
                   actor: Pick<User, 'id'> & UserPreset['Avatar'];
               },
               string
@@ -127,15 +122,4 @@ export function setPageContext(options: {
 
 export function usePageContext() {
     return getContext(key) as ReturnType<typeof setPageContext>;
-}
-
-export function invalidateActivityList(ctx: ReturnType<typeof setPageContext>, http: HttpClient) {
-    return ()  => {};
-    return async () => {
-        ctx.activityList = await fetchActivityList(http)(
-            ctx.task.id,
-            null,
-            ctx.activityList?.items.length
-        );
-    };
 }

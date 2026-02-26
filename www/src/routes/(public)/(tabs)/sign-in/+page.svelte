@@ -41,7 +41,7 @@
 	<div>
 		<div class="mb-4 flex items-center gap-4">
 			<div class="bg-base-border h-px flex-1"></div>
-			<span class="text-base-fg-muted uppercase">or</span>
+			<span class="text-fg-muted uppercase">or</span>
 			<div class="bg-base-border h-px flex-1"></div>
 		</div>
 		<a

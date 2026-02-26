@@ -26,6 +26,6 @@
 				<GitHub />
 			</a>
 		</div>
-		<p class="text-base-fg-muted mt-12 text-sm">© 2025 Fullest, Inc.</p>
+		<p class="text-fg-muted mt-12 text-sm">© 2025 Fullest, Inc.</p>
 	</div>
 </footer>

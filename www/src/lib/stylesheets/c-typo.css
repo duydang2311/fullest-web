@@ -1,17 +1,17 @@
 .c-label {
 	display: block;
 	font-size: var(--text-body-sm);
-	/* color: var(--color-base-fg-dim); */
+	/* color: var(--color-fg-dim); */
 }
 
 .c-help-text {
 	font-size: var(--text-body-sm);
-	color: var(--color-base-fg-dim);
+	color: var(--color-fg-dim);
 }
 
 .c-caption {
 	font-size: var(--text-body-xs);
-	color: var(--color-base-fg-dim);
+	color: var(--color-fg-dim);
 }
 
 .c-link {

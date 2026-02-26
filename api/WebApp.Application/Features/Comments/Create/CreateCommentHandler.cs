@@ -52,7 +52,7 @@ public sealed class CreateCommentHandler(
         };
         await db.AddAsync(comment, ct).ConfigureAwait(false);
 
-        var commentCreated = new CommentCreated(comment);
+        var commentCreated = new CommentCreated(command.ProjectId, comment);
         foreach (var handler in commentCreatedHandlers)
         {
             await handler.HandleAsync(commentCreated, ct).ConfigureAwait(false);

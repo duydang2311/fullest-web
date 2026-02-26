@@ -12,8 +12,8 @@
     const { user }: Props = $props();
 </script>
 
-<header class="border-b-surface-border border-b px-8 py-2">
-    <nav class="max-w-container-xl mx-auto flex w-full items-center justify-between gap-8">
+<header class="px-2 lg:px-4 h-12 content-center">
+    <nav class="flex items-center justify-between gap-8">
         <div class="flex items-center gap-2">
             <LogoType />
             <a href="/" class={button({ variant: 'base', ghost: true })}>Dashboard</a>

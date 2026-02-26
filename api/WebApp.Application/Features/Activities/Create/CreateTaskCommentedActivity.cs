@@ -13,9 +13,10 @@ public sealed class CreateTaskCommentedActivity(BaseDbContext db) : ICommentCrea
                 new Activity
                 {
                     Kind = ActivityKind.Commented,
+                    ProjectId = created.ProjectId,
                     TaskId = created.Comment.TaskId,
                     ActorId = created.Comment.AuthorId,
-                    Data = JsonSerializer.SerializeToDocument(
+                    Metadata = JsonSerializer.Serialize(
                         new { CommentId = created.Comment.Id.Value }
                     ),
                 },

@@ -20,7 +20,7 @@
         onOpenChange: async (details) => {
             if (details.open) {
                 menu.api.setHighlightedValue(ctx.task.status?.id ?? '');
-                statuses = await getStatuses(data.project.id).then((a) => a.items);
+                statuses = await getStatuses(data.project.id).run().then((a) => a.items);
             }
         },
         onSelect: (details) => updateStatus(details.value),
@@ -44,7 +44,7 @@
                     actor: data.user,
                     createdTime: new Date().toISOString(),
                     kind: ActivityKind.PriorityChanged,
-                    data: {
+                    metadata: {
                         status: {
                             id: statusId,
                             name: status.name,

@@ -13,10 +13,11 @@ public sealed class CreateTaskPriorityChangedActivity(BaseDbContext db)
         await db.Activities.AddAsync(
             new Activity
             {
-                TaskId = changed.TaskId,
                 ActorId = changed.ActorId,
                 Kind = ActivityKind.PriorityChanged,
-                Data = JsonSerializer.SerializeToDocument(
+                ProjectId = changed.ProjectId,
+                TaskId = changed.TaskId,
+                Metadata = JsonSerializer.Serialize(
                     new
                     {
                         PriorityId = changed.PriorityId?.Value,

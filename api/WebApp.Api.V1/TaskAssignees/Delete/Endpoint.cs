@@ -1,4 +1,3 @@
-using Ardalis.GuardClauses;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -35,8 +34,9 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
             return TypedResults.NotFound(Problem.FromError(ErrorCodes.NotFound));
         }
 
+        var projectId = (ProjectId)HttpContext.Items["ProjectId"]!;
         await eventHub
-            .PublishAsync(new TaskUnassigned(req.TaskId, req.CallerId, req.UserId), ct)
+            .PublishAsync(new TaskUnassigned(projectId, req.TaskId, req.CallerId, req.UserId), ct)
             .ConfigureAwait(false);
         await db.SaveChangesAsync(ct).ConfigureAwait(false);
         await tx.CommitAsync(ct).ConfigureAwait(false);

@@ -14,12 +14,11 @@ public sealed class CreateTaskAssignedActivity(BaseDbContext db)
         await db.Activities.AddAsync(
             new Activity
             {
-                TaskId = assigned.TaskId,
                 ActorId = assigned.ActorId,
                 Kind = ActivityKind.Assigned,
-                Data = JsonSerializer.SerializeToDocument(
-                    new { AssigneeId = assigned.AssigneeId.Value }
-                ),
+                ProjectId = assigned.ProjectId,
+                TaskId = assigned.TaskId,
+                Metadata = JsonSerializer.Serialize(new { AssigneeId = assigned.AssigneeId.Value }),
             },
             ct
         );

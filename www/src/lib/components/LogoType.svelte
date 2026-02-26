@@ -7,5 +7,5 @@
 
 <div {...props} class="flex items-center gap-1 {cls}">
 	<Logo />
-	<p class="text-base-fg-strong font-black tracking-tight">FULLEST</p>
+	<p class="text-fg-emph font-black tracking-tight">FULLEST</p>
 </div>

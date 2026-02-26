@@ -14,10 +14,9 @@ import {
 } from '$lib/utils/errors';
 import { jsonify, parseHttpProblem } from '$lib/utils/http';
 import { problemDetailsValidator } from '$lib/utils/problem';
-import { useRuntime } from '~/lib/utils/runtime.server';
-import pipe from '@bitty/pipe';
 import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';
+import { useRuntime } from '~/lib/utils/runtime.server';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies, url }) => {
@@ -53,7 +52,7 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
             }),
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
-    )(pipe(mapFetchException, enrich({ step: 'exchange_token' })));
+    )((e) => enrich({ step: 'exchange_token' })(mapFetchException(e)));
     if (!exchanged.ok) {
         return error(500, exchanged.error);
     }

@@ -23,17 +23,17 @@
                 return true;
             }
             invariant(
-                typeof a.data === 'object' &&
-                    a.data &&
-                    'comment' in a.data &&
-                    a.data.comment &&
-                    typeof a.data.comment === 'object' &&
-                    a.data.comment &&
-                    'id' in a.data.comment &&
-                    typeof a.data.comment.id === 'string',
-                'activity.data.comment.id must be string'
+                typeof a.metadata === 'object' &&
+                    a.metadata &&
+                    'comment' in a.metadata &&
+                    a.metadata.comment &&
+                    typeof a.metadata.comment === 'object' &&
+                    a.metadata.comment &&
+                    'id' in a.metadata.comment &&
+                    typeof a.metadata.comment.id === 'string',
+                'activity.metadata.comment.id must be string'
             );
-            return a.data.comment.id !== data.task.initialCommentId;
+            return a.metadata.comment.id !== data.task.initialCommentId;
         }) ?? []
     );
     const stuck = $derived(listBusy.for(1000));

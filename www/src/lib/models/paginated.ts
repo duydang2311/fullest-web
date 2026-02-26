@@ -6,13 +6,10 @@ export interface OffsetList<T> {
     totalPages: number;
 }
 
-export interface KeysetList<T, TKey> {
+export interface KeysetList<T> {
     items: T[];
     hasPrevious: boolean;
     hasNext: boolean;
-    before?: TKey;
-    after?: TKey;
-    totalCount: number;
 }
 
 export interface CursorList<T, TKey> {
@@ -45,31 +42,22 @@ export function offsetList<T>(
     };
 }
 
-export function keysetList<T, TKey>(): KeysetList<T, TKey>;
-export function keysetList<T, TKey>(
-    items: T[],
-    totalCount: number,
-    hasPrevious: boolean,
-    hasNext: boolean,
-    before?: TKey,
-    after?: TKey
-): KeysetList<T, TKey>;
-export function keysetList<T, TKey>(
+export function keysetList<T>(): KeysetList<T>;
+export function keysetList<T>(items: T[], hasPrevious: boolean, hasNext: boolean): KeysetList<T>;
+export function keysetList<T>(
     items?: T[],
-    totalCount?: number,
     hasPrevious?: boolean,
-    hasNext?: boolean,
-    before?: TKey,
-    after?: TKey
-): KeysetList<T, TKey> {
+    hasNext?: boolean
+): KeysetList<T> {
     return {
         items: items ?? [],
-        totalCount: totalCount ?? 0,
         hasPrevious: hasPrevious ?? false,
         hasNext: hasNext ?? false,
-        before,
-        after,
     };
+}
+
+export function reverseKeysetList<T>(list: KeysetList<T>) {
+    return keysetList(list.items.toReversed(), list.hasNext, list.hasPrevious);
 }
 
 export function cursorList<T, TKey>(): CursorList<T, TKey>;
@@ -87,5 +75,34 @@ export function cursorList<T, TKey>(
         items: items ?? [],
         cursor: cursor ?? null,
         hasMore: hasMore ?? false,
+    };
+}
+
+export function offsetPagination({ list, page }: { list: OffsetList<unknown>; page: number }) {
+    let pages: (number | '...')[] = undefined!;
+    if (list.totalPages <= 7) {
+        pages = Array.from({ length: list.totalPages }, (_, i) => i + 1);
+    } else {
+        if (page <= 4) {
+            pages = [1, 2, 3, 4, 5, '...', list.totalPages];
+        } else if (page >= list.totalPages - 3) {
+            pages = [
+                1,
+                '...',
+                list.totalPages - 4,
+                list.totalPages - 3,
+                list.totalPages - 2,
+                list.totalPages - 1,
+                list.totalPages,
+            ];
+        } else {
+            pages = [1, '...', page - 1, page, page + 1, '...', list.totalPages];
+        }
+    }
+    return {
+        page,
+        pages,
+        canPrev: page > 1,
+        canNext: page < list.totalPages,
     };
 }

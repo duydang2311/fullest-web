@@ -84,7 +84,16 @@ public sealed class AppDbContext
             .Properties<ActivityId>()
             .HaveConversion<EntityIdConverter<ActivityId, long>>();
         configurationBuilder
+            .Properties<EntityId>()
+            .HaveConversion<EntityIdConverter<EntityId, long>>();
+        configurationBuilder
             .Properties<ActivityKind>()
             .HaveConversion<EnumToNumberConverter<ActivityKind, int>>();
+        configurationBuilder
+            .Properties<ActivityResourceKind>()
+            .HaveConversion<EnumToNumberConverter<ActivityResourceKind, byte>>();
+        configurationBuilder
+            .Properties<ActivityContextKind>()
+            .HaveConversion<EnumToNumberConverter<ActivityContextKind, byte>>();
     }
 }

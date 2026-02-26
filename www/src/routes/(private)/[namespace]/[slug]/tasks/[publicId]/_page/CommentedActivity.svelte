@@ -14,14 +14,14 @@
     const {
         activity,
     }: {
-        activity: Pick<Activity, 'createdTime' | 'data'> & {
+        activity: Pick<Activity, 'createdTime'> & {
             actor: Pick<User, 'name' | 'displayName' | 'imageKey' | 'imageVersion'>;
-            data: { comment: { id: string; contentJson: string | null } };
+            metadata: { comment: { id: string; contentJson: string | null } };
         };
     } = $props();
 
     const taskId = $derived(usePageData<PageData>().task.id);
-    const comment = $derived(activity.data.comment);
+    const comment = $derived(activity.metadata.comment);
     let isEditing = $state.raw(false);
 </script>
 
@@ -35,7 +35,7 @@
                 <a href={namespaceUrl(activity.actor.name)} class="c-link">
                     <strong>{activity.actor.displayName ?? activity.actor.name}</strong>
                 </a>
-                <span class="text-sm font-medium text-base-fg-dim">
+                <span class="text-sm font-medium text-fg-dim">
                     · <RelativeDateTime time={activity.createdTime} />
                 </span>
             </span>
@@ -50,7 +50,7 @@
                 {#if comment.contentJson && comment?.contentJson.length > 0}
                     {@html DOMPurify.sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
                 {:else}
-                    <i class="text-base-fg-muted">No description provided.</i>
+                    <i class="text-fg-muted">No description provided.</i>
                 {/if}
             </article>
         {/if}

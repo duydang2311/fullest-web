@@ -12,6 +12,7 @@ public sealed class CreateTaskCreatedActivity(BaseDbContext db) : ITaskCreatedHa
                 new Activity
                 {
                     Kind = ActivityKind.Created,
+                    ProjectId = created.Task.ProjectId,
                     TaskId = created.Task.Id,
                     ActorId = created.Task.AuthorId,
                 },

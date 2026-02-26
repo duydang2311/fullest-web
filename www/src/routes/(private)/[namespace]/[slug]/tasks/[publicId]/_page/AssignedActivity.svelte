@@ -8,16 +8,16 @@
     const {
         activity,
     }: {
-        activity: Pick<Activity, 'createdTime' | 'data'> & {
+        activity: Pick<Activity, 'createdTime'> & {
             actor: Pick<User, 'id'> & UserPreset['Avatar'];
-            data: { assignee: Pick<User, 'id' | 'name' | 'displayName'> };
+            metadata: { assignee: Pick<User, 'id' | 'name' | 'displayName'> };
         };
     } = $props();
 
-    const data = $derived(activity.data);
+    const metadata = $derived(activity.metadata);
 </script>
 
-{#if data}
+{#if metadata}
     <div class="flex gap-2 items-center px-2">
         <ActivityAvatar user={activity.actor} />
         <div>
@@ -25,15 +25,15 @@
                 <strong>{activity.actor.displayName ?? activity.actor.name}</strong>
             </a>
             <span class="text-sm">
-                {#if data.assignee.id === activity.actor.id}
+                {#if metadata.assignee.id === activity.actor.id}
                     <span>self-assigned</span>
                 {:else}
                     <span>
                         assigned
-                        {data.assignee.displayName ?? data.assignee.name}
+                        {metadata.assignee.displayName ?? metadata.assignee.name}
                     </span>
                 {/if}
-                <span class="text-sm font-medium text-base-fg-dim">
+                <span class="text-sm font-medium text-fg-dim">
                     · <RelativeDateTime time={activity.createdTime} />
                 </span>
             </span>

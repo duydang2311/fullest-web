@@ -44,7 +44,8 @@
                     ...oldActivityList,
                     items: oldActivityList.items.filter(
                         (a) =>
-                            !validators.commented.check(a.data) || a.data.comment.id !== comment.id
+                            !validators.commented.check(a.metadata) ||
+                            a.metadata.comment.id !== comment.id
                     ),
                 };
                 await deleteComment({ id: comment.id }).finally(invalidateAll);

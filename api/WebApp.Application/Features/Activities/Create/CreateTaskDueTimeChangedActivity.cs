@@ -14,10 +14,11 @@ public sealed class CreateTaskDueTimeChangedActivity(BaseDbContext db)
         await db.Activities.AddAsync(
             new Activity
             {
-                TaskId = changed.TaskId,
                 ActorId = changed.ActorId,
                 Kind = ActivityKind.DueTimeChanged,
-                Data = JsonSerializer.SerializeToDocument(
+                ProjectId = changed.ProjectId,
+                TaskId = changed.TaskId,
+                Metadata = JsonSerializer.Serialize(
                     new
                     {
                         DueTime = changed.DueTime.HasValue ? (Instant?)changed.DueTime.Value : null,

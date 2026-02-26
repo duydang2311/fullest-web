@@ -5,8 +5,8 @@
     import {
         ChevronDownOutline,
         PlusOutline,
-        ProjectOutline,
-        TaskOutline,
+        CubeOutline,
+        CircleDotOutline,
     } from '~/lib/components/icons';
     import { button } from '~/lib/utils/styles';
 
@@ -31,8 +31,8 @@
     <ChevronDownOutline />
 </button>
 <div use:portal {...menu.api.getPositionerProps()}>
-    <ul {...menu.api.getContentProps()} class="c-menu-content flex flex-col gap-1">
-        {#each [{ icon: ProjectOutline, href: '/new', label: 'New project' }, { icon: TaskOutline, href: '/new-task', label: 'New task' }] as item (item.href)}
+    <ul {...menu.api.getContentProps()} class="c-menu-content flex flex-col gap-1 min-w-40">
+        {#each [{ icon: CubeOutline, href: '/new', label: 'New project' }, { icon: CircleDotOutline, href: '/new-task', label: 'New task' }] as item (item.href)}
             <li>
                 <a
                     href={item.href}

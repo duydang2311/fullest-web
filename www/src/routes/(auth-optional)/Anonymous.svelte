@@ -1,11 +1,10 @@
 <script lang="ts">
     import Footer from '~/lib/components/Footer.svelte';
-    import { Logo } from '~/lib/components/icons';
+    import LogoType from '~/lib/components/LogoType.svelte';
     import { button } from '~/lib/utils/styles';
     import FeaturesSection from './FeaturesSection.svelte';
     import HeaderActions from './HeaderActions.svelte';
     import ScrollingText from './ScrollingText.svelte';
-    import LogoType from '~/lib/components/LogoType.svelte';
 </script>
 
 <header class="mb-8 p-4">
@@ -22,7 +21,7 @@
     <section class="min-h-[calc(100vh-2rem-4rem-2rem)] p-8">
         <div class="text-center">
             <h1
-                class="text-base-fg-strong text-[clamp(var(--text-display-md),calc(var(--text-body-md)+6vw),6rem)] text-balance font-bold leading-none tracking-tighter"
+                class="text-fg-emph text-[clamp(var(--text-display-md),calc(var(--text-body-md)+6vw),6rem)] text-balance font-bold leading-none tracking-tighter"
             >
                 <div>Task management</div>
                 <div class="mt-2 flex flex-wrap items-center justify-center gap-2">

@@ -3,7 +3,7 @@
 }
 
 .c-inline-alert--header--base {
-	--_color: var(--color-base-fg-strong);
+	--_color: var(--color-fg-emph);
 }
 
 .c-inline-alert--header--negative {

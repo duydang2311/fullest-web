@@ -26,7 +26,7 @@
         </a>
     </div> -->
     <div class="h-16 flex gap-4 border-b border-b-surface-border">
-        <h1 class="text-title-xs tracking-tight font-bold content-center text-base-fg-strong pl-8">
+        <h1 class="text-title-xs tracking-tight font-bold content-center text-fg-emph pl-8">
             Tasks
         </h1>
     </div>
@@ -34,19 +34,19 @@
         class="flex *:flex-1 divide-x divide-surface-border bg-surface-subtle border-b-surface-border border-b"
     >
         <div class="h-36 content-center px-8">
-            <div class="text-base-fg-muted tracking-wide text-sm">PROGRESS</div>
+            <div class="text-fg-muted tracking-wide text-sm">PROGRESS</div>
             <div class="text-4xl font-light">92%</div>
         </div>
         <div class="h-36 content-center px-8">
-            <div class="text-base-fg-muted tracking-wide text-sm">OPEN ITEMS</div>
+            <div class="text-fg-muted tracking-wide text-sm">OPEN ITEMS</div>
             <div class="text-4xl font-light">42</div>
         </div>
         <div class="h-36 content-center px-8">
-            <div class="text-base-fg-muted tracking-wide text-sm">DUE DATE</div>
+            <div class="text-fg-muted tracking-wide text-sm">DUE DATE</div>
             <div class="text-4xl font-light">84</div>
         </div>
         <div class="h-36 content-center px-8">
-            <div class="text-base-fg-muted tracking-wide text-sm">TEAM</div>
+            <div class="text-fg-muted tracking-wide text-sm">TEAM</div>
             <div class="text-4xl font-light">10</div>
         </div>
     </div> -->
@@ -59,7 +59,7 @@
                     class="c-input bg-base border-0 max-w-64 pl-10"
                 />
                 <MagnifyingGlass
-                    class="absolute left-2 top-1/2 -translate-y-1/2 text-base-fg-muted"
+                    class="absolute left-2 top-1/2 -translate-y-1/2 text-fg-muted"
                 />
             </div>
             <a
@@ -81,15 +81,15 @@
                     <tr
                         class="border-b-surface-border col-span-full grid grid-cols-subgrid items-center border-b *:px-4 *:py-4 px-8"
                     >
-                        <th class="text-base-fg-dim font-normal text-sm tracking-wide">ID</th>
-                        <th class="text-base-fg-dim font-normal text-sm tracking-wide">Task</th>
-                        <th class="text-base-fg-dim font-normal text-sm tracking-wide">
+                        <th class="text-fg-dim font-normal text-sm tracking-wide">ID</th>
+                        <th class="text-fg-dim font-normal text-sm tracking-wide">Task</th>
+                        <th class="text-fg-dim font-normal text-sm tracking-wide">
                             Author
                         </th>
-                        <th class="text-base-fg-dim font-normal text-sm tracking-wide">
+                        <th class="text-fg-dim font-normal text-sm tracking-wide">
                             Status
                         </th>
-                        <th class="text-base-fg-dim font-normal text-sm tracking-wide">
+                        <th class="text-fg-dim font-normal text-sm tracking-wide">
                             Priority
                         </th>
                     </tr>
@@ -99,7 +99,7 @@
                         <tr
                             class="col-span-full items-center grid grid-cols-subgrid *:px-4 *:py-6 px-8 border-b border-b-surface-border"
                         >
-                            <td class="text-base-fg-muted text-sm tracking-wide">
+                            <td class="text-fg-muted text-sm tracking-wide">
                                 #{task.publicId}
                             </td>
                             <td

@@ -2,6 +2,7 @@ using FastEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebApp.Api.Common.Codecs;
 using WebApp.Domain.Commands;
+using WebApp.Domain.Entities;
 
 namespace WebApp.Api.V1.Comments.Create;
 
@@ -23,8 +24,9 @@ public sealed class Endpoint(
         CancellationToken ct
     )
     {
+        var projectId = (ProjectId)HttpContext.Items["ProjectId"]!;
         var comment = await createCommentHandler.HandleAsync(
-            new CreateComment(req.TaskId, req.CallerId)
+            new CreateComment(projectId, req.TaskId, req.CallerId)
             {
                 ContentJson = req.ContentJson,
                 ContentText = req.ContentText,

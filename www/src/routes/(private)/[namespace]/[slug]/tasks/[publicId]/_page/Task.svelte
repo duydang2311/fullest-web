@@ -75,7 +75,7 @@
             </div>
         </div>
         <h1
-            class="leading-none text-title-sm text-base-fg-strong font-bold max-w-container-lg mx-auto"
+            class="leading-none text-title-sm text-fg-emph font-bold max-w-container-lg mx-auto"
         >
             {ctx.task.title}
         </h1>
@@ -103,7 +103,7 @@
                 {#if comment?.contentJson && comment?.contentJson.length > 0}
                     {@html DOMPurify.sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
                 {:else}
-                    <i class="text-base-fg-muted">No description provided.</i>
+                    <i class="text-fg-muted">No description provided.</i>
                 {/if}
             </article>
         {/if}

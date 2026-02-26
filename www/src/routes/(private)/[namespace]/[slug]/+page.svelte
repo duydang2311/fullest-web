@@ -25,7 +25,7 @@
                 <div class="size-avatar-sm bg-base-subtle rounded-full"></div>
                 <a
                     href="/{page.params.namespace}/{page.params.slug}"
-                    class="c-link text-title-lg text-title-xs font-semibold tracking-tight"
+                    class="c-link text-title-lg text-title-xs tracking-tight"
                 >
                     {data.project.name}
                 </a>
@@ -35,7 +35,7 @@
             </div>
         </div>
         {#if data.project.summary && data.project.summary.length > 0}
-            <p class="max-w-container-md text-base-fg-dim mt-2">
+            <p class="max-w-container-md text-fg-dim mt-2">
                 {data.project.summary}
             </p>
         {/if}

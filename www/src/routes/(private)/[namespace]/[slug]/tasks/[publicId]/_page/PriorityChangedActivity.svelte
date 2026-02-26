@@ -9,19 +9,19 @@
     const {
         activity,
     }: {
-        activity: Pick<Activity, 'createdTime' | 'data'> & {
+        activity: Pick<Activity, 'createdTime'> & {
             actor: Pick<User, 'name' | 'displayName' | 'imageKey' | 'imageVersion'>;
-            data: {
+            metadata: {
                 priority: Pick<Priority, 'name'> | null;
                 oldPriority: Pick<Priority, 'name'> | null;
             };
         };
     } = $props();
 
-    const data = $derived(activity.data);
+    const metadata = $derived(activity.metadata);
 </script>
 
-{#if data}
+{#if metadata}
     <div class="flex gap-2 items-center px-2">
         <ActivityAvatar user={activity.actor} />
         <div>
@@ -31,17 +31,17 @@
             <span class="text-sm">
                 <span>changed the priority to</span>
                 <span class="px-2 bg-surface-emph rounded-sm">
-                    {data.priority?.name ?? 'None'}
+                    {metadata.priority?.name ?? 'None'}
                 </span>
-                <span class="text-sm font-medium text-base-fg-dim">
+                <span class="text-sm font-medium text-fg-dim">
                     · <RelativeDateTime time={activity.createdTime} />
                 </span>
             </span>
         </div>
         <div
-            class="ml-auto px-2 bg-surface-subtle rounded-sm text-sm line-through text-base-fg-muted"
+            class="ml-auto px-2 bg-surface-subtle rounded-sm text-sm line-through text-fg-muted"
         >
-            {data.oldPriority?.name ?? 'None'}
+            {metadata.oldPriority?.name ?? 'None'}
         </div>
     </div>
 {/if}

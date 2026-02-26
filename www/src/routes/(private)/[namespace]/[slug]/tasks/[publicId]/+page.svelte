@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="hidden lg:block w-64 h-fit sticky top-0">
-        <div class="text-sm text-base-fg-dim font-medium border-b border-b-surface-border p-4">
+        <div class="text-sm text-fg-dim font-medium border-b border-b-surface-border p-4">
             Properties
         </div>
         <div class="flex flex-col gap-2 p-4">

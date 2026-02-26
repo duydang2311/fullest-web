@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -18,9 +19,14 @@ public sealed class CommentedHydratorStrategy(
 
     public void CollectId(Activity activity)
     {
+        if (activity.Metadata is null)
+        {
+            return;
+        }
+
+        using var metadata = JsonDocument.Parse(activity.Metadata);
         if (
-            activity.Data is not null
-            && activity.Data.RootElement.TryGetProperty("CommentId", out var commentIdElement)
+            metadata.RootElement.TryGetProperty("CommentId", out var commentIdElement)
             && commentIdElement.TryGetInt64(out var commentIdValue)
         )
         {
@@ -40,14 +46,14 @@ public sealed class CommentedHydratorStrategy(
         }
 
         await using var scope = serviceScopeFactory.CreateAsyncScope();
-        await using var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         comments = await db
             .Comments.Where(a => commentIds.Contains(a.Id))
             .ToDictionaryAsync(a => a.Id, ct)
             .ConfigureAwait(false);
     }
 
-    public Activity Hydrate(Activity activity)
+    public JsonObject? HydrateMetadata(Activity activity)
     {
         if (
             comments is null
@@ -56,12 +62,13 @@ public sealed class CommentedHydratorStrategy(
             || !comments.TryGetValue(commentId, out var comment)
         )
         {
-            return activity;
+            return null;
         }
-        return activity with
+
+        return new JsonObject
         {
-            Data = JsonSerializer.SerializeToDocument(
-                new { Comment = comment },
+            ["comment"] = JsonSerializer.SerializeToNode(
+                comment,
                 jsonOptions.Value.SerializerOptions
             ),
         };
