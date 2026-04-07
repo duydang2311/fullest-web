@@ -76,7 +76,7 @@
                 />
             {:else}
                 <div
-                    class="size-avatar-lg rounded-full bg-base-light border-2 border-base-border"
+                    class="size-avatar-lg rounded-full bg-surface border-2 border-base-border"
                 ></div>
             {/if}
             <button

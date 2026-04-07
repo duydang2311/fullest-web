@@ -17,7 +17,7 @@
 	</div>
 	<div class="relative h-full">
 		<div
-			class="bg-base max-w-160 min-[40rem]:rounded-r-3xl relative flex h-full min-h-max flex-col overflow-hidden p-8 pt-20"
+			class="bg-surface max-w-160 min-[40rem]:rounded-r-3xl relative flex h-full min-h-max flex-col overflow-hidden p-8 pt-20"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

@@ -63,6 +63,7 @@ export function fetchActivityList(http: HttpClient) {
                 after,
                 fields: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Data',
                 size: size ?? 20,
+                sort: 'Id',
             },
         });
         return result.pipe(
@@ -78,6 +79,10 @@ export function fetchActivityList(http: HttpClient) {
                     >()
                 )
             ),
+            attempt.map(a => {
+                console.log(a);
+                return a;
+            }),
             attempt.unwrap
         );
     };

@@ -19,7 +19,7 @@
             >
                 {#if tabs.value === item.href}
                     <div
-                        class="bg-base-active absolute size-full animate-slide-in-from-b duration-300"
+                        class="bg-base-subtle absolute size-full animate-slide-in-from-b duration-300"
                     ></div>
                 {/if}
                 <a

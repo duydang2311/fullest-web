@@ -19,10 +19,10 @@
     const fieldErrors = $derived(appForm.errors ?? {});
 </script>
 
-<main class="bg-base-light dark:bg-base flex-1 p-4 md:p-8 lg:p-12">
+<main class="bg-surface dark:bg-base flex-1 p-4 md:p-8 lg:p-12">
     <form
         method="post"
-        class="max-w-container-sm mx-auto flex-1 border border-base-border rounded-lg shadow-xs divide-y divide-base-border-weak"
+        class="max-w-container-sm mx-auto flex-1 border border-base-border rounded-lg shadow-xs divide-y divide-surface-border"
         novalidate
         {@attach appForm.withEnhanced()}
     >

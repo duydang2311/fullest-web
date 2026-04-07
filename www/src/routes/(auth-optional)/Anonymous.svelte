@@ -10,7 +10,7 @@
 
 <header class="mb-8 p-4">
     <div
-        class="bg-base-light dark:bg-base-dark border-base-border sticky top-0 h-16 content-center rounded-full border px-8"
+        class="bg-surface dark:bg-base-subtle border-base-border sticky top-0 h-16 content-center rounded-full border px-8"
     >
         <nav class="flex items-center justify-between">
             <LogoType />

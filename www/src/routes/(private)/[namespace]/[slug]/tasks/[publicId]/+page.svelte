@@ -21,7 +21,7 @@
     });
 </script>
 
-<div class="divide-base-border-weak mx-auto w-full flex-1 lg:flex lg:divide-x max-h-full">
+<div class="divide-surface-border mx-auto w-full flex-1 lg:flex lg:divide-x max-h-full">
     <div class="flex-1 py-4">
         <Task />
         <div class="mt-8 px-4 lg:px-8">

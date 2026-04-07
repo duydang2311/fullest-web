@@ -235,7 +235,7 @@
         </div>
         <!-- {#each features as feature (feature.title)}
             <div
-                class="relative border-base-border hover:border-base-border-strong rounded-2xl border p-6 transition hover:shadow-sm flex items-center gap-8 overflow-hidden"
+                class="relative border-base-border hover:border-base-border-emph rounded-2xl border p-6 transition hover:shadow-sm flex items-center gap-8 overflow-hidden"
             >
                 <div>
                     <h3 class="text-base-fg-strong font-medium mt-2 text-title-sm">

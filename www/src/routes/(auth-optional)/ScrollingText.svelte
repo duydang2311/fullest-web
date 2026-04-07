@@ -17,7 +17,7 @@
 </script>
 
 <div
-	class="bg-primary/15 text-primary ml-0.5 px-2"
+	class="bg-primary text-primary-fg ml-0.5 px-2"
 	{@attach (node) => {
 		return untrack(() => {
 			const interval = setInterval(() => {

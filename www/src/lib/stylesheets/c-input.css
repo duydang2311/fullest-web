@@ -27,7 +27,7 @@
 
     &:where(:focus-visible) {
         outline: none;
-        --_border: var(--color-base-border-strong);
+        --_border: var(--color-base-border-emph);
         @apply ring-focus-base-fg;
     }
 

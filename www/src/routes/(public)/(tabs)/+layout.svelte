@@ -54,18 +54,18 @@
 <div {...tabs.getRootProps()} class="mt-8 flex flex-1 flex-col">
 	<div
 		{...tabs.getListProps()}
-		class="bg-base-light border-base-border flex gap-1 rounded-2xl border p-1"
+		class="bg-surface border-base-border flex gap-1 rounded-2xl border p-1"
 	>
 		{#each [{ value: '/sign-in', label: 'Sign in' }, { value: '/sign-up', label: 'Sign up' }] as tab (tab.value)}
 			<button
 				{...tabs.getTriggerProps({ value: tab.value })}
 				class="{button({
 					variant: 'base',
-				})} hover:bg-base-hover active:bg-base-active group relative flex-1 focus-visible:ring-0 focus-visible:ring-offset-0"
+				})} hover:bg-base-subtle active:bg-base-emph group relative flex-1 focus-visible:ring-0 focus-visible:ring-offset-0"
 			>
 				{#if tabs.value === tab.value}
 					<div
-						class="active-tab bg-base-selected group-focus-visible:ring-focus-base-fg absolute inset-0 rounded-xl transition-[box-shadow]"
+						class="active-tab bg-base-emph group-focus-visible:ring-focus-base-fg absolute inset-0 rounded-xl transition-[box-shadow]"
 						data-flip-id="active-tab"
 					></div>
 				{/if}

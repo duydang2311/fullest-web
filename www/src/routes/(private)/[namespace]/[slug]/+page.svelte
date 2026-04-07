@@ -22,7 +22,7 @@
         {/if}
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <div class="size-avatar-sm bg-base-dark rounded-full"></div>
+                <div class="size-avatar-sm bg-base-subtle rounded-full"></div>
                 <a
                     href="/{page.params.namespace}/{page.params.slug}"
                     class="c-link text-title-lg text-title-xs font-semibold tracking-tight"
