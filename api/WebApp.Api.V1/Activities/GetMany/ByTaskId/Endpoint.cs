@@ -30,10 +30,10 @@ public sealed class Endpoint(AppDbContext db, ActivityHydrator activityHydrator)
         }
         if (req.After.HasValue)
         {
-            query = query.Where(a => a.Id > req.After.Value).OrderBy(a => a.Id);
+            query = query.Where(a => a.Id > req.After.Value);
         }
 
-        query = query.Take(req.Size + 1);
+        query = query.OrderBy(a => a.Id).Take(req.Size + 1);
 
         if (!string.IsNullOrEmpty(req.Fields))
         {
