@@ -19,9 +19,9 @@
     --color-surface-emph: oklch(97% 0 240);
     --color-surface-border: oklch(94% 0 240);
 
-    --color-base: oklch(95% 0 240);
+    --color-base: oklch(96% 0 240);
     --color-base-subtle: oklch(93.5% 0 240);
-    --color-base-emph: oklch(92% 0 240);
+    --color-base-emph: oklch(91.5% 0 240);
     --color-base-border: oklch(90% 0 240);
     --color-base-border-emph: oklch(88% 0 240);
 
@@ -78,8 +78,6 @@
     --text-body-md: 1rem;
     --text-body-sm: 0.875rem;
     --text-body-xs: 0.75rem;
-
-    --default-transition-duration: 75ms;
 
     --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
 

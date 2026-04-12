@@ -148,6 +148,13 @@
 .c-button {
     padding: --spacing(1.5) --spacing(3);
     border-radius: var(--radius-md);
+
+    &:where(.c-button--sm) {
+        border-radius: var(--radius-sm);
+        padding: --spacing(1) --spacing(2);
+        font-size: var(--text-body-sm);
+    }
+
     border: 1px solid var(--_border);
     background-color: var(--_bg);
     color: var(--_text);
@@ -176,5 +183,15 @@
     &:where(:disabled, [data-disabled]) {
         opacity: 0.4;
         pointer-events: none;
+    }
+}
+
+.c-button--ghost {
+    &:where(:hover) {
+        transition-duration: 0ms;
+    }
+
+    &:where(:active) {
+        transition-duration: var(--default-transition-duration);
     }
 }

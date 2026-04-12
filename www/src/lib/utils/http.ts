@@ -3,6 +3,8 @@ import invariant from 'tiny-invariant';
 import { mapJsonException, ValidationError } from './errors';
 import { problemDetailsValidator } from './problem';
 
+export type Direction = 'asc' | 'desc';
+
 export const jsonify = <T>(f: () => Promise<T>) => {
     return attempt.async(() => f())(mapJsonException);
 };

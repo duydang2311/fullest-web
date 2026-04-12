@@ -4,16 +4,25 @@ type ButtonStyles = {
     variant?: 'base' | 'primary' | 'negative' | 'secondary';
     outlined?: boolean;
     icon?: boolean;
+    size?: 'md' | 'sm';
 } & EitherOr<{ filled?: boolean }, { ghost?: boolean }>;
 
-export const button = ({ variant = 'base', filled, ghost, outlined, icon }: ButtonStyles = {}) => {
+export const button = ({
+    variant = 'base',
+    filled,
+    ghost,
+    outlined,
+    icon,
+    size
+}: ButtonStyles = {}) => {
     return clsx(
         'c-button',
         `c-button--${variant}`,
         filled && 'c-button--filled',
         ghost && 'c-button--ghost',
         outlined && 'c-button--outlined',
-        icon && 'c-button--icon'
+        icon && 'c-button--icon',
+        size && `c-button--${size}`,
     );
 };
 

@@ -13,13 +13,20 @@ class FluentSearchParams {
         this.#searchParams = searchParams;
     }
 
-    set(name: string, value: string) {
-        this.#searchParams.set(name, value);
+    set(name: string, value: string | null | undefined) {
+        if (value) {
+            this.#searchParams.set(name, value);
+        }
         return this;
     }
 
     delete(name: string) {
         this.#searchParams.delete(name);
         return this;
+    }
+
+    toSearch() {
+        const search = this.#searchParams.toString();
+        return search ? `?${search}` : search;
     }
 }

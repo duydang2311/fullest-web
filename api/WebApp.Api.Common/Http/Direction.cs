@@ -10,8 +10,13 @@ public readonly struct Direction
         IsDescending = false;
     }
 
-    public Direction(bool isDescending)
+    public Direction(bool isAscending)
     {
-        IsDescending = isDescending;
+        IsDescending = !isAscending;
+    }
+
+    public Direction Reversed()
+    {
+        return new Direction(IsDescending);
     }
 }

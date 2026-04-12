@@ -138,7 +138,7 @@ export const getActivities = query(
                     taskId: data.taskId,
                     cursor: data.cursor,
                     select: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Data',
-                    sort: 'Id',
+                    direction: 'asc',
                     size: data.size ?? 20,
                 },
             })

@@ -11,7 +11,7 @@ using WebApp.Infrastructure.Data;
 namespace WebApp.Api.V1.Activities.GetMany.ByTaskId;
 
 public sealed class Endpoint(AppDbContext db, ActivityHydrator activityHydrator)
-    : Endpoint<Request, Results<NotFound, Ok<CursorList<Projectable, ActivityId?>>>>
+    : Endpoint<Request, Results<NotFound, Ok<KeysetList<Projectable>>>>
 {
     public override void Configure()
     {
@@ -19,35 +19,49 @@ public sealed class Endpoint(AppDbContext db, ActivityHydrator activityHydrator)
         Version(1);
     }
 
-    public override async Task<
-        Results<NotFound, Ok<CursorList<Projectable, ActivityId?>>>
-    > ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NotFound, Ok<KeysetList<Projectable>>>> ExecuteAsync(
+        Request req,
+        CancellationToken ct
+    )
     {
-        var query = db.Activities.AsQueryable();
+        var baseQuery = db.Activities.AsQueryable();
         if (req.ProjectId.HasValue)
         {
-            query = query.Where(a => a.ProjectId == req.ProjectId);
+            baseQuery = baseQuery.Where(a => a.ProjectId == req.ProjectId);
         }
         if (req.TaskId.HasValue)
         {
-            query = query.Where(a => a.TaskId == req.TaskId);
+            baseQuery = baseQuery.Where(a => a.TaskId == req.TaskId);
         }
         if (req.ForUserId.HasValue)
         {
-            query = query.Where(a =>
+            baseQuery = baseQuery.Where(a =>
                 db.ProjectMembers.Any(b =>
                     b.UserId == req.ForUserId.Value && b.ProjectId == a.ProjectId
                 )
             );
         }
-        if (req.After.HasValue)
+
+        var query = baseQuery;
+        if (req.UntilId.HasValue)
         {
-            query = query.Where(a => a.Id > req.After.Value);
+            query = req.Direction.IsAscending
+                ? query.Where(a => a.Id <= req.UntilId.Value)
+                : query.Where(a => a.Id >= req.UntilId.Value);
+            query = query.OrderBy(req.Direction.Reversed(), a => a.Id);
+        }
+        else
+        {
+            if (req.AfterId.HasValue)
+            {
+                query = req.Direction.IsAscending
+                    ? query.Where(a => a.Id > req.AfterId.Value)
+                    : query.Where(a => a.Id < req.AfterId.Value);
+            }
+            query = query.OrderBy(req.Direction, a => a.Id);
         }
 
-        query = query
-            .SortOrDefault(Orderable.From(req), a => a.OrderByDescending(b => b.Id))
-            .Take(req.Size + 1);
+        query = query.Take(req.Size + 1);
 
         if (!string.IsNullOrEmpty(req.Select))
         {
@@ -55,16 +69,26 @@ public sealed class Endpoint(AppDbContext db, ActivityHydrator activityHydrator)
         }
 
         var items = await query.ToListAsync(ct).ConfigureAwait(false);
-        var hasMore = items.Count > req.Size;
-        var hydrated = await activityHydrator.GetHydratedActivitiesAsync(
-            hasMore ? [.. items.Take(req.Size)] : items,
-            ct
-        );
+        var hasNext = items.Count > req.Size;
+        if (hasNext)
+        {
+            items.RemoveAt(items.Count - 1);
+        }
+        var hasPrevious = req.AfterId.HasValue;
+        if (req.UntilId.HasValue)
+        {
+            hasPrevious = await (
+                req.Direction.IsAscending
+                    ? baseQuery.AnyAsync(a => a.Id > req.UntilId.Value, ct).ConfigureAwait(false)
+                    : baseQuery.AnyAsync(a => a.Id < req.UntilId.Value, ct).ConfigureAwait(false)
+            );
+        }
+        var hydrated = await activityHydrator.GetHydratedActivitiesAsync(items, ct);
         return TypedResults.Ok(
-            CursorList.From(
-                hydrated.Select(Projectable.From<HydratedActivity>(req.Select)),
-                (ActivityId?)hydrated[^1].Id,
-                hasMore
+            KeysetList.From(
+                items: hydrated.Select(Projectable.From<HydratedActivity>(req.Select)),
+                hasPrevious: hasPrevious,
+                hasNext: hasNext
             )
         );
     }

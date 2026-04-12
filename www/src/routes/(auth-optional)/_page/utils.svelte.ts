@@ -2,12 +2,12 @@ import { attempt } from '@duydang2311/attempt';
 import { getContext, setContext } from 'svelte';
 import { ActivityKind, type Activity } from '~/lib/models/activity';
 import type { Namespace } from '~/lib/models/namespace';
-import { cursorList, keysetList, type CursorList, type KeysetList } from '~/lib/models/paginated';
+import { keysetList, type KeysetList } from '~/lib/models/paginated';
 import type { Project } from '~/lib/models/project';
 import type { UserPreset } from '~/lib/models/user';
 import type { HttpClient } from '~/lib/services/http_client';
 import { BadHttpResponse } from '~/lib/utils/errors';
-import { fields, jsonify } from '~/lib/utils/http';
+import { fields, jsonify, type Direction } from '~/lib/utils/http';
 import { v } from '~/lib/utils/valibot';
 import { createValidator } from '~/lib/utils/validation';
 
@@ -49,8 +49,14 @@ export function getProjectList(http: HttpClient) {
     };
 }
 
-export function getActivityList(http: HttpClient) {
-    return async (userId: string) => {
+export function makeFetchActivityList(http: HttpClient) {
+    return async (
+        userId: string,
+        afterId: string | null,
+        untilId: string | null,
+        direction: Direction,
+        size: number
+    ) => {
         const result = await http.get('activities', {
             query: {
                 forUserId: userId,
@@ -59,18 +65,21 @@ export function getActivityList(http: HttpClient) {
                     Project: fields('Id,Identifier,Name', { Namespace: 'Kind,User.Name' }),
                     Task: 'Id,PublicId,Title',
                 }),
-                sort: '-Id',
+                afterId,
+                untilId,
+                direction,
+                size
             },
         });
         return result.pipe(
             attempt.flatMap(async (resp) => {
                 if (resp.ok) {
-                    return await jsonify(() => resp.json<CursorList<LocalActivity, string>>());
+                    return await jsonify(() => resp.json<KeysetList<LocalActivity>>());
                 }
                 console.error(resp);
                 return attempt.fail(BadHttpResponse(resp.status));
             }),
-            attempt.unwrapOrElse(() => cursorList())
+            attempt.unwrapOrElse(keysetList)
         );
     };
 }
@@ -78,7 +87,7 @@ export function getActivityList(http: HttpClient) {
 const key = {};
 export function setPageContext(initial: {
     projectList: KeysetList<LocalProject>;
-    activityList?: CursorList<LocalActivity, string>;
+    activityList?: KeysetList<LocalActivity>;
 }) {
     let projectList = $state.raw(initial?.projectList);
     let activityList = $state.raw(initial?.activityList);

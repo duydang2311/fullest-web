@@ -62,7 +62,7 @@ public static class FastEndpointsConfiguration
             }
             return new ParseResult(
                 true,
-                new Direction(str.Equals("desc", StringComparison.OrdinalIgnoreCase))
+                new Direction(str.Equals("asc", StringComparison.OrdinalIgnoreCase))
             );
         });
     }

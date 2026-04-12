@@ -58,7 +58,7 @@ export function fetchActivityList(http: HttpClient) {
                 after,
                 select: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Metadata',
                 size: size ?? 20,
-                sort: 'Id',
+                direction: 'asc',
             },
         });
         return result.pipe(
