@@ -50,7 +50,7 @@ public sealed class Endpoint(
             {
                 auth = new UserAuthCredentials
                 {
-                    Hash = passwordHasher.Hash(Guard.Against.Null(req.Password)),
+                    Hash = new string(passwordHasher.Hash(Guard.Against.Null(req.Password))),
                 };
                 break;
             }

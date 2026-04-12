@@ -4,7 +4,7 @@ namespace WebApp.Api.Common.Http;
 
 public sealed record Orderable : IOrderable
 {
-    public string Sort { get; init; } = string.Empty;
+    public string? Sort { get; init; }
 
     public static Orderable From(IOrderable orderable) => new() { Sort = orderable.Sort };
 }

@@ -29,7 +29,9 @@ public sealed class AppDbContext
             configuration.GetSection(DataOptions.Section).Get<DataOptions>()
             ?? throw new InvalidOperationException("Expected DataOptions to be configured.");
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+#pragma warning disable CS0436 // Type conflicts with imported type
         ServiceCollectionExtensions.Configure(optionsBuilder, dataOptions);
+#pragma warning restore CS0436 // Type conflicts with imported type
 
         return new AppDbContext(optionsBuilder.Options);
     }

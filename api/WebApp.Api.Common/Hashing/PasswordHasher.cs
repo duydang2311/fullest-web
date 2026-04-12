@@ -5,15 +5,15 @@ namespace WebApp.Api.Common.Hashing;
 
 public sealed class PasswordHasher : IPasswordHasher
 {
-    public byte[] Hash(string password)
+    public char[] Hash(string password)
     {
         const int memorySize = 128 * 1024 * 1024;
-        Span<byte> hash = stackalloc byte[Argon2id.MaxHashSize];
+        Span<char> hash = stackalloc char[Argon2id.HashSize];
         Argon2id.ComputeHash(hash, Encoding.UTF8.GetBytes(password), 3, memorySize);
         return hash.ToArray();
     }
 
-    public bool Verify(byte[] hash, string password)
+    public bool Verify(char[] hash, string password)
     {
         return Argon2id.VerifyHash(hash, Encoding.UTF8.GetBytes(password));
     }
