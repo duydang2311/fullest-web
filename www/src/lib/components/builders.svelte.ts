@@ -90,7 +90,6 @@ class Menu {
     readonly #api: menu.Api;
 
     constructor(props: menu.Props) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const service = useMachine(menu.machine as any, props) as menu.Service;
         this.#api = $derived(menu.connect(service, normalizeProps));
     }

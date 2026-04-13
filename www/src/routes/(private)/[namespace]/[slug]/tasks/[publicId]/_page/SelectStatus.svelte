@@ -17,10 +17,13 @@
     const ctx = usePageContext();
     const menu = createMenu({
         id,
+        defaultHighlightedValue: ctx.task.status?.id,
         onOpenChange: async (details) => {
             if (details.open) {
-                menu.api.setHighlightedValue(ctx.task.status?.id ?? '');
-                statuses = await getStatuses(data.project.id).run().then((a) => a.items);
+                statuses = await getStatuses(data.project.id)
+                    .run()
+                    .then((a) => a.items);
+                menu.api.setHighlightedValue(ctx.task.status?.id);
             }
         },
         onSelect: (details) => updateStatus(details.value),

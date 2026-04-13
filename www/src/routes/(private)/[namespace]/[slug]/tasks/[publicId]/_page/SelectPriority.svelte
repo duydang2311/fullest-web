@@ -17,10 +17,13 @@
     const id = $props.id();
     const menu = createMenu({
         id,
+        defaultHighlightedValue: ctx.task.priority?.id,
         onOpenChange: async (details) => {
             if (details.open) {
-                menu.api.setHighlightedValue(ctx.task.priority?.id ?? '');
-                priorities = await getPriorities(data.project.id).run().then((a) => a.items);
+                priorities = await getPriorities(data.project.id)
+                    .run()
+                    .then((a) => a.items);
+                menu.api.setHighlightedValue(ctx.task.priority?.id);
             }
         },
         onSelect: (details) => updatePriority(details.value),

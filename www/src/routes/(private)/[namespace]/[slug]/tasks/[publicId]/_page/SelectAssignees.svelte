@@ -175,10 +175,9 @@
                 placeholder="Search users..."
                 oninput={(e) => {
                     if (e.currentTarget.value.length === 0) {
-                        updateSearchQueryDebounced.cancel();
                         users = [];
                     } else {
-                        updateSearchQueryDebounced.maybeExecute(e.currentTarget.value);
+                        updateSearchQueryDebounced(e.currentTarget.value);
                     }
                 }}
             />
