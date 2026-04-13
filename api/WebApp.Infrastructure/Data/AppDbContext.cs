@@ -21,9 +21,13 @@ public sealed class AppDbContext
 
     public AppDbContext CreateDbContext(string[] args)
     {
+        var environment =
+            Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+            ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
+            ?? "Development";
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: true)
-            .AddJsonFile("appsettings.Development.json", optional: true)
+            .AddJsonFile($"appsettings.{environment}.json", optional: true)
             .Build();
         var dataOptions =
             configuration.GetSection(DataOptions.Section).Get<DataOptions>()

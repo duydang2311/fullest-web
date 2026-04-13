@@ -5,6 +5,8 @@ services:
       POSTGRES_DB: webapp
       POSTGRES_USER: webapp
       POSTGRES_PASSWORD: 123456
+      ASPNETCORE_ENVIRONMENT: Production
+      DOTNET_ENVIRONMENT: Production
     ports:
       - "5432:5432"
     volumes:
