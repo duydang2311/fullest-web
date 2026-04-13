@@ -1,0 +1,20 @@
+"$schema" = "./node_modules/wrangler/config-schema.json"
+name = "fullest-web"
+main = ".svelte-kit/cloudflare/_worker.js"
+compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2026-04-13"
+
+[assets]
+binding = "ASSETS"
+directory = ".svelte-kit/cloudflare"
+
+[observability]
+[observability.logs]
+enabled = true
+invocation_logs = true
+
+[observability.traces]
+
+[[kv_namespaces]]
+binding = "APP_KV"
+id = "bc1a9d5e621e4a20a4dfa0e2ab009c2a"

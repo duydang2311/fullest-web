@@ -19,23 +19,23 @@ import { error, redirect } from '@sveltejs/kit';
 import { useRuntime } from '~/lib/utils/runtime.server';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ cookies, url }) => {
-    const oauthState = cookies.get('oauth_state');
+export const load: PageServerLoad = async (e) => {
+    const oauthState = e.cookies.get('oauth_state');
     if (!oauthState) {
         return error(400, MissingOAuthStateError());
     }
-    cookies.delete('oauth_state', {
+    e.cookies.delete('oauth_state', {
         path: '/api/externals/auth/google/code',
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
     });
 
-    if (oauthState !== url.searchParams.get('state')) {
+    if (oauthState !== e.url.searchParams.get('state')) {
         return error(400, MismatchOAuthStateError());
     }
 
-    const code = url.searchParams.get('code');
+    const code = e.url.searchParams.get('code');
     if (!code) {
         return error(400, MissingGoogleAuthorizationCodeError());
     }
@@ -48,7 +48,7 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
                 client_id: env.GOOGLE_OAUTH_CLIENT_ID,
                 client_secret: env.GOOGLE_OAUTH_CLIENT_SECRET,
                 grant_type: 'authorization_code',
-                redirect_uri: `${url.origin}/api/externals/auth/google/code`,
+                redirect_uri: `${e.url.origin}/api/externals/auth/google/code`,
             }),
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
@@ -85,16 +85,15 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
         )
     ) {
         const id = crypto.randomUUID();
-        const { cache } = useRuntime();
-        await cache.set(
+        e.platform!.env.APP_KV.put(
             CacheKey.completeOAuthRegistration(id),
-            {
+            JSON.stringify({
                 provider: 'google',
                 idToken: parsed.data.id_token,
-            },
-            '5m'
+            }),
+            { expirationTtl: 60 * 5 }
         );
-        cookies.set('oauth_complete_session', id, {
+        e.cookies.set('oauth_complete_session', id, {
             path: '/sign-up/complete',
             httpOnly: true,
             secure: true,
@@ -115,7 +114,7 @@ export const load: PageServerLoad = async ({ cookies, url }) => {
     if (!parsedCreatedResponse.ok) {
         return error(500, enrichStep('parse_create_session_response')(parsedCreatedResponse.error));
     }
-    cookies.set('session_token', parsedCreatedResponse.data.token, {
+    e.cookies.set('session_token', parsedCreatedResponse.data.token, {
         path: '/',
         maxAge: 60 * 60 * 24 * 7,
         httpOnly: true,

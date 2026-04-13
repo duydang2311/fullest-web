@@ -1,9 +1,9 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 
-import type { Cache } from '$lib/services/cache';
 import type { HttpClient } from '$lib/services/http_client';
 import 'unplugin-icons/types/svelte';
 import type { UserPreset } from './lib/models/user';
+import './worker-configuration';
 
 // for information about these interfaces
 declare global {
@@ -19,12 +19,15 @@ declare global {
 		}
 		interface Locals {
 			http: HttpClient;
-			cache: Cache;
 			session?: { user: Pick<User, 'id'> & UserPreset['Avatar'] };
 		}
 		// interface PageData {}
 		// interface PageState {}
-		// interface Platform {}
+        interface Platform {
+            env: Env;
+            cf: CfProperties;
+            ctx: ExecutionContext;
+        }
 	}
 
 	interface Body {

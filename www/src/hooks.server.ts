@@ -1,23 +1,18 @@
 import { env } from '$env/dynamic/private';
-import { MemoryCache, type Cache } from '$lib/services/cache';
 import { DefaultHttpClient } from '$lib/services/default_http_client';
-import { withRuntime } from '~/lib/utils/runtime.server';
 import { redirect, type Handle, type ServerInit } from '@sveltejs/kit';
-import { Cacheable } from 'cacheable';
-import invariant from 'tiny-invariant';
+import { withRuntime } from '~/lib/utils/runtime.server';
 import type { User, UserPreset } from './lib/models/user';
+import { guardNull } from './lib/utils/guard';
 import { jsonify } from './lib/utils/http';
 import { trimEnd } from './lib/utils/string';
 import { withQueryParams } from './lib/utils/url.server';
 
-let cache: Cache;
-
 export const init: ServerInit = () => {
-    invariant(env.API_URL_PREFIX, 'expect API_URL_PREFIX');
-    invariant(env.API_URL_SUFFIX, 'expect API_URL_SUFFIX');
-    invariant(env.GOOGLE_OAUTH_CLIENT_ID, 'expect GOOGLE_OAUTH_CLIENT_ID');
-    invariant(env.GOOGLE_OAUTH_CLIENT_SECRET, 'expect GOOGLE_OAUTH_CLIENT_SECRET');
-    cache = new MemoryCache(new Cacheable({ ttl: '30m' }));
+    guardNull(env.API_URL_PREFIX);
+    guardNull(env.API_URL_SUFFIX);
+    guardNull(env.GOOGLE_OAUTH_CLIENT_ID);
+    guardNull(env.GOOGLE_OAUTH_CLIENT_SECRET);
 };
 
 const CODE_SLASH = '/'.charCodeAt(0);
@@ -79,7 +74,6 @@ export const handle: Handle = ({ event, resolve }) => {
             suffix: env.API_URL_SUFFIX,
             headers: sessionToken ? { Authorization: `Bearer ${sessionToken}` } : undefined,
         }),
-        cache,
     };
 
     if (!event.locals.session && sessionToken != null) {
