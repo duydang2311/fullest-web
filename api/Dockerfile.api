@@ -8,10 +8,12 @@ RUN dotnet publish -c Release WebApp.Api -o published
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS runtime
 
+RUN apk add --no-cache krb5-libs
+
 WORKDIR /app
 
 COPY --from=build /app/published .
 
-EXPOSE 8080 443
+EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "WebApp.Api.dll"]
