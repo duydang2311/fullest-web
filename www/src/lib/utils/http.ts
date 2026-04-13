@@ -1,6 +1,6 @@
 import { attempt } from '@duydang2311/attempt';
-import invariant from 'tiny-invariant';
-import { mapJsonException, ValidationError } from './errors';
+import { HttpErr, HttpValidationErr, mapJsonException } from './errors';
+import { guard } from './guard';
 import { problemDetailsValidator } from './problem';
 
 export type Direction = 'asc' | 'desc';
@@ -14,17 +14,46 @@ export function parseHttpProblem(input: Response | unknown) {
 }
 
 export async function parseHttpError(response: Response) {
-    invariant(!response.ok, 'response must have error status code');
-    const parsedBody = await jsonify(() => response.json());
-    if (!parsedBody.ok) {
-        return parsedBody;
+    guard(!response.ok, 'response must have error status code');
+    if (response.status >= 500) {
+        return HttpErr(response.status);
     }
 
-    const parsedProblem = parseHttpProblem(parsedBody.data);
-    if (!parsedProblem.ok) {
-        return attempt.fail(ValidationError({ $: [response.status + ''] }));
+    const contentType = response.headers.get('Content-Type');
+    if (
+        !contentType ||
+        (!contentType.includes('application/json') &&
+            !contentType.includes('application/problem+json'))
+    ) {
+        return HttpErr(response.status);
     }
-    return attempt.ok(parsedProblem.data);
+
+    const parsedBody = await jsonify(() => response.json());
+    if (!parsedBody.ok) {
+        return HttpErr(response.status);
+    }
+
+    const result = parseHttpProblem(parsedBody.data);
+    if (!result.ok) {
+        return HttpErr(response.status);
+    }
+    if (!result.data.errors) {
+        return HttpErr(response.status);
+    }
+    return HttpValidationErr(
+        response.status,
+        result.data.errors.reduce(
+            (acc, cur) => {
+                if (!acc[cur.field]) {
+                    acc[cur.field] = [cur.code];
+                } else {
+                    acc[cur.field].push(cur.code);
+                }
+                return acc;
+            },
+            {} as Record<string, string[]>
+        )
+    );
 }
 
 export function fields(...values: (string | Record<string, string>)[]) {

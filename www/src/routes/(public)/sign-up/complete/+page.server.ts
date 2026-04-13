@@ -1,17 +1,17 @@
 import { CacheKey } from '$lib/utils/cache';
-import { GenericError, ValidationError } from '$lib/utils/errors';
-import { jsonify, parseHttpProblem } from '$lib/utils/http';
+import { Err } from '$lib/utils/errors';
+import { jsonify, parseHttpError } from '$lib/utils/http';
 import { createValidator } from '$lib/utils/validation';
 import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
+import { guardNull } from '~/lib/utils/guard';
 import type { Actions } from './$types';
-import invariant from 'tiny-invariant';
 
 export const actions: Actions = {
     default: async (e) => {
         const id = e.cookies.get('oauth_complete_session');
         if (!id) {
-            return fail(400, ValidationError({ $: ['ERR_NO_COMPLETE_SESSION_COOKIE'] }));
+            return fail(400, Err('ERR_NO_COMPLETE_SESSION_COOKIE'));
         }
 
         const formData = await e.request.formData();
@@ -21,15 +21,15 @@ export const actions: Actions = {
         }
 
         const key = CacheKey.completeOAuthRegistration(id);
-        invariant(e.platform, 'e.platform must not be null');
+        guardNull(e.platform);
         const dataStr = await e.platform.env.APP_KV.get(key);
         if (!dataStr) {
-            return fail(400, ValidationError({ $: ['ERR_NO_COMPLETE_SESSION_DATA'] }));
+            return fail(400, Err('ERR_NO_COMPLETE_SESSION_DATA'));
         }
 
         await e.platform.env.APP_KV.delete(key);
 
-        const result = completeSessionDataValidator.parse(JSON.stringify(dataStr));
+        const result = completeSessionDataValidator.parse(JSON.parse(dataStr));
         if (!result.ok) {
             return fail(400, result.error);
         }
@@ -47,11 +47,8 @@ export const actions: Actions = {
                     return error(500, created.error);
                 }
                 if (!created.data.ok) {
-                    const problemParsed = parseHttpProblem(created.data);
-                    if (!problemParsed.ok) {
-                        return error(500, problemParsed.error);
-                    }
-                    return fail(created.data.status, ValidationError.from(problemParsed.data));
+                    const err = await parseHttpError(created.data);
+                    return fail(err.status, err);
                 }
 
                 const sessionCreated = await e.locals.http.post('sessions', {
@@ -63,15 +60,10 @@ export const actions: Actions = {
                 if (!sessionCreated.ok) {
                     return error(500, sessionCreated.error);
                 }
+
                 if (!sessionCreated.data.ok) {
-                    const problemParsed = await parseHttpProblem(sessionCreated.data);
-                    if (!problemParsed.ok) {
-                        return error(500, problemParsed.error);
-                    }
-                    return fail(
-                        sessionCreated.data.status,
-                        ValidationError.from(problemParsed.data)
-                    );
+                    const err = await parseHttpError(sessionCreated.data);
+                    return fail(err.status, err);
                 }
 
                 const jsonified = await jsonify(() =>
@@ -93,7 +85,7 @@ export const actions: Actions = {
                 return redirect(303, '/');
             }
             default:
-                return error(500, GenericError({ code: 'ERR_INVALID_OAUTH_PROVIDER' }));
+                return error(500, Err('ERR_INVALID_OAUTH_PROVIDER'));
         }
     },
 };

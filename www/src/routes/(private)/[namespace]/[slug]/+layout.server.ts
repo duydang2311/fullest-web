@@ -2,7 +2,7 @@ import { attempt } from '@duydang2311/attempt';
 import { error } from '@sveltejs/kit';
 import invariant from 'tiny-invariant';
 import type { Project } from '~/lib/models/project';
-import { enrichStep, NotFoundError, ValidationError } from '~/lib/utils/errors';
+import { enrichStep, NotFoundError } from '~/lib/utils/errors';
 import { jsonify, parseHttpError } from '~/lib/utils/http';
 import { useRuntime } from '~/lib/utils/runtime.server';
 import type { LayoutServerLoad } from './$types';
@@ -68,11 +68,8 @@ async function fetchNamespace(namespace: string) {
             if (response.status === 404) {
                 return error(404, NotFoundError());
             }
-            const parsed = await parseHttpError(response);
-            if (!parsed.ok) {
-                return attempt.fail(parsed.error);
-            }
-            return attempt.fail(ValidationError.from(parsed.data));
+            const err = await parseHttpError(response);
+            return attempt.fail(err);
         })
     );
 }
@@ -90,11 +87,8 @@ async function fetchProject(namespaceId: string, identifier: string) {
         if (fetched.data.status === 404) {
             return error(404, NotFoundError());
         }
-        const parsedFailedResponse = await parseHttpError(fetched.data);
-        if (!parsedFailedResponse.ok) {
-            return attempt.fail(parsedFailedResponse.error);
-        }
-        return attempt.fail(ValidationError.from(parsedFailedResponse.data));
+        const err = await parseHttpError(fetched.data);
+        return attempt.fail(err);
     }
 
     return await jsonify(() =>

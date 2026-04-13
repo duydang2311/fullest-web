@@ -166,6 +166,44 @@ export function BadHttpResponse(status: number, context?: unknown): BadHttpRespo
     });
 }
 
+export type Err<T extends string> = { kind: 'Error'; code: T; message: string };
+export function Err<T extends string>(code: T, message?: string): Err<T> {
+    return {
+        kind: 'Error' as const,
+        code,
+        message: message ?? `An error occurred: ${code}`,
+    };
+}
+
+export function HttpErr<T extends number>(status: T, message?: string) {
+    return {
+        kind: 'HttpError' as const,
+        status,
+        message: message ?? `An HTTP error of status ${status} occurred`,
+    };
+}
+
+export function ValidationErr(errors: Record<string, string[]>, message?: string) {
+    return {
+        kind: 'ValidationError' as const,
+        errors,
+        message: message ?? `A validation error occurred`,
+    };
+}
+
+export function HttpValidationErr(
+    status: number,
+    errors: Record<string, string[]>,
+    message?: string
+) {
+    return {
+        kind: 'HttpValidationError' as const,
+        status,
+        errors,
+        message: message ?? `An HTTP validation error occurred`,
+    };
+}
+
 export const enrich =
     (context: { step: string }) =>
     <T>(error: T): RichError<T> => {
@@ -190,16 +228,13 @@ export function traced(trace: string) {
 
 export const mapFetchException = (e: unknown) => {
     if (isNetworkError(e)) {
-        return HttpNetworkError();
+        return Err('HttpNetworkError');
     }
     if (e instanceof Error) {
         if (e.name === 'AbortError') {
-            return AbortError();
+            return Err('AbortError');
         }
-        return HttpUnknownError({
-            name: e.name,
-            message: e.message,
-        });
+        return Err('HttpUnknownError', e.message);
     }
     throw e;
 };

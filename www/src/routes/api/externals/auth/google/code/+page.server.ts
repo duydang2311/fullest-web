@@ -1,29 +1,18 @@
 import { env } from '$env/dynamic/private';
 import { CacheKey } from '$lib/utils/cache';
-import {
-    enrich,
-    enrichStep,
-    ErrorCode,
-    GenericError,
-    isError,
-    mapFetchException,
-    MismatchOAuthStateError,
-    MissingGoogleAuthorizationCodeError,
-    MissingOAuthStateError,
-    ValidationError,
-} from '$lib/utils/errors';
-import { jsonify, parseHttpProblem } from '$lib/utils/http';
+import { Err, ErrorCode } from '$lib/utils/errors';
+import { jsonify, parseHttpError } from '$lib/utils/http';
 import { problemDetailsValidator } from '$lib/utils/problem';
 import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';
-import { useRuntime } from '~/lib/utils/runtime.server';
-import type { PageServerLoad } from './$types';
 import type { HttpClient } from '~/lib/services/http_client';
+import { guardNull } from '~/lib/utils/guard';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (e) => {
     const oauthState = e.cookies.get('oauth_state');
     if (!oauthState) {
-        return error(400, MissingOAuthStateError());
+        return error(400, Err('ERR_MISSING_OAUTH_STATE'));
     }
     e.cookies.delete('oauth_state', {
         path: '/api/externals/auth/google/code',
@@ -33,12 +22,12 @@ export const load: PageServerLoad = async (e) => {
     });
 
     if (oauthState !== e.url.searchParams.get('state')) {
-        return error(400, MismatchOAuthStateError());
+        return error(400, Err('ERR_MISMATCH_OAUTH_STATE'));
     }
 
     const code = e.url.searchParams.get('code');
     if (!code) {
-        return error(400, MissingGoogleAuthorizationCodeError());
+        return error(400, Err('ERR_MISSING_GOOGLE_AUTHORIZAITION_CODE'));
     }
 
     const exchanged = await attempt.async(() =>
@@ -53,13 +42,14 @@ export const load: PageServerLoad = async (e) => {
             }),
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
-    )((e) => enrich({ step: 'exchange_token' })(mapFetchException(e)));
+    )();
     if (!exchanged.ok) {
-        return error(500, exchanged.error);
+        return error(500, Err('ERR_EXCHANGE_TOKEN_FAILED'));
     }
 
     if (!exchanged.data.ok) {
-        return error(exchanged.data.status, GenericError(await exchanged.data.json()));
+        const err = await parseHttpError(exchanged.data);
+        return error(err.status, err);
     }
 
     const parsed = await jsonify(() =>
@@ -72,7 +62,7 @@ export const load: PageServerLoad = async (e) => {
         }>()
     );
     if (!parsed.ok) {
-        return error(500, enrichStep('parse_google_response')(parsed.error));
+        return error(500, Err('ERR_PARSE_TOKEN_BODY_FAILED'));
     }
 
     const created = await createSession(e.locals.http)(parsed.data.id_token);
@@ -86,7 +76,8 @@ export const load: PageServerLoad = async (e) => {
         )
     ) {
         const id = crypto.randomUUID();
-        e.platform!.env.APP_KV.put(
+        guardNull(e.platform);
+        await e.platform.env.APP_KV.put(
             CacheKey.completeOAuthRegistration(id),
             JSON.stringify({
                 provider: 'google',
@@ -105,15 +96,15 @@ export const load: PageServerLoad = async (e) => {
     }
 
     if (!created.ok) {
-        if (isError(created.error)) {
-            return error(500, created.error);
+        if (created.error.kind === 'HttpValidationError' || created.error.kind === 'HttpError') {
+            return error(created.error.status, created.error);
         }
-        return error(created.error.status, ValidationError.from(created.error));
+        return error(500, created.error);
     }
 
     const parsedCreatedResponse = await jsonify(() => created.data.json<{ token: string }>());
     if (!parsedCreatedResponse.ok) {
-        return error(500, enrichStep('parse_create_session_response')(parsedCreatedResponse.error));
+        return error(500, Err('ERR_PARSE_SESSION_BODY_FAILED'));
     }
     e.cookies.set('session_token', parsedCreatedResponse.data.token, {
         path: '/',
@@ -133,19 +124,12 @@ const createSession = (http: HttpClient) => async (googleIdToken: string) => {
         },
     });
     if (!created.ok) {
-        return attempt.fail(enrichStep('create_session')(created.error));
+        return attempt.fail(Err('ERR_FETCH_SESSION'));
     }
 
     if (!created.data.ok) {
-        const parsedJson = await jsonify(() => created.data.json());
-        if (!parsedJson.ok) {
-            return attempt.fail(enrichStep('parse_response_json')(parsedJson.error));
-        }
-        const parsedProblem = parseHttpProblem(parsedJson.data);
-        if (!parsedProblem.ok) {
-            return attempt.fail(enrichStep('parse_problem')(GenericError(parsedJson.data)));
-        }
-        return attempt.fail(parsedProblem.data);
+        const err = await parseHttpError(created.data);
+        return attempt.fail(err);
     }
     return created;
 };

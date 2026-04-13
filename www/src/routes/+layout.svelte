@@ -2,7 +2,6 @@
     import '@fontsource-variable/dm-sans';
     import '../app.css';
 
-    import { onNavigate } from '$app/navigation';
     import favicon from '$lib/assets/favicon.svg';
     import { BrowserHttpClient } from '~/lib/services/browser_http_client';
     import { setRuntime } from '~/lib/utils/runtime';
