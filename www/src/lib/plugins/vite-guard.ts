@@ -12,6 +12,7 @@ export function guardPlugin() {
         async transform(code: string, id: string) {
             if (
                 (!id.endsWith('.js') && !id.endsWith('.ts') && !id.endsWith('.svelte')) ||
+                id.includes('node_modules') ||
                 !code.includes('guard')
             ) {
                 return null;
