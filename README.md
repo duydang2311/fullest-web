@@ -42,6 +42,7 @@ Serverless functions and edge computing for asset handling.
 | Component                   | Platform            |
 | --------------------------- | ------------------- |
 | API (`/api`)                | Railway (Free Tier) |
+| Database                    | Neon DB (Free Tier) |
 | Frontend (`/www`)           | Cloudflare Workers  |
 | Workers (`/workers-assets`) | Cloudflare Workers  |
 
