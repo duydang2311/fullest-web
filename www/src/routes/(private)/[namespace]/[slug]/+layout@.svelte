@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { goto } from '$app/navigation';
     import { page } from '$app/state';
     import AuthenticatedHeader from '~/lib/components/AuthenticatedHeader.svelte';
     import Footer from '~/lib/components/Footer.svelte';
