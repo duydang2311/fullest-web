@@ -18,6 +18,7 @@ import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';
 import { useRuntime } from '~/lib/utils/runtime.server';
 import type { PageServerLoad } from './$types';
+import type { HttpClient } from '~/lib/services/http_client';
 
 export const load: PageServerLoad = async (e) => {
     const oauthState = e.cookies.get('oauth_state');
@@ -74,7 +75,7 @@ export const load: PageServerLoad = async (e) => {
         return error(500, enrichStep('parse_google_response')(parsed.error));
     }
 
-    const created = await createSession(parsed.data.id_token);
+    const created = await createSession(e.locals.http)(parsed.data.id_token);
     if (
         !created.ok &&
         problemDetailsValidator.check(created.error) &&
@@ -124,8 +125,7 @@ export const load: PageServerLoad = async (e) => {
     return redirect(303, '/');
 };
 
-const createSession = async (googleIdToken: string) => {
-    const { http } = useRuntime();
+const createSession = (http: HttpClient) => async (googleIdToken: string) => {
     const created = await http.post('sessions', {
         body: {
             provider: 'google',

@@ -69,7 +69,7 @@ export const handle: Handle = ({ event, resolve }) => {
 
     event.locals = {
         http: new DefaultHttpClient({
-            fetcher: globalThis.fetch,
+            fetcher: (url, init) => fetch(url, init),
             prefix: env.API_URL_PREFIX,
             suffix: env.API_URL_SUFFIX,
             headers: sessionToken ? { Authorization: `Bearer ${sessionToken}` } : undefined,
