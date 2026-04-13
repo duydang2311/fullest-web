@@ -19,45 +19,11 @@
             }
             return page.url.pathname.substring(0, idx);
         },
-        onValueChange: async (details) => {
-            await goto(details.value, { replaceState: true, keepFocus: true });
-        },
     });
 </script>
 
 <SidebarLayout>
     {#snippet top()}
-        <!-- <header class="text-sm bg-surface-subtle">
-            <nav>
-                <div
-                    class="flex divide-x divide-surface-border overflow-auto border-b border-b-surface-border"
-                >
-                    <div class="flex items-center gap-4 px-8">
-                        <div class="flex items-center gap-2">
-                            <a href="/{data.namespace.user.name}" class="c-link">
-                                {data.namespace.kind === 'user'
-                                    ? (data.namespace.user.displayName ?? data.namespace.user.name)
-                                    : 'Organization'}
-                            </a>
-                            <ChevronRightOutline class="text-fg-muted size-4" />
-                            <a
-                                href="/{data.namespace.user.name}/{data.project.identifier}"
-                                class="c-link font-normal"
-                            >
-                                {data.project.name}
-                            </a>
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <Tabs {tabs} />
-                    </div>
-                    <div class="flex items-center justify-end gap-4 px-8 shrink-0">
-                        <AuthenticatedHeaderCreateActions />
-                        <AuthenticatedHeaderPfp user={data.user} />
-                    </div>
-                </div>
-            </nav>
-        </header> -->
         <AuthenticatedHeader user={data.user} />
     {/snippet}
     {#snippet left()}

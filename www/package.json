@@ -59,6 +59,7 @@
 		"magic-string": "^0.30.21",
 		"marked": "^18.0.0",
 		"mitata": "^1.0.34",
+		"motion": "^12.38.0",
 		"oxc-parser": "^0.125.0",
 		"prettier": "^3.8.2",
 		"prettier-plugin-svelte": "^3.5.1",

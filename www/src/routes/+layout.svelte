@@ -16,16 +16,16 @@
         }),
     });
 
-    onNavigate((navigation) => {
-        if (!document.startViewTransition || navigation.from?.url.href === navigation.to?.url.href) return;
+    // onNavigate((navigation) => {
+    //     if (!document.startViewTransition || navigation.from?.url.href === navigation.to?.url.href) return;
 
-        return new Promise((resolve) => {
-            document.startViewTransition(async () => {
-                resolve();
-                await navigation.complete;
-            });
-        });
-    });
+    //     return new Promise((resolve) => {
+    //         document.startViewTransition(async () => {
+    //             resolve();
+    //             await navigation.complete;
+    //         });
+    //     });
+    // });
 </script>
 
 <svelte:head>
