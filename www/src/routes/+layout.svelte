@@ -2,6 +2,7 @@
     import '@fontsource-variable/dm-sans';
     import '../app.css';
 
+    import { onNavigate } from '$app/navigation';
     import favicon from '$lib/assets/favicon.svg';
     import { BrowserHttpClient } from '~/lib/services/browser_http_client';
     import { setRuntime } from '~/lib/utils/runtime';
@@ -13,6 +14,17 @@
             fetcher: fetch,
             prefix: '/_/api/',
         }),
+    });
+
+    onNavigate((navigation) => {
+        if (!document.startViewTransition || navigation.from?.url.href === navigation.to?.url.href) return;
+
+        return new Promise((resolve) => {
+            document.startViewTransition(async () => {
+                resolve();
+                await navigation.complete;
+            });
+        });
     });
 </script>
 

@@ -23,7 +23,7 @@
     <li class="relative">
         {@render children()}
         <div
-            class="absolute w-px h-full left-0 bottom-0 translate-y-full translate-x-4 bg-base-border"
+            class="absolute w-px h-6 left-0 bottom-0 translate-y-full translate-x-4 bg-surface-border"
         ></div>
     </li>
 {/snippet}

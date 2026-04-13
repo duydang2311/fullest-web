@@ -2,6 +2,7 @@
     import invariant from 'tiny-invariant';
     import AuthenticatedHeader from '~/lib/components/AuthenticatedHeader.svelte';
     import Footer from '~/lib/components/Footer.svelte';
+    import SidebarLayout from '~/lib/components/SidebarLayout.svelte';
     import { usePageData } from '~/lib/utils/kit';
     import type { PageData } from './$types';
     import RecentActivities from './RecentActivities.svelte';
@@ -12,22 +13,22 @@
     const user = $derived(data.session.user);
 </script>
 
-<div class="bg-surface-subtle flex flex-col h-screen overflow-hidden">
-    <AuthenticatedHeader {user} />
-    <div class="flex flex-1 overflow-hidden">
+<SidebarLayout>
+    {#snippet top()}
+        <AuthenticatedHeader {user} />
+    {/snippet}
+    {#snippet left()}
         <YourProjects />
-        <main
-            class="flex-1 bg-surface border-t border-l border-surface-border rounded-tl-2xl flex flex-col overflow-auto"
-        >
-            <div class="p-6 flex-1">
-                <h1 class="text-title-sm text-fg-emph">
-                    Good morning, {user.displayName ?? user.name}!
-                </h1>
-                <div class="mt-6">
-                    <RecentActivities />
-                </div>
+    {/snippet}
+    {#snippet main()}
+        <main class="p-6 flex-1">
+            <h1 class="text-title-sm text-fg-emph">
+                Good morning, {user.displayName ?? user.name}!
+            </h1>
+            <div class="mt-6">
+                <RecentActivities />
             </div>
-            <Footer />
         </main>
-    </div>
-</div>
+        <Footer />
+    {/snippet}
+</SidebarLayout>

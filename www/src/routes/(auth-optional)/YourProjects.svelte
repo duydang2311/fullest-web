@@ -61,7 +61,7 @@
     }
 </script>
 
-<aside class="flex flex-col w-96 py-4">
+<aside class="flex flex-col py-4">
     <div class="flex items-center justify-between px-2 lg:px-4">
         <div class="flex items-center gap-1">
             <!-- <div class="h-3 w-2 bg-fg-emph rounded-xs"></div> -->

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { page } from '$app/state';
     import { Tabs } from '~/lib/components/builders.svelte';
-    import { button } from '~/lib/utils/styles';
+    import { C } from '~/lib/utils/styles';
 
     const { tabs }: { tabs: Tabs } = $props();
     const tabItems = [
@@ -10,23 +10,22 @@
     ];
 </script>
 
-<div {...tabs.getRootProps()} class="h-full">
-    <div {...tabs.getListProps()} class="flex items-center h-full">
+<div {...tabs.getRootProps()}>
+    <div {...tabs.getListProps()} class="flex flex-col items-center">
         {#each tabItems as item (item.href)}
             <button
                 {...tabs.getTriggerProps({ value: item.href })}
-                class="focus-visible:ring-focus-fg group relative focus-visible:outline-none min-w-max px-0 h-full overflow-hidden"
+                class="group relative w-full text-left rounded-md focus-visible:outline-none focus-visible:ring focus-visible:ring-base-border"
             >
                 {#if tabs.value === item.href}
-                    <div
-                        class="bg-base-subtle absolute size-full animate-slide-in-from-b duration-300"
-                    ></div>
+                    <div class="bg-base-emph rounded-md absolute top-0 left-0 size-full"></div>
                 {/if}
                 <a
                     href={item.href}
-                    class="{button({
+                    class="{C.button({
                         variant: 'base',
-                    })} content-center font-normal px-4 py-2 h-full tracking-tight relative text-fg-muted hover:text-fg rounded-b-none group-data-selected:bg-transparent group-data-selected:text-fg-emph block group-data-selected:font-bold"
+                        ghost: true,
+                    })} relative block font-normal group-data-selected:font-medium"
                 >
                     {item.label}
                 </a>
