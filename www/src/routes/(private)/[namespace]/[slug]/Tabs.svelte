@@ -1,10 +1,12 @@
 <script lang="ts">
-    import { onNavigate } from '$app/navigation';
+    import { afterNavigate, beforeNavigate } from '$app/navigation';
     import { page } from '$app/state';
-    import { animate, type AnimationPlaybackControls } from 'motion';
     import { Tabs } from '~/lib/components/builders.svelte';
     import { Dashboard, DashboardOutline, TaskIcon, TaskIconOutline } from '~/lib/components/icons';
+    import { Flip, gsap } from '~/lib/utils/gsap';
     import { C } from '~/lib/utils/styles';
+
+    gsap.registerPlugin(Flip);
 
     let activeEl = $state.raw<HTMLElement>();
     const { tabs }: { tabs: Tabs } = $props();
@@ -23,42 +25,45 @@
         },
     ];
 
-    let anim: AnimationPlaybackControls | null = null;
-    onNavigate(() => {
-        if (!activeEl) {
+    let flipState: Flip.FlipState | null = null;
+    let lastActiveEl: HTMLElement | null = null;
+    beforeNavigate(() => {
+        if (!activeEl) return;
+        lastActiveEl = activeEl;
+        flipState = Flip.getState(activeEl, { simple: true });
+    });
+
+    afterNavigate(() => {
+        if (!flipState || !activeEl || lastActiveEl === activeEl) {
+            flipState = null;
+            lastActiveEl = null;
             return;
         }
-        const lastEl = activeEl;
-        const first = activeEl.getBoundingClientRect();
-        return () => {
-            if (!activeEl || lastEl === activeEl) {
-                return;
-            }
-            const last = activeEl.getBoundingClientRect();
-            const dx = first.left - last.left;
-            const dy = first.top - last.top;
-            const dw = last.width ? first.width / last.width : 1;
-            const dh = last.height ? first.height / last.height : 1;
-            if (anim) {
-                anim.stop();
-            }
-            anim = animate(
-                activeEl,
-                {
-                    x: [dx, 0],
-                    y: [dy, 0],
-                    scaleX: [dw, 0.98, 1],
-                    scaleY: [dh, 1.1, 1],
-                },
-                {
-                    duration: 0.2,
-                    ease: 'circInOut',
-                    onComplete() {
-                        anim = null;
-                    },
-                }
-            );
-        };
+        const tl = gsap.timeline();
+        tl.add(
+            Flip.from(flipState, {
+                targets: activeEl,
+                absolute: true,
+                duration: 0.2,
+                ease: 'circ.inOut',
+                clearProps: 'transform',
+            }),
+            0
+        );
+        tl.to(
+            activeEl,
+            {
+                scaleX: 0.98,
+                scaleY: 1.1,
+                duration: 0.1,
+                ease: 'sine.inOut',
+                yoyo: true,
+                repeat: 1,
+            },
+            0
+        );
+        lastActiveEl = null;
+        flipState = null;
     });
 </script>
 
@@ -73,6 +78,7 @@
                 {#if active}
                     <div
                         bind:this={activeEl}
+                        data-flip-id="active"
                         class="bg-base-emph rounded-md absolute top-0 left-0 size-full"
                     ></div>
                 {/if}
