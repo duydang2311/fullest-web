@@ -7,7 +7,7 @@ on:
     branches: 
       [ main ]
     paths:
-    - '**'
+    - 'api/**'
     - '.github/workflows/fullest-web-api-AutoDeployTrigger-7a103cdf-46ae-46b2-8816-fe449ab4c377.yml'
 
   # Allow manual trigger 
@@ -35,7 +35,7 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: api
-          _dockerfilePathKey_: Dockerfile.api
+          dockerfilePath: Dockerfile.api
           _targetLabelKey_: _targetLabel_
           registryUrl: 
           registryUsername: ${{ secrets.FULLESTWEBAPI_REGISTRY_USERNAME }}
