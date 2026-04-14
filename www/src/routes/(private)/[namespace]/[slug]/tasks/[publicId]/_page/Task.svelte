@@ -1,6 +1,6 @@
 <script lang="ts">
     import { portal } from '@zag-js/svelte';
-    import DOMPurify from 'isomorphic-dompurify';
+    import sanitize from 'sanitize-html';
     import { createMenu } from '~/lib/components/builders.svelte';
     import { renderToHTMLString } from '~/lib/components/editor';
     import { MenuOutline, PencilOutline, TrashOutline } from '~/lib/components/icons';
@@ -74,9 +74,7 @@
                 </div>
             </div>
         </div>
-        <h1
-            class="leading-none text-title-sm text-fg-emph font-bold max-w-container-lg mx-auto"
-        >
+        <h1 class="leading-none text-title-sm text-fg-emph font-bold max-w-container-lg mx-auto">
             {ctx.task.title}
         </h1>
         <div class="mt-6 flex flex-wrap gap-x-2 gap-y-2 *:basis-40 *:flex-1 lg:hidden">
@@ -101,7 +99,8 @@
         {:else}
             <article class="prose wrap-anywhere mt-4 max-w-container-lg mx-auto">
                 {#if comment?.contentJson && comment?.contentJson.length > 0}
-                    {@html DOMPurify.sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
+                    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+                    {@html sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
                 {:else}
                     <i class="text-fg-muted">No description provided.</i>
                 {/if}

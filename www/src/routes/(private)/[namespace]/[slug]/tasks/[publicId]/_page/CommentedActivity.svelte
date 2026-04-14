@@ -1,5 +1,4 @@
 <script lang="ts">
-    import DOMPurify from 'isomorphic-dompurify';
     import { renderToHTMLString } from '~/lib/components/editor';
     import RelativeDateTime from '~/lib/components/RelativeDateTime.svelte';
     import type { Activity } from '~/lib/models/activity';
@@ -48,7 +47,8 @@
         {:else}
             <article class="prose max-w-none p-4 wrap-anywhere">
                 {#if comment.contentJson && comment?.contentJson.length > 0}
-                    {@html DOMPurify.sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
+                    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+                    {@html renderToHTMLString(JSON.parse(comment.contentJson))}
                 {:else}
                     <i class="text-fg-muted">No description provided.</i>
                 {/if}
