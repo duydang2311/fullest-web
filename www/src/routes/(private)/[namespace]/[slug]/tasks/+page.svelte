@@ -1,10 +1,34 @@
 <script lang="ts">
     import { page } from '$app/state';
-    import Avatar from '~/lib/components/Avatar.svelte';
+    import { untrack } from 'svelte';
     import { MagnifyingGlass, PlusOutline } from '~/lib/components/icons';
     import { button } from '~/lib/utils/styles';
+    import StatusGroup from './StatusGroup.svelte';
 
     const { data } = $props();
+    const statusNames = untrack(() =>
+        Object.fromEntries(data.statusList.items.map((a) => [a.id, a.name]))
+    );
+    const tasks = untrack(() =>
+        data.taskList
+            ?.map((a) => Object.groupBy(a.items, (b) => b.status?.id ?? 'null'))
+            .reduce(
+                (acc, cur) => {
+                    console.log(cur);
+                    for (const k of Object.keys(cur)) {
+                        acc[k ?? 'null'] = {
+                            name: statusNames[k],
+                            items: cur[k] ?? [],
+                        };
+                    }
+                    return acc;
+                },
+                {} as Record<
+                    string,
+                    { name: string; items: (typeof data.taskList)[number]['items'] }
+                >
+            )
+    );
 </script>
 
 <div class="mx-auto w-full">
@@ -58,9 +82,7 @@
                     placeholder="Filter tasks..."
                     class="c-input bg-base border-0 max-w-64 pl-10"
                 />
-                <MagnifyingGlass
-                    class="absolute left-2 top-1/2 -translate-y-1/2 text-fg-muted"
-                />
+                <MagnifyingGlass class="absolute left-2 top-1/2 -translate-y-1/2 text-fg-muted" />
             </div>
             <a
                 href="/{page.params.namespace}/{page.params.slug}/tasks/new"
@@ -73,73 +95,17 @@
                 New Task
             </a>
         </div>
-        <div class="overflow-auto">
-            <table
-                class="bg-surface min-w-container-md grid grid-cols-[auto_1fr_auto_auto_auto] content-start text-left"
+        <div class="px-8">
+            <div
+                class="grid grid-cols-[auto_1fr_auto_auto] border border-surface-border rounded-md"
             >
-                <thead class="col-span-full grid grid-cols-subgrid">
-                    <tr
-                        class="border-b-surface-border col-span-full grid grid-cols-subgrid items-center border-b *:px-4 *:py-4 px-8"
-                    >
-                        <th class="text-fg-dim font-normal text-sm tracking-wide">ID</th>
-                        <th class="text-fg-dim font-normal text-sm tracking-wide">Task</th>
-                        <th class="text-fg-dim font-normal text-sm tracking-wide">
-                            Author
-                        </th>
-                        <th class="text-fg-dim font-normal text-sm tracking-wide">
-                            Status
-                        </th>
-                        <th class="text-fg-dim font-normal text-sm tracking-wide">
-                            Priority
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="col-span-full grid grid-cols-subgrid">
-                    {#each data.taskList.items as task (task.id)}
-                        <tr
-                            class="col-span-full items-center grid grid-cols-subgrid *:px-4 *:py-6 px-8 border-b border-b-surface-border"
-                        >
-                            <td class="text-fg-muted text-sm tracking-wide">
-                                #{task.publicId}
-                            </td>
-                            <td
-                                class="hover:bg-surface-subtle active:bg-surface-emph relative transition min-w-max"
-                            >
-                                <a
-                                    href="/{page.params.namespace}/{page.params
-                                        .slug}/tasks/{task.publicId}"
-                                    aria-label="View task details"
-                                    class="absolute inset-0"
-                                ></a>
-                                <div>
-                                    {task.title}
-                                </div>
-                            </td>
-                            <td class="min-w-32">
-                                <div class="flex items-center gap-2">
-                                    <Avatar
-                                        user={task.author}
-                                        class="size-avatar-xs rounded-full"
-                                    />
-                                    <span>{task.author.displayName ?? task.author.name}</span>
-                                </div>
-                            </td>
-                            <td class="min-w-32">
-                                <span>{task.status?.name ?? 'No status'}</span>
-                                <!-- <div
-                                        class="border-base-border border-3 absolute bottom-0 right-0 size-0 border-l-transparent border-t-transparent"
-                                    ></div> -->
-                            </td>
-                            <td class="min-w-32">
-                                <span>{task.priority?.name ?? 'No priority'}</span>
-                                <!-- <div
-                                        class="border-base-border border-3 absolute bottom-0 right-0 size-0 border-l-transparent border-t-transparent"
-                                    ></div> -->
-                            </td>
-                        </tr>
-                    {/each}
-                </tbody>
-            </table>
+                {#each [{ id: 'null', name: 'null' }, ...data.statusList.items] as item (item.id)}
+                    <StatusGroup
+                        name={item.name === 'null' ? 'No status' : item.name}
+                        items={tasks[item.id]?.items ?? []}
+                    />
+                {/each}
+            </div>
         </div>
     </div>
 </div>

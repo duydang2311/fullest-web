@@ -31,6 +31,7 @@
         "@types/node": "^25.6.0",
         "@types/sanitize-html": "^2.16.1",
         "@types/slug": "^5.0.9",
+        "@zag-js/collapsible": "^1.40.0",
         "@zag-js/file-upload": "^1.40.0",
         "@zag-js/listbox": "^1.40.0",
         "@zag-js/menu": "^1.40.0",
@@ -567,6 +568,8 @@
     "@zag-js/anatomy": ["@zag-js/anatomy@1.40.0", "", {}, "sha512-oiB4uAaV//L38JluLVPtOHO3xvqambrfrXVOoq4kmNrBv1LLlCmFvrXA2HOR9lakn4ExK27XSUrKhUN7YlKjfQ=="],
 
     "@zag-js/aria-hidden": ["@zag-js/aria-hidden@1.40.0", "", { "dependencies": { "@zag-js/dom-query": "1.40.0" } }, "sha512-lNWujEIlfGKwMQIcgfXuOZSsJD2avrgPsQHrXNVF9mkXygjLFcIRKz2pEexTSCqFh/HuUZJ6rG4pM/hJ/BiVCw=="],
+
+    "@zag-js/collapsible": ["@zag-js/collapsible@1.40.0", "", { "dependencies": { "@zag-js/anatomy": "1.40.0", "@zag-js/core": "1.40.0", "@zag-js/dom-query": "1.40.0", "@zag-js/types": "1.40.0", "@zag-js/utils": "1.40.0" } }, "sha512-xDLY4j9D3gdoTirkwzMaCtelfCjnMhBzPyY6c/mh4oPvD3RB6dr3V3kI80i3yxHaUUeDCIUm/XAxK0InPsRBug=="],
 
     "@zag-js/collection": ["@zag-js/collection@1.40.0", "", { "dependencies": { "@zag-js/utils": "1.40.0" } }, "sha512-+3o1nvbcA9Kz2hDDFf8Kngpd+of33S4TS5Tb9KvrHlU5ieQdvEUtc7/pWG2aCTkGpmgda+j91akB6ZB8+oVkvA=="],
 

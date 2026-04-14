@@ -1,3 +1,4 @@
+import * as collapsible from '@zag-js/collapsible';
 import * as fileUpload from '@zag-js/file-upload';
 import * as listbox from '@zag-js/listbox';
 import * as menu from '@zag-js/menu';
@@ -15,6 +16,16 @@ export function createMenu(props: menu.Props) {
 
 export function createFileUpload(props: fileUpload.Props) {
     return new FileUpload(props);
+}
+
+export function createCollapsible(props: collapsible.Props) {
+    const service = useMachine(collapsible.machine, props);
+    const api = $derived(collapsible.connect(service, normalizeProps));
+    return {
+        get api() {
+            return api;
+        },
+    };
 }
 
 export class Tabs {

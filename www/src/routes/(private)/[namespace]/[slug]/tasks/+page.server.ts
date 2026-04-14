@@ -1,13 +1,11 @@
 import { attempt } from '@duydang2311/attempt';
 import { error } from '@sveltejs/kit';
 import type { OffsetList } from '~/lib/models/paginated';
-import type { Priority } from '~/lib/models/priority';
 import type { Status } from '~/lib/models/status';
-import type { Task } from '~/lib/models/task';
-import type { UserPreset } from '~/lib/models/user';
 import { enrichStep, ErrorKind, ForbiddenError, traced, UnknownError } from '~/lib/utils/errors';
 import { jsonify } from '~/lib/utils/http';
 import type { PageServerLoad } from './$types';
+import type { LocalTask } from './utils';
 
 export const load: PageServerLoad = async (e) => {
     const parent = await e.parent();
@@ -17,7 +15,7 @@ export const load: PageServerLoad = async (e) => {
                 query: {
                     projectId: parent.project.id,
                     fields: 'Id,Name,Rank,Category',
-                    sort: '-Rank',
+                    sort: 'Rank',
                 },
             })
             .then((att) =>
@@ -32,11 +30,12 @@ export const load: PageServerLoad = async (e) => {
                     attempt.unwrapOrElse((e) => error(500, enrichStep('fetch_statuses')(e)))
                 )
             ),
-        await e.locals.http
-            .get('tasks', {
+        e.locals.http
+            .get('tasks/group-by/status', {
                 query: {
                     projectId: parent.project.id,
-                    fields: 'Id,PublicId,Title,Author.Name,Author.DisplayName,Author.ImageKey,Author.ImageVersion,Status.Name,Priority.Name',
+                    fields: 'Id,PublicId,Title,Author.Name,Author.DisplayName,Author.ImageKey,Author.ImageVersion,Status.Id,Priority.Name',
+                    size: 10,
                     sort: '-Id',
                 },
             })
@@ -44,17 +43,7 @@ export const load: PageServerLoad = async (e) => {
                 att.pipe(
                     attempt.flatMap(async (response) =>
                         response.ok
-                            ? await jsonify(() =>
-                                  response.json<
-                                      OffsetList<
-                                          Pick<Task, 'id' | 'publicId' | 'title'> & {
-                                              author: UserPreset['Avatar'];
-                                              status?: Pick<Status, 'name'>;
-                                              priority?: Pick<Priority, 'name'>;
-                                          }
-                                      >
-                                  >()
-                              )
+                            ? await jsonify(() => response.json<OffsetList<LocalTask>[]>())
                             : response.status === 403
                               ? attempt.fail(ForbiddenError())
                               : attempt.fail(UnknownError(await response.text()))
@@ -71,7 +60,7 @@ export const load: PageServerLoad = async (e) => {
     }
 
     return {
-        statuses: statusList,
+        statusList,
         taskList: fetchedTasks.data,
     };
 };
