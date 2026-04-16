@@ -13,6 +13,7 @@ public sealed class PriorityConfiguration : IEntityTypeConfiguration<Priority>
         builder.Property(a => a.Name);
         builder.Property(a => a.Color);
         builder.Property(a => a.Description);
+        builder.Property(a => a.Category);
         builder.Property(a => a.Rank).UseCollation("C");
 
         builder.HasOne(a => a.Project).WithMany(a => a.Priorities).HasForeignKey(a => a.ProjectId);

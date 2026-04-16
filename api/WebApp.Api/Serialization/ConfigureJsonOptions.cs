@@ -18,7 +18,6 @@ public class ConfigureJsonOptions(
 {
     public void Configure(JsonOptions options)
     {
-        options.SerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
         options.SerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
         options.SerializerOptions.Converters.Add(new EntityIdJsonConverter<UserId>(numberEncoder));
         options.SerializerOptions.Converters.Add(

@@ -3,6 +3,7 @@ using System.Reflection;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using WebApp.Api.Common.Codecs;
 using WebApp.Api.Common.Http;
 using WebApp.Api.Common.Projection;
 using WebApp.Domain.Entities;
@@ -10,16 +11,17 @@ using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Tasks.GetManyGroupedByStatus;
 
-public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<List<OffsetList<Projectable>>>>
+public sealed class Endpoint(AppDbContext db, INumberEncoder numberEncoder)
+    : Endpoint<Request, Ok<Dictionary<string, KeysetList<Projectable>>>>
 {
     public override void Configure()
     {
-        Get("tasks/group-by/status");
+        Get("tasks/grouped/status");
         Version(1);
         PreProcessor<Authorize>();
     }
 
-    public override async Task<Ok<List<OffsetList<Projectable>>>> ExecuteAsync(
+    public override async Task<Ok<Dictionary<string, KeysetList<Projectable>>>> ExecuteAsync(
         Request req,
         CancellationToken ct
     )
@@ -30,29 +32,50 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<List<Offset
             query = query.Where(a => a.ProjectId == req.ProjectId && a.Project.DeletedTime == null);
         }
 
-        var pagination = OffsetPagination.From(req);
-        var order = Orderable.From(req);
+        var countGroups = await query
+            .GroupBy(a => a.StatusId ?? new StatusId(-1))
+            .Select(g => g.Count())
+            .ToListAsync()
+            .ConfigureAwait(false);
         var groups = await query
             .GroupBy(a => a.StatusId ?? new StatusId(-1))
-            .Select(BuildGroupedSelectExpression(pagination, order, req.Fields))
-            .ToListAsync(ct)
+            .Select(
+                BuildGroupedSelectExpression(
+                    req.Direction,
+                    req.Size,
+                    req.IncludeTotalCount,
+                    req.Select
+                )
+            )
+            .ToDictionaryAsync(a => a.Key, ct)
             .ConfigureAwait(false);
         return TypedResults.Ok(
-            groups
-                .Select(wrapped =>
-                    OffsetList.From(
-                        wrapped.Items.Select(task => task.ToProjectable(req.Fields)),
-                        pagination,
-                        wrapped.TotalCount
-                    )
-                )
-                .ToList()
+            groups.ToDictionary(
+                kvp => kvp.Key.Value == -1 ? "none" : numberEncoder.Encode(kvp.Key.Value),
+                kvp =>
+                {
+                    var hasNext = kvp.Value.Items.Count > req.Size;
+                    if (hasNext)
+                    {
+                        kvp.Value.Items.RemoveAt(kvp.Value.Items.Count - 1);
+                    }
+                    return KeysetList.From(
+                        items: kvp.Value.Items.Select(Projectable.From<TaskEntity>(req.Select)),
+                        hasPrevious: false,
+                        hasNext: hasNext,
+                        kvp.Value.TotalCount
+                    );
+                }
+            )
         );
     }
 
-    public Expression<Func<IGrouping<StatusId, TaskEntity>, Wrapped>> BuildGroupedSelectExpression(
-        OffsetPagination pagination,
-        Orderable order,
+    private Expression<
+        Func<IGrouping<StatusId, TaskEntity>, GroupedList>
+    > BuildGroupedSelectExpression(
+        Direction direction,
+        int size,
+        bool includeTotalCount,
         string? fields
     )
     {
@@ -69,23 +92,38 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<List<Offset
             groupParam
         );
 
-        var skipMethod = typeof(Queryable)
-            .GetMethods(BindingFlags.Public | BindingFlags.Static)
-            .First(a => a.Name == nameof(Queryable.Skip) && a.GetParameters().Length == 2)
-            .MakeGenericMethod(itemType);
-        var skipCall = Expression.Call(
-            skipMethod,
-            asQueryExpr,
-            Expression.Constant(pagination.Offset)
+        Expression orderCall = null!;
+        MethodInfo orderMethod = null!;
+        if (direction.IsAscending)
+        {
+            orderMethod = typeof(Queryable)
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .First(a => a.Name == nameof(Queryable.OrderBy) && a.GetParameters().Length == 2)
+                .MakeGenericMethod(itemType, typeof(TaskId));
+        }
+        else
+        {
+            orderMethod = typeof(Queryable)
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .First(a =>
+                    a.Name == nameof(Queryable.OrderByDescending) && a.GetParameters().Length == 2
+                )
+                .MakeGenericMethod(itemType, typeof(TaskId));
+        }
+        var param = Expression.Parameter(typeof(TaskEntity));
+        var lambdaType = typeof(Func<,>).MakeGenericType(typeof(TaskEntity), typeof(TaskId));
+        var lambda = Expression.Lambda(
+            lambdaType,
+            Expression.Property(param, nameof(TaskEntity.Id)),
+            param
         );
+        orderCall = Expression.Call(orderMethod, asQueryExpr, lambda);
 
         var takeMethod = typeof(Queryable)
             .GetMethods(BindingFlags.Public | BindingFlags.Static)
             .First(a => a.Name == nameof(Queryable.Take) && a.GetParameters().Length == 2)
             .MakeGenericMethod(itemType);
-        var takeCall = Expression.Call(takeMethod, skipCall, Expression.Constant(pagination.Size));
-
-        var orderByCall = BuildOrderByExpression(takeCall, itemParam, order.Sort);
+        var takeCall = Expression.Call(takeMethod, orderCall, Expression.Constant(size + 1));
 
         var itemLambdaExpr = Expression.Lambda<Func<TaskEntity, TaskEntity>>(
             string.IsNullOrEmpty(fields)
@@ -101,31 +139,42 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<List<Offset
             .GetMethods(BindingFlags.Public | BindingFlags.Static)
             .First(a => a.Name == nameof(Queryable.Select) && a.GetParameters().Length == 2)
             .MakeGenericMethod(itemType, itemType);
-        var selectCall = Expression.Call(selectMethod, orderByCall, itemLambdaExpr);
+        var selectCall = Expression.Call(selectMethod, takeCall, itemLambdaExpr);
         var toListMethod = typeof(Enumerable)
             .GetMethods(BindingFlags.Public | BindingFlags.Static)
             .First(a => a.Name == nameof(Enumerable.ToList) && a.GetParameters().Length == 1)
             .MakeGenericMethod(itemType);
         var toListCall = Expression.Call(toListMethod, selectCall);
         var itemsBindExpr = Expression.Bind(
-            typeof(Wrapped).GetProperty(nameof(Wrapped.Items))!,
+            typeof(GroupedList).GetProperty(nameof(GroupedList.Items))!,
             toListCall
         );
-        var countMethod = typeof(Enumerable)
-            .GetMethods(BindingFlags.Public | BindingFlags.Static)
-            .First(a => a.Name == nameof(Enumerable.Count) && a.GetParameters().Length == 1)
-            .MakeGenericMethod(itemType);
-        var totalCountBindExpr = Expression.Bind(
-            typeof(Wrapped).GetProperty(nameof(Wrapped.TotalCount))!,
-            Expression.Call(countMethod, groupParam)
+        var keyProperty = typeof(IGrouping<StatusId, TaskEntity>).GetProperty(
+            nameof(IGrouping<,>.Key)
+        )!;
+        var keyBindExpr = Expression.Bind(
+            typeof(GroupedList).GetProperty(nameof(GroupedList.Key))!,
+            Expression.Property(groupParam, keyProperty)
         );
 
+        var bindingExprs = new List<MemberBinding>([itemsBindExpr, keyBindExpr]);
+        if (includeTotalCount)
+        {
+            var countMethod = typeof(Enumerable)
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .First(a => a.Name == nameof(Enumerable.Count) && a.GetParameters().Length == 1)
+                .MakeGenericMethod(itemType);
+            var totalCountBindExpr = Expression.Bind(
+                typeof(GroupedList).GetProperty(nameof(GroupedList.TotalCount))!,
+                Expression.Call(countMethod, groupParam)
+            );
+            bindingExprs.Add(totalCountBindExpr);
+        }
         var groupInitExpr = Expression.MemberInit(
-            Expression.New(typeof(Wrapped)),
-            itemsBindExpr,
-            totalCountBindExpr
+            Expression.New(typeof(GroupedList)),
+            bindingExprs
         );
-        var groupLambdaExpr = Expression.Lambda<Func<IGrouping<StatusId, TaskEntity>, Wrapped>>(
+        var groupLambdaExpr = Expression.Lambda<Func<IGrouping<StatusId, TaskEntity>, GroupedList>>(
             groupInitExpr,
             groupParam
         );
@@ -133,69 +182,10 @@ public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Ok<List<Offset
         return groupLambdaExpr;
     }
 
-    public static Expression BuildOrderByExpression(
-        Expression sourceExpr,
-        ParameterExpression parameter,
-        string sortString
-    )
+    private sealed record GroupedList
     {
-        var fields = sortString.Split(
-            ',',
-            StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries
-        );
-
-        Expression resultExpr = sourceExpr;
-        bool isFirst = true;
-        var queryableType = typeof(Queryable);
-
-        foreach (var field in fields)
-        {
-            bool descending = field.StartsWith("-");
-            var fieldName = descending ? field[1..].Trim() : field.Trim();
-
-            var member = BuildPropertyAccess(parameter, fieldName);
-            var lambdaType = typeof(Func<,>).MakeGenericType(parameter.Type, member.Type);
-            var lambda = Expression.Lambda(lambdaType, member, parameter);
-
-            string methodName;
-            if (isFirst)
-                methodName = descending
-                    ? nameof(Queryable.OrderByDescending)
-                    : nameof(Queryable.OrderBy);
-            else
-                methodName = descending
-                    ? nameof(Queryable.ThenByDescending)
-                    : nameof(Queryable.ThenBy);
-
-            var method = queryableType
-                .GetMethods()
-                .Where(a => a.Name == methodName && a.GetParameters().Length == 2)
-                .Single()
-                .MakeGenericMethod(parameter.Type, member.Type);
-
-            resultExpr = Expression.Call(method, resultExpr, lambda);
-            isFirst = false;
-        }
-
-        return resultExpr;
-    }
-
-    private static MemberExpression BuildPropertyAccess(ParameterExpression parameter, string field)
-    {
-        var segments = field.Split('.');
-        MemberExpression? member = null;
-        foreach (var segment in segments)
-        {
-            member = member is null
-                ? Expression.PropertyOrField(parameter, segment)
-                : Expression.PropertyOrField(member, segment);
-        }
-        return member!;
-    }
-
-    public sealed record Wrapped
-    {
+        public required StatusId Key { get; init; }
         public required List<TaskEntity> Items { get; init; }
-        public required int TotalCount { get; init; }
+        public int TotalCount { get; init; }
     }
 }

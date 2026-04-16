@@ -2,9 +2,12 @@ namespace WebApp.Domain.Entities;
 
 public enum StatusCategory : byte
 {
-    None,
-    Pending,
+    Proposed = 1,
+    Ready,
     Active,
+    Paused,
+    Review,
     Completed,
     Canceled,
+    Archived,
 }

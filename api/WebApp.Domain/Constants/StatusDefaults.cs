@@ -11,15 +11,15 @@ public sealed record StatusDefaults(
 {
     public static readonly StatusDefaults Backlog = new(
         "Backlog",
-        StatusCategory.Pending,
+        StatusCategory.Proposed,
         string.Empty,
-        "Tasks you think about doing"
+        "Tasks not ready or unplanned"
     );
     public static readonly StatusDefaults Todo = new(
         "Todo",
-        StatusCategory.Pending,
+        StatusCategory.Ready,
         string.Empty,
-        "Tasks you decided to do"
+        "Tasks ready to be picked up"
     );
     public static readonly StatusDefaults InProgress = new(
         "In Progress",
@@ -27,29 +27,29 @@ public sealed record StatusDefaults(
         string.Empty,
         "Tasks being worked on"
     );
+    public static readonly StatusDefaults Paused = new(
+        "Paused",
+        StatusCategory.Paused,
+        string.Empty,
+        "Tasks being on hold"
+    );
     public static readonly StatusDefaults Review = new(
         "Review",
-        StatusCategory.Active,
+        StatusCategory.Review,
         string.Empty,
-        "Tasks being reviewed"
+        "Tasks awaiting for feedback or approval"
     );
     public static readonly StatusDefaults Done = new(
         "Done",
         StatusCategory.Completed,
         string.Empty,
-        "Tasks that are finished"
+        "Tasks finished successfully"
     );
     public static readonly StatusDefaults Cancelled = new(
         "Cancelled",
         StatusCategory.Canceled,
         string.Empty,
-        "Tasks that are cancelled"
-    );
-    public static readonly StatusDefaults Duplicate = new(
-        "Duplicate",
-        StatusCategory.Canceled,
-        string.Empty,
-        "Tasks that are duplicated"
+        "Tasks no longer required"
     );
 
     public static readonly StatusDefaults[] All =
@@ -57,9 +57,9 @@ public sealed record StatusDefaults(
         Backlog,
         Todo,
         InProgress,
+        Paused,
         Review,
         Done,
         Cancelled,
-        Duplicate,
     ];
 }

@@ -28,6 +28,7 @@ public sealed class CreateDefaultPriorities(BaseDbContext db) : IProjectCreatedH
                         ProjectId = created.ProjectId,
                         Name = a.Name,
                         Color = a.Color,
+                        Category = a.Category,
                         Description = a.Description,
                         Rank = ranks[i],
                     }

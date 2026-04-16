@@ -41,6 +41,7 @@ public static partial class ServiceCollectionExtensions
                         .MigrationsAssembly(dataOptions.MigrationsAssembly)
                         .MapEnum<NamespaceKind>("namespace_kind")
                         .MapEnum<StatusCategory>("status_category")
+                        .MapEnum<PriorityCategory>("priority_category")
             )
             .EnableDetailedErrors()
             .EnableSensitiveDataLogging()
