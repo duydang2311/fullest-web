@@ -6,6 +6,39 @@
     --_border: transparent;
 }
 
+.c-button--surface {
+    --_text: var(--color-fg);
+
+    &:where(.c-button--filled) {
+        --_bg: var(--color-surface);
+        --_bg-hover: var(--color-surface-subtle);
+        --_bg-active: var(--color-surface-emph);
+    }
+
+    &:where(.c-button--ghost) {
+        --_bg-hover: var(--color-surface-subtle);
+        --_bg-active: var(--color-surface-emph);
+        &:where(:disabled, [data-disabled]) {
+            --_text: var(--color-fg-muted);
+            --_bg-hover: transparent;
+            --_bg-active: transparent;
+        }
+    }
+
+    &:where([data-state='open']) {
+        --_bg: var(--_bg-active);
+        --_bg-hover: var(--_bg-active);
+    }
+
+    &:where(.c-button--outlined) {
+        --_border: color-mix(in oklch, var(--color-surface-border) 60%, var(--color-surface-border-emph));
+    }
+
+    &:where(:focus-visible) {
+        @apply ring-focus-fg;
+    }
+}
+
 .c-button--base {
     --_text: var(--color-fg);
 

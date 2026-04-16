@@ -10,6 +10,7 @@ export interface KeysetList<T> {
     items: T[];
     hasPrevious: boolean;
     hasNext: boolean;
+    totalCount: number;
 }
 
 export interface CursorList<T, TKey> {
@@ -43,16 +44,23 @@ export function offsetList<T>(
 }
 
 export function keysetList<T>(): KeysetList<T>;
-export function keysetList<T>(items: T[], hasPrevious: boolean, hasNext: boolean): KeysetList<T>;
+export function keysetList<T>(
+    items: T[],
+    hasPrevious: boolean,
+    hasNext: boolean,
+    totalCount: number
+): KeysetList<T>;
 export function keysetList<T>(
     items?: T[],
     hasPrevious?: boolean,
-    hasNext?: boolean
+    hasNext?: boolean,
+    totalCount?: number
 ): KeysetList<T> {
     return {
         items: items ?? [],
         hasPrevious: hasPrevious ?? false,
         hasNext: hasNext ?? false,
+        totalCount: totalCount ?? 0,
     };
 }
 

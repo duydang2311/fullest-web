@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
 type ButtonStyles = {
-    variant?: 'base' | 'primary' | 'negative' | 'secondary';
+    variant?: 'surface' | 'base' | 'primary' | 'negative' | 'secondary';
     outlined?: boolean;
     icon?: boolean;
     size?: 'md' | 'sm';

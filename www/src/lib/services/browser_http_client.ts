@@ -98,7 +98,7 @@ export class BrowserHttpClient implements HttpClient {
         );
     }
 
-    #withQueryParams(url: string, params: Record<string, number | string | null | undefined>) {
+    #withQueryParams(url: string, params: Record<string, number | string | boolean | null | undefined>) {
         const search = Object.entries(params)
             .filter(([_, v]) => v)
             .map(([k, v]) => `${k}=${encodeURIComponent(v as NonNullable<typeof v>)}`)
