@@ -74,10 +74,6 @@ export function fetchActivityList(http: HttpClient) {
                     >()
                 )
             ),
-            attempt.map((a) => {
-                console.log(a);
-                return a;
-            }),
             attempt.unwrap
         );
     };

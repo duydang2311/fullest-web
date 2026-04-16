@@ -1,8 +1,6 @@
 <script lang="ts">
     import { portal } from '@zag-js/svelte';
-    import sanitize from 'sanitize-html';
     import { createMenu } from '~/lib/components/builders.svelte';
-    import { renderToHTMLString } from '~/lib/components/editor';
     import { MenuOutline, PencilOutline, TrashOutline } from '~/lib/components/icons';
     import { button, C } from '~/lib/utils/styles';
     import { deleteTask } from './page.remote';
@@ -98,9 +96,8 @@
             </div>
         {:else}
             <article class="prose wrap-anywhere mt-4 max-w-container-lg mx-auto">
-                {#if comment?.contentJson && comment?.contentJson.length > 0}
-                    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-                    {@html sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
+                {#if comment.contentHtml && comment.contentHtml.length > 0}
+                    {@html comment.contentHtml}
                 {:else}
                     <i class="text-fg-muted">No description provided.</i>
                 {/if}

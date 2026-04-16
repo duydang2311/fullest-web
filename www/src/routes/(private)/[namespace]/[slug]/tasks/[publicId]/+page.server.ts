@@ -8,6 +8,8 @@ import type { User, UserPreset } from '~/lib/models/user';
 import { ErrorKind, ForbiddenError, NotFoundError, UnknownError } from '~/lib/utils/errors';
 import { jsonify } from '~/lib/utils/http';
 import type { PageServerLoad } from './$types';
+import sanitize from 'sanitize-html';
+import { renderToHTMLString } from '~/lib/components/editor';
 
 export const load: PageServerLoad = async (e) => {
     e.depends(e.route.id);
@@ -51,6 +53,7 @@ export const load: PageServerLoad = async (e) => {
                         priority: Pick<Priority, 'id' | 'name'>;
                         status: Pick<Status, 'id' | 'name'>;
                         initialComment: Pick<Comment, 'id' | 'contentJson' | 'createdTime'> & {
+                            contentHtml: string | null;
                             author: Pick<
                                 User,
                                 'name' | 'displayName' | 'imageKey' | 'imageVersion'
@@ -69,6 +72,10 @@ export const load: PageServerLoad = async (e) => {
             );
         })
     );
+
+    if (task.initialComment.contentJson) {
+        task.initialComment.contentHtml = sanitize(renderToHTMLString(JSON.parse(task.initialComment.contentJson)));
+    }
 
     return {
         task,

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { browser } from '$app/environment';
     import { watch } from '@duydang2311/svutils';
     import { untrack } from 'svelte';
     import { useRuntime } from '~/lib/utils/runtime';
@@ -13,11 +14,17 @@
     const { http } = useRuntime();
     const ctx = setPageContext({ task: untrack(() => data.task) });
 
-    watch(() => data)(() => {
+    if (browser) {
+        untrack(() =>
+            fetchActivityList(http)(data.task.id, null, ctx.activityList?.items.length).then(
+                (list) => {
+                    ctx.activityList = list;
+                }
+            )
+        );
+    }
+    watch(() => ctx.task)(() => {
         ctx.task = data.task;
-        fetchActivityList(http)(data.task.id, null, ctx.activityList?.items.length).then((list) => {
-            ctx.activityList = list;
-        });
     });
 </script>
 

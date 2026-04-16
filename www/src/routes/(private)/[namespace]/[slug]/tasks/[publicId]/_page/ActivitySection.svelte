@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { replaceState } from '$app/navigation';
-    import { page } from '$app/state';
     import { busy } from '@duydang2311/svutils';
     import { onDestroy } from 'svelte';
     import invariant from 'tiny-invariant';

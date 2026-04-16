@@ -49,6 +49,7 @@
 		"@zag-js/tabs": "^1.40.0",
 		"cacheable": "^2.3.4",
 		"clsx": "^2.1.1",
+		"dompurify": "^3.4.0",
 		"eslint": "^10.2.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.17.0",
