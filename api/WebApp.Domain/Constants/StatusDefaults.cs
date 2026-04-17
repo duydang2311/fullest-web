@@ -57,9 +57,9 @@ public sealed record StatusDefaults(
         Backlog,
         Todo,
         InProgress,
-        Paused,
         Review,
         Done,
+        Paused,
         Cancelled,
     ];
 }
