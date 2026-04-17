@@ -7,7 +7,12 @@ using WebApp.Domain.Entities;
 
 namespace WebApp.Api.V1.Projects.Create;
 
-public sealed record Request(string? Name, string? Identifier, string? Summary)
+public sealed record Request(
+    string? Name,
+    string? Identifier,
+    string? Summary,
+    string? DescriptionJson
+)
 {
     public string? NormalizedIdentifier => Identifier?.Trim().ToLowerInvariant();
     public string? NormalizedSummary => Summary?.Trim();

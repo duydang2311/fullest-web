@@ -29,7 +29,6 @@ public sealed class Endpoint(
             new CreateComment(projectId, req.TaskId, req.CallerId)
             {
                 ContentJson = req.ContentJson,
-                ContentText = req.ContentText,
             },
             ct
         );

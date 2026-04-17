@@ -6,7 +6,7 @@ using FastEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebApp.Api.Common.Codecs;
 using WebApp.Api.Common.Http;
-using WebApp.Domain.Commands;
+using WebApp.Application.Common;
 using WebApp.Domain.Entities;
 using WebApp.Domain.Events;
 using WebApp.Infrastructure.Data;
@@ -35,40 +35,13 @@ public sealed class Endpoint(
         Guard.Against.Null(req.NormalizedTitle);
 
         await using var tx = await db.Database.BeginTransactionAsync(ct).ConfigureAwait(false);
-        var doc =
-            req.DescriptionJson is null
-            || req.DescriptionJson.RootElement.ValueKind == JsonValueKind.Null
-                ? null
-                : req.DescriptionJson;
-        string? preview = default;
-        if (doc is not null)
-        {
-            preview = ExtractText(doc, 256);
-        }
-        else if (!string.IsNullOrEmpty(req.DescriptionText))
-        {
-            doc = JsonSerializer.SerializeToDocument(
-                new
-                {
-                    type = "doc",
-                    content = new[]
-                    {
-                        new
-                        {
-                            type = "paragraph",
-                            content = new[] { new { type = "text", text = req.DescriptionText } },
-                        },
-                    },
-                }
-            );
-            preview = ExtractText(req.DescriptionText, 256);
-        }
+        var (json, preview) = TextDocumentHelper.ParseDocumentPreview(req.DescriptionJson);
         var task = new TaskEntity
         {
             ProjectId = req.ProjectId.Value,
             AuthorId = req.CallerId,
             Title = req.NormalizedTitle,
-            DescriptionJson = doc is null ? null : JsonSerializer.Serialize(doc),
+            DescriptionJson = json,
             DescriptionPreview = preview,
         };
         await db.AddAsync(task, ct).ConfigureAwait(false);

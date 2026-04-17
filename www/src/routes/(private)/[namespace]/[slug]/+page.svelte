@@ -2,9 +2,9 @@
     import { page } from '$app/state';
     import Avatar from '~/lib/components/Avatar.svelte';
     import { CheckCircleOutline } from '~/lib/components/icons';
-    import About from './About.svelte';
-    import ProjectActions from './ProjectActions.svelte';
     import Breadcrumbs from './__page__/Breadcrumbs.svelte';
+    import Description from './Description.svelte';
+    import ProjectActions from './ProjectActions.svelte';
 
     const { data } = $props();
 </script>
@@ -46,6 +46,6 @@
         {/if}
     </div>
     <div class="mt-4 px-8">
-        <About project={data.project} />
+        <Description />
     </div>
 </div>

@@ -10,7 +10,8 @@ public sealed record Project : ISoftDelete
     public ProjectId Id { get; init; }
     public string Name { get; init; } = null!;
     public string? Summary { get; init; }
-    public string? About { get; init; }
+    public string? DescriptionJson { get; init; }
+    public string? DescriptionPreview { get; init; }
     public string Identifier { get; init; } = null!;
     public Instant? DeletedTime { get; init; }
     public ICollection<ProjectMember> ProjectMembers { get; init; } = null!;

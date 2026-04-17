@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Api.Common.Codecs;
 using WebApp.Api.Common.Http;
+using WebApp.Application.Common;
 using WebApp.Domain.Entities;
 using WebApp.Domain.Events;
 using WebApp.Infrastructure.Data;
@@ -41,12 +42,15 @@ public sealed class Endpoint(
         }
 
         await using var tx = await db.Database.BeginTransactionAsync(ct);
+        var (json, preview) = TextDocumentHelper.ParseDocumentPreview(req.DescriptionJson);
         var project = new Project
         {
             Name = req.Name,
             Identifier = req.NormalizedIdentifier,
             NamespaceId = namespaceId.Value,
             Summary = req.NormalizedSummary,
+            DescriptionJson = json,
+            DescriptionPreview = preview,
         };
         await db.Projects.AddAsync(project, ct).ConfigureAwait(false);
         try

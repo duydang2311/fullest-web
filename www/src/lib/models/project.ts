@@ -9,10 +9,10 @@ export interface Project {
 	namespace: Namespace;
 	id: string;
 	name: string;
-	summary?: string;
-	about?: string;
+	summary: string | null;
+	descriptionJson: string | null;
 	identifier: string;
-	deletedTime?: string;
+	deletedTime: string | null;
 	projectMembers: string;
 	tags: Tag[];
 }

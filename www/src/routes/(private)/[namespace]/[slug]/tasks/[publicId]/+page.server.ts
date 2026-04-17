@@ -11,7 +11,6 @@ import { fields, jsonify } from '~/lib/utils/http';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (e) => {
-    e.depends(e.route.id);
     const parent = await e.parent();
     const fetchedTask = await e.locals.http.get(
         `projects/${parent.project.id}/tasks/${e.params.publicId}`,
@@ -66,7 +65,6 @@ export const load: PageServerLoad = async (e) => {
         })
     );
 
-    console.log(task);
     if (task.descriptionJson) {
         task.descriptionHtml = sanitize(renderToHTMLString(JSON.parse(task.descriptionJson)));
     }
