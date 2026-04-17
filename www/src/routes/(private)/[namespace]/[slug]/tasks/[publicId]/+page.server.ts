@@ -1,15 +1,14 @@
 import { attempt } from '@duydang2311/attempt';
 import { error } from '@sveltejs/kit';
-import type { Comment } from '~/lib/models/comment';
+import sanitize from 'sanitize-html';
+import { renderToHTMLString } from '~/lib/components/editor';
 import type { Priority } from '~/lib/models/priority';
 import type { Status } from '~/lib/models/status';
 import type { Task } from '~/lib/models/task';
 import type { User, UserPreset } from '~/lib/models/user';
 import { ErrorKind, ForbiddenError, NotFoundError, UnknownError } from '~/lib/utils/errors';
-import { jsonify } from '~/lib/utils/http';
+import { fields, jsonify } from '~/lib/utils/http';
 import type { PageServerLoad } from './$types';
-import sanitize from 'sanitize-html';
-import { renderToHTMLString } from '~/lib/components/editor';
 
 export const load: PageServerLoad = async (e) => {
     e.depends(e.route.id);
@@ -18,12 +17,12 @@ export const load: PageServerLoad = async (e) => {
         `projects/${parent.project.id}/tasks/${e.params.publicId}`,
         {
             query: {
-                fields: [
-                    'Id,PublicId,Title,Status.Id,Status.Name,Priority.Id,Priority.Name,CreatedTime,UpdatedTime,InitialCommentId,Author.Name',
-                    'InitialComment.Id,InitialComment.ContentJson,InitialComment.CreatedTime,InitialComment.Author.Name',
-                    'InitialComment.Author.DisplayName,InitialComment.Author.ImageKey,InitialComment.Author.ImageVersion',
-                    'Assignees.Id,Assignees.Name,Assignees.DisplayName,Assignees.ImageKey,Assignees.ImageVersion',
-                ].join(','),
+                fields: fields('Id,PublicId,Title,CreatedTime,UpdatedTime,DescriptionJson', {
+                    Status: 'Id,Name',
+                    Priority: 'Id,Name',
+                    Author: 'Name,DisplayName,ImageKey,ImageVersion',
+                    Assignees: 'Id,Name,DisplayName,ImageKey,ImageVersion',
+                }),
             },
         }
     );
@@ -48,18 +47,12 @@ export const load: PageServerLoad = async (e) => {
                         | 'title'
                         | 'createdTime'
                         | 'updatedTime'
-                        | 'initialCommentId'
+                        | 'descriptionJson'
                     > & {
+                        descriptionHtml: string;
                         priority: Pick<Priority, 'id' | 'name'>;
                         status: Pick<Status, 'id' | 'name'>;
-                        initialComment: Pick<Comment, 'id' | 'contentJson' | 'createdTime'> & {
-                            contentHtml: string | null;
-                            author: Pick<
-                                User,
-                                'name' | 'displayName' | 'imageKey' | 'imageVersion'
-                            >;
-                        };
-                        author: Pick<User, 'name'>;
+                        author: UserPreset['Avatar'];
                         assignees: (Pick<User, 'id'> & UserPreset['Avatar'])[];
                     }
                 >()
@@ -73,8 +66,9 @@ export const load: PageServerLoad = async (e) => {
         })
     );
 
-    if (task.initialComment.contentJson) {
-        task.initialComment.contentHtml = sanitize(renderToHTMLString(JSON.parse(task.initialComment.contentJson)));
+    console.log(task);
+    if (task.descriptionJson) {
+        task.descriptionHtml = sanitize(renderToHTMLString(JSON.parse(task.descriptionJson)));
     }
 
     return {

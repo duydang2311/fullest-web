@@ -7,12 +7,11 @@
     import SelectAssignees from './SelectAssignees.svelte';
     import SelectPriority from './SelectPriority.svelte';
     import SelectStatus from './SelectStatus.svelte';
-    import TaskEdit from './TaskEdit.svelte';
     import { usePageContext } from './utils.svelte';
 
     let isEditing = $state.raw(false);
     const ctx = usePageContext();
-    const comment = $derived(ctx.task.initialComment);
+    const task = $derived(ctx.task);
     const id = $props.id();
     const menu = createMenu({
         id,
@@ -28,7 +27,7 @@
     <div class="border-b border-b-surface-border pb-4 px-4 lg:px-8">
         <div class="flex justify-between items-center gap-8 max-w-container-lg mx-auto">
             <p class="c-help-text px-2 bg-surface-subtle border border-surface-border rounded-sm">
-                #{ctx.task.publicId}
+                #{task.publicId}
             </p>
             <div class="mt-4">
                 <button
@@ -54,7 +53,7 @@
                         </li>
                         <li>
                             <form {...deleteTask}>
-                                <input {...deleteTask.fields.id.as('hidden', ctx.task.id)} />
+                                <input {...deleteTask.fields.id.as('hidden', task.id)} />
                                 <button
                                     type="submit"
                                     {...menu.api.getItemProps({ value: 'delete' })}
@@ -73,7 +72,7 @@
             </div>
         </div>
         <h1 class="leading-none text-title-sm text-fg-emph font-bold max-w-container-lg mx-auto">
-            {ctx.task.title}
+            {task.title}
         </h1>
         <div class="mt-6 flex flex-wrap gap-x-2 gap-y-2 *:basis-40 *:flex-1 lg:hidden">
             <SelectStatus />
@@ -82,26 +81,12 @@
         </div>
     </div>
     <div class="px-4 lg:px-8">
-        {#if isEditing}
-            <div class="mt-4 max-w-container-lg mx-auto">
-                <TaskEdit
-                    {comment}
-                    onCancel={() => {
-                        isEditing = false;
-                    }}
-                    onSave={() => {
-                        isEditing = false;
-                    }}
-                />
-            </div>
-        {:else}
-            <article class="prose wrap-anywhere mt-4 max-w-container-lg mx-auto">
-                {#if comment.contentHtml && comment.contentHtml.length > 0}
-                    {@html comment.contentHtml}
-                {:else}
-                    <i class="text-fg-muted">No description provided.</i>
-                {/if}
-            </article>
-        {/if}
+        <article class="prose wrap-anywhere mt-4 max-w-container-lg mx-auto">
+            {#if task.descriptionHtml && task.descriptionHtml.length > 0}
+                {@html task.descriptionHtml}
+            {:else}
+                <i class="text-fg-muted">No description provided.</i>
+            {/if}
+        </article>
     </div>
 </div>

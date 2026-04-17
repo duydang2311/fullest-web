@@ -23,7 +23,7 @@ export const actions: Actions = {
 
         const created = await http.post('projects', { body: validated.data });
         if (!created.ok) {
-            return fail(created.error.kind === ErrorKind.HttpNetwork ? 502 : 500, created.error);
+            return fail(500, created.error);
         }
         if (!created.data.ok) {
             const parsedBody = await jsonify(() => created.data.json());

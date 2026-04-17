@@ -1,8 +1,9 @@
+using System.Text;
+using System.Text.Json;
 using Ardalis.GuardClauses;
 using EntityFramework.Exceptions.Common;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
 using WebApp.Api.Common.Codecs;
 using WebApp.Api.Common.Http;
 using WebApp.Domain.Commands;
@@ -16,7 +17,6 @@ public sealed class Endpoint(
     AppDbContext db,
     LinkGenerator linkGenerator,
     INumberEncoder numberEncoder,
-    ICreateCommentHandler createCommentHandler,
     IEnumerable<ITaskCreatedHandler> taskCreatedHandlers
 ) : Endpoint<Request, Results<BadRequest<Problem>, NotFound<Problem>, Created<Response>>>
 {
@@ -35,11 +35,41 @@ public sealed class Endpoint(
         Guard.Against.Null(req.NormalizedTitle);
 
         await using var tx = await db.Database.BeginTransactionAsync(ct).ConfigureAwait(false);
+        var doc =
+            req.DescriptionJson is null
+            || req.DescriptionJson.RootElement.ValueKind == JsonValueKind.Null
+                ? null
+                : req.DescriptionJson;
+        string? preview = default;
+        if (doc is not null)
+        {
+            preview = ExtractText(doc, 256);
+        }
+        else if (!string.IsNullOrEmpty(req.DescriptionText))
+        {
+            doc = JsonSerializer.SerializeToDocument(
+                new
+                {
+                    type = "doc",
+                    content = new[]
+                    {
+                        new
+                        {
+                            type = "paragraph",
+                            content = new[] { new { type = "text", text = req.DescriptionText } },
+                        },
+                    },
+                }
+            );
+            preview = ExtractText(req.DescriptionText, 256);
+        }
         var task = new TaskEntity
         {
             ProjectId = req.ProjectId.Value,
             AuthorId = req.CallerId,
             Title = req.NormalizedTitle,
+            DescriptionJson = doc is null ? null : JsonSerializer.Serialize(doc),
+            DescriptionPreview = preview,
         };
         await db.AddAsync(task, ct).ConfigureAwait(false);
         try
@@ -74,21 +104,6 @@ public sealed class Endpoint(
         }
         await db.SaveChangesAsync(ct).ConfigureAwait(false);
 
-        var comment = await createCommentHandler
-            .HandleAsync(
-                new CreateComment(req.ProjectId.Value, task.Id, req.CallerId)
-                {
-                    ContentJson = req.DescriptionJson,
-                    ContentText = req.DescriptionText,
-                },
-                ct
-            )
-            .ConfigureAwait(false);
-        await db
-            .Tasks.Where(a => a.Id == task.Id)
-            .ExecuteUpdateAsync(a => a.SetProperty(b => b.InitialCommentId, comment.Id), ct)
-            .ConfigureAwait(false);
-
         var url = linkGenerator.GetUriByName(
             HttpContext,
             IEndpoint.GetName<GetOne.ById.Endpoint>(),
@@ -101,5 +116,83 @@ public sealed class Endpoint(
 
         await tx.CommitAsync(ct).ConfigureAwait(false);
         return TypedResults.Created(url, new Response(task.Id, task.PublicId));
+    }
+
+    private static string? ExtractText(string text, int size)
+    {
+        if (text.Length <= size)
+        {
+            return text;
+        }
+
+        if (text[size] == ' ')
+        {
+            return text[..size];
+        }
+
+        var lastDelimiter = -1;
+        for (int i = size; i >= 0; --i)
+        {
+            if (text[i] == ' ')
+            {
+                lastDelimiter = i;
+                break;
+            }
+        }
+        if (lastDelimiter == -1)
+        {
+            return text[..size];
+        }
+        return text[..lastDelimiter];
+    }
+
+    private static string? ExtractText(JsonDocument doc, int size)
+    {
+        var stack = new Stack<JsonElement>();
+        var sb = new StringBuilder(size);
+        stack.Push(doc.RootElement);
+        while (sb.Length < size && stack.TryPop(out var el))
+        {
+            if (!el.TryGetProperty("type", out var type))
+            {
+                continue;
+            }
+
+            var value = type.GetString();
+            if (string.Equals(value, "text", StringComparison.OrdinalIgnoreCase))
+            {
+                if (el.TryGetProperty("text", out var text))
+                {
+                    var trimmed = text.GetString()?.Trim();
+                    if (sb.Length + (trimmed?.Length ?? 0) >= size)
+                    {
+                        break;
+                    }
+                    sb.Append(trimmed).Append(' ');
+                }
+                continue;
+            }
+
+            if (
+                el.TryGetProperty("content", out var content)
+                && content.ValueKind == JsonValueKind.Array
+            )
+            {
+                foreach (var childEl in content.EnumerateArray())
+                {
+                    stack.Push(childEl);
+                }
+            }
+        }
+
+        if (sb.Length == 0)
+        {
+            return null;
+        }
+        if (sb[^1] == ' ')
+        {
+            return sb.ToString(0, sb.Length - 1);
+        }
+        return sb.ToString();
     }
 }

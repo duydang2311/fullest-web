@@ -19,10 +19,6 @@ public sealed class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.HasKey(a => a.Id);
         builder.HasIndex(a => a.DeletedTime);
         builder.HasOne(a => a.Task).WithMany(a => a.Comments).HasForeignKey(a => a.TaskId);
-        builder
-            .HasOne<TaskEntity>()
-            .WithOne(a => a.InitialComment)
-            .HasForeignKey<TaskEntity>(a => a.InitialCommentId);
         builder.HasOne(a => a.Author).WithMany().HasForeignKey(a => a.AuthorId);
     }
 }

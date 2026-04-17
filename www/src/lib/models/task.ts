@@ -15,12 +15,12 @@ export interface Task {
 	assignees: User[];
 	publicId: string;
 	title: string;
+	descriptionJson: string | null;
+	descriptionPreview: string | null;
 	statusId?: string;
 	status?: Status;
 	priorityId?: string;
 	priority?: Priority;
-	initialCommentId: string;
-	initialComment: Comment;
 	comments?: Comment[];
 	dueTime?: string;
 	dueTz?: string;
