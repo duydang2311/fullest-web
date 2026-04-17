@@ -5,7 +5,7 @@
     import { keysetList } from '~/lib/models/paginated';
     import { StatusCategory } from '~/lib/models/status';
     import { button } from '~/lib/utils/styles';
-    import ContentLayout from '../ContentLayout.svelte';
+    import Breadcrumbs from '../__page__/Breadcrumbs.svelte';
     import StatusGroup from './StatusGroup.svelte';
     import { setPageContext } from './utils.svelte';
 
@@ -14,25 +14,28 @@
     const ctx = setPageContext({ taskGroups: untrack(() => data.taskList) });
 </script>
 
-<ContentLayout>
-    <div class="flex gap-4 border-b border-b-surface-border pb-4 px-8 items-center justify-between">
-        <h1 class="tracking-tight text-fg-emph">Tasks</h1>
-        <a
-            href="/{page.params.namespace}/{page.params.slug}/tasks/new"
-            class="{button({
-                variant: 'primary',
-                filled: true,
-                size: 'sm',
-            })} ml-auto flex items-center gap-2 text-nowrap tracking-tight"
-        >
-            <PlusOutline />
-            New
-        </a>
+<div class="py-4">
+    <div class="px-8 pb-4 border-b border-b-surface-border">
+        <div class="flex gap-4 items-start justify-between">
+            <div>
+                <Breadcrumbs />
+                <h1 class="tracking-tight text-fg-emph mt-1">Tasks</h1>
+            </div>
+            <a
+                href="/{page.params.namespace}/{page.params.slug}/tasks/new"
+                class="{button({
+                    variant: 'primary',
+                    filled: true,
+                    size: 'sm',
+                })} ml-auto flex items-center gap-2 text-nowrap tracking-tight"
+            >
+                <PlusOutline />
+                New
+            </a>
+        </div>
     </div>
     <div class="mt-4 px-4">
-        <div
-            class="grid grid-cols-[auto_1fr_auto_auto] border border-surface-border rounded-md gap-px"
-        >
+        <div class="grid grid-cols-[auto_1fr_auto_auto] border border-surface-border rounded-md">
             {#if ctx.taskGroups['none']}
                 {@const list = ctx.taskGroups['none'] ?? keysetList()}
                 <StatusGroup
@@ -51,4 +54,4 @@
             {/each}
         </div>
     </div>
-</ContentLayout>
+</div>

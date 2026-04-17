@@ -68,7 +68,7 @@
     <button
         {...collapsible.api.getTriggerProps()}
         type="button"
-        class="relative px-4 py-2 bg-surface-subtle hover:bg-surface-emph transition col-span-full group-not-first:border-t group-not-first:border-t-surface-border border-b group-last:group-data-[state=closed]:border-b-0 border-b-surface-border tracking-tight flex items-center gap-4"
+        class="relative px-4 py-2 bg-surface-subtle hover:bg-surface-emph transition col-span-full group-not-first:border-t group-not-first:border-t-surface-border group-data-[state=open]:border-b group-last:group-data-[state=closed]:border-b-0 border-b-surface-border tracking-tight flex items-center gap-4"
     >
         <Icon class="text-fg-muted group-data-[state=open]:text-fg transition duration-200" />
         <div
