@@ -7,19 +7,12 @@
     import SelectAssignees from './SelectAssignees.svelte';
     import SelectPriority from './SelectPriority.svelte';
     import SelectStatus from './SelectStatus.svelte';
-    import { usePageContext } from './utils.svelte';
+    import { useTask } from './utils.svelte';
 
-    let isEditing = $state.raw(false);
-    const ctx = usePageContext();
-    const task = $derived(ctx.task);
+    const task = $derived(await useTask());
     const id = $props.id();
     const menu = createMenu({
         id,
-        onSelect: async (details) => {
-            if (details.value === 'edit') {
-                isEditing = true;
-            }
-        },
     });
 </script>
 
@@ -85,7 +78,7 @@
             {#if task.descriptionHtml && task.descriptionHtml.length > 0}
                 {@html task.descriptionHtml}
             {:else}
-                <i class="text-fg-muted">No description provided.</i>
+                <span class="text-fg-muted text-sm">No description added.</span>
             {/if}
         </article>
     </div>

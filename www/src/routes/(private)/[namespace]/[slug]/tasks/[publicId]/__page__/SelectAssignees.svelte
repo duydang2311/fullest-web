@@ -12,11 +12,12 @@
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
     import { assignTask, searchUsers, unassignTask } from './page.remote';
-    import { usePageContext } from './utils.svelte';
+    import { usePageContext, useTask } from './utils.svelte';
 
     const data = usePageData<PageData>();
     const ctx = usePageContext();
     const id = $props.id();
+    const task = $derived(await useTask());
     let searchQuery = $state.raw('');
     let users = $derived(
         searchQuery ? await searchUsers({ query: searchQuery }).then((a) => a.items) : []
@@ -29,9 +30,9 @@
             }
         },
     });
-    const assigneeIds = $derived.by(() => new Set(ctx.task.assignees.map((a) => a.id)));
+    const assigneeIds = $derived.by(() => new Set(task.assignees.map((a) => a.id)));
     const listboxUsers = $derived([
-        ...ctx.task.assignees,
+        ...task.assignees,
         ...(users ?? []).filter((a) => !assigneeIds.has(a.id)),
     ]);
     const listbox = createListbox({
@@ -44,10 +45,10 @@
             });
         },
         get value() {
-            return ctx.task.assignees.map((a) => a.id);
+            return task.assignees.map((a) => a.id);
         },
         onValueChange: (details) => {
-            const assignees = new Set(ctx.task.assignees.map((a) => a.id));
+            const assignees = new Set(task.assignees.map((a) => a.id));
             const current = new Set(details.value);
             const assigned = current.difference(assignees);
             const unassigned = assignees.difference(current);
@@ -65,7 +66,7 @@
     }) {
         const users = $state.snapshot(listboxUsers);
 
-        const oldTask = $state.snapshot(ctx.task);
+        const oldTask = $state.snapshot(task);
         const oldActivityList = $state.snapshot(ctx.activityList);
         invariant(oldTask, 'oldTask must not be null');
         invariant(oldActivityList, 'oldActivityList must not be null');
@@ -102,23 +103,23 @@
                 }),
             ],
         };
-        ctx.task = {
-            ...oldTask,
-            assignees: [
-                ...ctx.task.assignees.filter((a) => unassigned.has(a.id)),
-                ...users.filter((a) => assigned.has(a.id)),
-            ],
-        };
+        // task = {
+        //     ...oldTask,
+        //     assignees: [
+        //         ...task.assignees.filter((a) => unassigned.has(a.id)),
+        //         ...users.filter((a) => assigned.has(a.id)),
+        //     ],
+        // };
         await Promise.all([
             ...Array.from(assigned).map((userId) =>
                 assignTask({
-                    taskId: ctx.task.id,
+                    taskId: task.id,
                     userId,
                 })
             ),
             ...Array.from(unassigned).map((userId) =>
                 unassignTask({
-                    taskId: ctx.task.id,
+                    taskId: task.id,
                     userId,
                 })
             ),
@@ -146,14 +147,14 @@
         <span
             class="lg:hidden ml-auto bg-primary rounded-sm size-5 leading-none text-xs font-bold flex justify-center items-center"
         >
-            {ctx.task.assignees.length}
+            {task.assignees.length}
         </span>
         <span>Assignees</span>
         <SettingsOutline />
     </button>
-    {#if ctx.task.assignees.length}
+    {#if task.assignees.length}
         <ul class="mt-2 flex flex-col gap-2 px-2 max-lg:hidden">
-            {#each ctx.task.assignees as assignee (assignee.id)}
+            {#each task.assignees as assignee (assignee.id)}
                 <div class="flex items-center gap-2">
                     <Avatar
                         user={assignee}

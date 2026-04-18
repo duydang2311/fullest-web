@@ -1,73 +1,69 @@
 <script lang="ts">
-    import { invalidateAll } from '$app/navigation';
     import { portal } from '@zag-js/svelte';
-    import invariant from 'tiny-invariant';
+    import { untrack } from 'svelte';
     import { createMenu } from '~/lib/components/builders.svelte';
     import { SettingsOutline } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
     import type { Priority } from '~/lib/models/priority';
+    import { guardNull } from '~/lib/utils/guard';
     import { usePageData } from '~/lib/utils/kit';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
-    import { getPriorities, patchTaskPriority } from './page.remote';
-    import { usePageContext } from './utils.svelte';
+    import { getActivityList, getPriorities, patchTaskPriority } from './page.remote';
+    import { useActivityLists, usePageContext, useTask } from './utils.svelte';
 
     const data = usePageData<PageData>();
+    const task = $derived(await useTask());
     const ctx = usePageContext();
+    const activityLists = $derived(useActivityLists(ctx.activityListParams));
     const id = $props.id();
     const menu = createMenu({
         id,
-        defaultHighlightedValue: ctx.task.priority?.id,
+        defaultHighlightedValue: untrack(() => task.priority?.id),
         onOpenChange: async (details) => {
             if (details.open) {
                 priorities = await getPriorities(data.project.id)
                     .run()
                     .then((a) => a.items);
-                menu.api.setHighlightedValue(ctx.task.priority?.id);
+                menu.api.setHighlightedValue(task.priority?.id);
             }
         },
         onSelect: (details) => updatePriority(details.value),
     });
 
     async function updatePriority(priorityId: string) {
-        const oldTask = $state.snapshot(ctx.task);
-        const oldActivityList = $state.snapshot(ctx.activityList);
-        invariant(oldTask, 'oldTask must not be null');
-        invariant(oldActivityList, 'oldActivityList must not be null');
-
         const priority = priorities?.find((a) => a.id === priorityId);
-        invariant(priority, 'priority must not be null');
-
-        ctx.activityList = {
-            ...oldActivityList,
-            items: [
-                ...oldActivityList.items,
-                {
-                    id: self.crypto.randomUUID(),
-                    actor: data.user,
-                    createdTime: new Date().toISOString(),
-                    kind: ActivityKind.PriorityChanged,
-                    metadata: {
-                        priority: {
-                            id: priorityId,
-                            name: priority.name,
-                        },
-                        oldPriority: {
-                            id: oldTask.priority?.id,
-                            name: oldTask.priority?.name ?? 'No priority',
-                        },
-                    },
-                },
-            ],
-        };
-        ctx.task = {
-            ...oldTask,
-            priority,
+        guardNull(priority);
+        const lastList = activityLists.at(-1);
+        guardNull(lastList);
+        guardNull(lastList.query.current);
+        const oldPriority = task.priority;
+        const optimisticActivity = {
+            id: self.crypto.randomUUID(),
+            actor: data.user,
+            createdTime: new Date().toISOString(),
+            kind: ActivityKind.PriorityChanged,
+            metadata: {
+                priority,
+                oldPriority,
+            },
         };
         await patchTaskPriority({
-            taskId: ctx.task.id,
+            taskId: task.id,
             priorityId,
-        }).finally(invalidateAll);
+            version: task.version,
+        }).updates(
+            useTask().withOverride((task) => ({
+                ...task,
+                priority,
+            })),
+            getActivityList(lastList.param).withOverride((list) => {
+                return {
+                    ...list,
+                    items: [...list.items, optimisticActivity],
+                };
+            })
+        );
     }
 
     let priorities = $state.raw<Pick<Priority, 'id' | 'name'>[]>();
@@ -83,7 +79,7 @@
         })} text-left font-medium w-full flex items-center max-lg:flex-row-reverse max-lg:justify-end gap-2 lg:justify-between"
     >
         <span>
-            {ctx.task.priority?.name ?? 'No priority'}
+            {task.priority?.name ?? 'No priority'}
         </span>
         <SettingsOutline />
     </button>

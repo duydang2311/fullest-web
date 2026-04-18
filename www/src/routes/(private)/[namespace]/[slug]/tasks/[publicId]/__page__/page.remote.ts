@@ -1,15 +1,17 @@
-import { command, form, getRequestEvent, query } from '$app/server';
+import { command, form, getRequestEvent, query, requested } from '$app/server';
 import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';
-import type { Activity } from '~/lib/models/activity';
+import sanitize from 'sanitize-html';
+import { renderToHTMLString } from '~/lib/components/editor';
 import { cursorList, offsetList, type CursorList, type OffsetList } from '~/lib/models/paginated';
 import type { Priority } from '~/lib/models/priority';
 import type { Status } from '~/lib/models/status';
+import type { Task } from '~/lib/models/task';
 import type { User, UserPreset } from '~/lib/models/user';
 import { BadHttpResponse, enrichStep, ValidationError } from '~/lib/utils/errors';
-import { jsonify, parseHttpProblem } from '~/lib/utils/http';
+import { jsonify, parseHttpError, parseHttpProblem } from '~/lib/utils/http';
 import { v } from '~/lib/utils/valibot';
-import type { PageData } from '../$types';
+import { makeFetchActivityList, makeFetchTask } from './utils.svelte';
 
 export const addComment = command(
     v.object({
@@ -104,59 +106,62 @@ export const deleteComment = command(
 
 export const getTask = query(
     v.object({
-        taskId: v.string(),
+        projectId: v.string(),
+        taskPublicId: v.string(),
     }),
     async (data) => {
         const e = getRequestEvent();
-        const result = await e.locals.http.get(`tasks/${data.taskId}`, {
-            query: {
-                fields: [
-                    'Id,PublicId,Title,Status.Id,Status.Name,Priority.Id,Priority.Name,CreatedTime,UpdatedTime,InitialCommentId,Author.Name',
-                    'InitialComment.Id,InitialComment.ContentJson,InitialComment.CreatedTime,InitialComment.Author.Name',
-                    'InitialComment.Author.DisplayName,InitialComment.Author.ImageKey,InitialComment.Author.ImageVersion',
-                    'Assignees.Id,Assignees.Name,Assignees.DisplayName,Assignees.ImageKey,Assignees.ImageVersion',
-                ].join(','),
-            },
-        });
-        return await result.pipe(
-            attempt.flatMap((response) => jsonify(() => response.json<PageData['task']>()))
+        const result = await makeFetchTask(e.locals.http)(data);
+        return result.pipe(
+            attempt.flatMap(async (resp) => {
+                if (!resp.ok) {
+                    const err = await parseHttpError(resp);
+                    return error(err.status, err);
+                }
+                return await jsonify(() =>
+                    resp.json<
+                        Pick<
+                            Task,
+                            | 'id'
+                            | 'publicId'
+                            | 'title'
+                            | 'createdTime'
+                            | 'updatedTime'
+                            | 'descriptionJson'
+                            | 'version'
+                        > & {
+                            descriptionHtml: string;
+                            priority: Pick<Priority, 'id' | 'name'>;
+                            status: Pick<Status, 'id' | 'name'>;
+                            author: UserPreset['Avatar'];
+                            assignees: (Pick<User, 'id'> & UserPreset['Avatar'])[];
+                        }
+                    >()
+                );
+            }),
+            attempt.map((task) => {
+                if (task.descriptionJson) {
+                    task.descriptionHtml = sanitize(
+                        renderToHTMLString(JSON.parse(task.descriptionJson))
+                    );
+                }
+                return task;
+            }),
+            attempt.unwrapOrElse((e) => error(500, e))
         );
     }
 );
 
-export const getActivities = query(
+export const getActivityList = query(
     v.object({
         taskId: v.string(),
-        size: v.nullish(v.number()),
-        cursor: v.nullish(v.string()),
+        size: v.number(),
+        afterId: v.nullish(v.string()),
     }),
     async (data) => {
         const e = getRequestEvent();
-        return (
-            await e.locals.http.get('activities', {
-                query: {
-                    taskId: data.taskId,
-                    cursor: data.cursor,
-                    select: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Data',
-                    direction: 'asc',
-                    size: data.size ?? 20,
-                },
-            })
-        ).pipe(
-            attempt.flatMap((response) =>
-                jsonify(() =>
-                    response.json<
-                        CursorList<
-                            Pick<Activity, 'id' | 'createdTime' | 'kind' | 'metadata'> & {
-                                actor: Pick<User, 'id'> & UserPreset['Avatar'];
-                            },
-                            string
-                        >
-                    >()
-                )
-            ),
-            attempt.unwrapOrElse(() => cursorList())
-        );
+        const result = await makeFetchActivityList(e.locals.http)(data);
+        return result.pipe(attempt.unwrapOrElse((e) => error(500, e)));
     }
 );
 
@@ -187,11 +192,13 @@ export const patchTaskStatus = command(
     v.object({
         taskId: v.string(),
         statusId: v.string(),
+        version: v.number(),
     }),
     async (data) => {
         const e = getRequestEvent();
         const result = await e.locals.http.patch(`tasks/${data.taskId}`, {
             body: {
+                version: data.version,
                 patch: {
                     statusId: data.statusId,
                 },
@@ -201,12 +208,22 @@ export const patchTaskStatus = command(
             return result;
         }
 
-        const response = result.data;
-        if (!response.ok) {
-            return attempt.fail(BadHttpResponse(response.status, response.statusText));
+        const resp = result.data;
+        if (!resp.ok) {
+            const error = await parseHttpError(resp);
+            return attempt.fail(error);
         }
 
-        return attempt.ok<void>(void 0);
+        const body = await jsonify(() => resp.json<{ version: number }>());
+        if (!body.ok) {
+            return attempt.fail(body.error);
+        }
+
+        await Promise.all([
+            requested(getActivityList).refreshAll(),
+            requested(getTask).refreshAll(),
+        ]);
+        return attempt.ok(body.data);
     }
 );
 
@@ -235,11 +252,13 @@ export const patchTaskPriority = command(
     v.object({
         taskId: v.string(),
         priorityId: v.string(),
+        version: v.number(),
     }),
     async (data) => {
         const e = getRequestEvent();
         const result = await e.locals.http.patch(`tasks/${data.taskId}`, {
             body: {
+                version: data.version,
                 patch: {
                     priorityId: data.priorityId,
                 },
@@ -249,12 +268,17 @@ export const patchTaskPriority = command(
             return result;
         }
 
-        const response = result.data;
-        if (!response.ok) {
-            return attempt.fail(BadHttpResponse(response.status, response.statusText));
+        const resp = result.data;
+        if (!resp.ok) {
+            const error = await parseHttpError(resp);
+            return attempt.fail(error);
         }
 
-        return attempt.ok<void>(void 0);
+        const body = await jsonify(() => resp.json<{ version: number }>());
+        if (!body.ok) {
+            return attempt.fail(body.error);
+        }
+        return attempt.ok(body.data);
     }
 );
 

@@ -50,7 +50,7 @@
                 {#if comment.contentJson && comment?.contentJson.length > 0}
                     {@html DOMPurify.sanitize(renderToHTMLString(JSON.parse(comment.contentJson)))}
                 {:else}
-                    <i class="text-fg-muted">No description provided.</i>
+                    <span class="text-fg-muted text-sm">N/A.</span>
                 {/if}
             </article>
         {/if}

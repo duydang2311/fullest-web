@@ -1,73 +1,69 @@
 <script lang="ts">
-    import { invalidateAll } from '$app/navigation';
     import { portal } from '@zag-js/svelte';
-    import invariant from 'tiny-invariant';
+    import { untrack } from 'svelte';
     import { createMenu } from '~/lib/components/builders.svelte';
     import { SettingsOutline } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
     import type { Status } from '~/lib/models/status';
+    import { guardNull } from '~/lib/utils/guard';
     import { usePageData } from '~/lib/utils/kit';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
-    import { getStatuses, patchTaskStatus } from './page.remote';
-    import { usePageContext } from './utils.svelte';
+    import { getActivityList, getStatuses, patchTaskStatus } from './page.remote';
+    import { useActivityLists, usePageContext, useTask } from './utils.svelte';
 
-    const data = usePageData<PageData>();
+    const pageData = usePageData<PageData>();
     const id = $props.id();
+    const task = $derived(await useTask());
     const ctx = usePageContext();
+    const activityLists = $derived(useActivityLists(ctx.activityListParams));
     const menu = createMenu({
         id,
-        defaultHighlightedValue: ctx.task.status?.id,
+        defaultHighlightedValue: untrack(() => task.status?.id),
         onOpenChange: async (details) => {
             if (details.open) {
-                statuses = await getStatuses(data.project.id)
+                statuses = await getStatuses(pageData.project.id)
                     .run()
                     .then((a) => a.items);
-                menu.api.setHighlightedValue(ctx.task.status?.id);
+                menu.api.setHighlightedValue(task.status?.id);
             }
         },
         onSelect: (details) => updateStatus(details.value),
     });
 
     async function updateStatus(statusId: string) {
-        const oldTask = $state.snapshot(ctx.task);
-        const oldActivityList = $state.snapshot(ctx.activityList);
-        invariant(oldTask, 'oldTask must not be null');
-        invariant(oldActivityList, 'oldActivityList must not be null');
-
         const status = statuses?.find((a) => a.id === statusId);
-        invariant(status, 'status must not be null');
-
-        ctx.activityList = {
-            ...oldActivityList,
-            items: [
-                ...oldActivityList.items,
-                {
-                    id: self.crypto.randomUUID(),
-                    actor: data.user,
-                    createdTime: new Date().toISOString(),
-                    kind: ActivityKind.PriorityChanged,
-                    metadata: {
-                        status: {
-                            id: statusId,
-                            name: status.name,
-                        },
-                        oldStatus: {
-                            id: oldTask.status?.id,
-                            name: oldTask.status?.name ?? 'No status',
-                        },
-                    },
-                },
-            ],
-        };
-        ctx.task = {
-            ...oldTask,
-            status,
+        guardNull(status);
+        const lastList = activityLists.at(-1);
+        guardNull(lastList);
+        guardNull(lastList.query.current);
+        const oldStatus = task.status;
+        const optimisticActivity = {
+            id: self.crypto.randomUUID(),
+            actor: pageData.user,
+            createdTime: new Date().toISOString(),
+            kind: ActivityKind.StatusChanged,
+            metadata: {
+                status,
+                oldStatus,
+            },
         };
         await patchTaskStatus({
-            taskId: ctx.task.id,
+            taskId: task.id,
             statusId,
-        }).finally(invalidateAll);
+            version: task.version,
+        }).updates(
+            useTask().withOverride((task) => ({
+                ...task,
+                status,
+            })),
+            getActivityList(lastList.param).withOverride((list) => {
+                return {
+                    ...list,
+                    items: [...list.items, optimisticActivity],
+                };
+            })
+        );
     }
 
     let statuses = $state.raw<Pick<Status, 'id' | 'name'>[]>();
@@ -83,7 +79,7 @@
         })} text-left font-medium w-full flex items-center max-lg:flex-row-reverse max-lg:justify-end gap-2 lg:justify-between"
     >
         <span>
-            {ctx.task.status?.name ?? 'No status'}
+            {task.status?.name ?? 'No status'}
         </span>
         <SettingsOutline />
     </button>

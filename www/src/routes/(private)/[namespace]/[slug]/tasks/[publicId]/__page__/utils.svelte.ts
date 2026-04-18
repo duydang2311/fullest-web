@@ -1,13 +1,16 @@
+import { page } from '$app/state';
 import { attempt } from '@duydang2311/attempt';
 import { getContext, setContext } from 'svelte';
 import { ActivityKind, type Activity } from '~/lib/models/activity';
-import type { CursorList } from '~/lib/models/paginated';
+import type { KeysetList } from '~/lib/models/paginated';
 import type { User, UserPreset } from '~/lib/models/user';
 import type { HttpClient } from '~/lib/services/http_client';
-import { jsonify } from '~/lib/utils/http';
+import { fields, jsonify, parseHttpError } from '~/lib/utils/http';
+import { usePageData } from '~/lib/utils/kit';
 import { v } from '~/lib/utils/valibot';
 import { createValidator } from '~/lib/utils/validation';
 import type { PageData } from '../$types';
+import { getActivityList, getTask } from './page.remote';
 
 export const validators = {
     [ActivityKind.Commented]: createValidator(
@@ -50,72 +53,88 @@ export const validators = {
     ),
 };
 
-export function fetchActivityList(http: HttpClient) {
-    return async (taskId: string, after?: string | null, size?: number) => {
+export interface ActivityListParams {
+    taskId: string;
+    size: number;
+    afterId?: string | null;
+}
+export function makeFetchActivityList(http: HttpClient) {
+    return async (params: ActivityListParams) => {
         const result = await http.get('activities', {
             query: {
-                taskId,
-                after,
+                taskId: params.taskId,
+                size: params.size,
                 select: 'Id,CreatedTime,Kind,Actor.Id,Actor.Name,Actor.DisplayName,Actor.ImageKey,Actor.ImageVersion,Metadata',
-                size: size ?? 20,
                 direction: 'asc',
+                afterId: params.afterId,
             },
         });
         return result.pipe(
-            attempt.flatMap((resp) =>
-                jsonify(() =>
+            attempt.flatMap(async (resp) => {
+                if (!resp.ok) {
+                    const err = await parseHttpError(resp);
+                    return attempt.fail(err);
+                }
+                return await jsonify(() =>
                     resp.json<
-                        CursorList<
+                        KeysetList<
                             Pick<Activity, 'id' | 'createdTime' | 'kind' | 'metadata'> & {
                                 actor: Pick<User, 'id'> & UserPreset['Avatar'];
-                            },
-                            string
+                            }
                         >
                     >()
-                )
-            ),
-            attempt.unwrap
+                );
+            })
         );
     };
 }
 
 const key = {};
 
-export function setPageContext(options: {
-    task: PageData['task'];
-    activityList?: CursorList<
-        Pick<Activity, 'id' | 'createdTime' | 'kind' | 'metadata'> & {
-            actor: Pick<User, 'id'> & UserPreset['Avatar'];
-        },
-        string
-    >;
-}) {
-    let task = $state.raw(options.task);
-    let activityList = $state.raw<
-        | CursorList<
-              Pick<Activity, 'id' | 'createdTime' | 'kind' | 'metadata'> & {
-                  actor: Pick<User, 'id'> & UserPreset['Avatar'];
-              },
-              string
-          >
-        | undefined
-    >(options.activityList);
+export function useTask() {
+    const pageData = usePageData<PageData>();
+    return getTask({
+        projectId: pageData.project.id,
+        taskPublicId: page.params.publicId!,
+    });
+}
+
+export function useActivityLists(params: ActivityListParams[]) {
+    return params.map((param) => ({
+        param,
+        query: getActivityList(param),
+    }));
+}
+
+export function setPageContext(initial: { activityListParams: ActivityListParams[] }) {
+    let activityListParams = $state(initial.activityListParams);
     return setContext(key, {
-        get task() {
-            return task;
+        get activityListParams() {
+            return activityListParams;
         },
-        set task(value) {
-            task = value;
-        },
-        get activityList() {
-            return activityList;
-        },
-        set activityList(value) {
-            activityList = value;
+        set activityListParams(value) {
+            activityListParams = value;
         },
     });
 }
 
 export function usePageContext() {
     return getContext(key) as ReturnType<typeof setPageContext>;
+}
+
+export function makeFetchTask(http: HttpClient) {
+    return (data: { projectId: string; taskPublicId: string }) =>
+        http.get(`projects/${data.projectId}/tasks/${data.taskPublicId}`, {
+            query: {
+                fields: fields(
+                    'Id,PublicId,Title,CreatedTime,UpdatedTime,DescriptionJson,Version',
+                    {
+                        Status: 'Id,Name',
+                        Priority: 'Id,Name',
+                        Author: 'Name,DisplayName,ImageKey,ImageVersion',
+                        Assignees: 'Id,Name,DisplayName,ImageKey,ImageVersion',
+                    }
+                ),
+            },
+        });
 }

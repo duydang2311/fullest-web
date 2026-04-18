@@ -8,7 +8,7 @@
     import { tsap } from '~/lib/utils/gsap';
     import { usePageState } from '~/lib/utils/kit';
     import { button } from '~/lib/utils/styles';
-    import { editComment, getActivities } from './page.remote';
+    import { editComment, getActivityList } from './page.remote';
     import type { PageState } from './types';
 
     let {
@@ -82,7 +82,7 @@
                     id: comment.id,
                     contentJson,
                 }).updates(
-                    getActivities({
+                    getActivityList({
                         taskId,
                         cursor: pageState.cursor,
                     }).withOverride((a) => ({

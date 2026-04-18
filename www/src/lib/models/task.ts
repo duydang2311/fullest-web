@@ -26,4 +26,5 @@ export interface Task {
 	dueTz?: string;
 	deletedTime?: string;
 	labels: Label[];
+	version: number;
 }

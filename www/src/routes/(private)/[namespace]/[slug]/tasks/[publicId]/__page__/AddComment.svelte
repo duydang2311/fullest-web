@@ -11,10 +11,11 @@
     import { button } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
     import { addComment } from './page.remote';
-    import { usePageContext } from './utils.svelte';
+    import { usePageContext, useTask } from './utils.svelte';
 
     const editor = createRef<Editor>();
     const data = usePageData<PageData>();
+    const task = $derived(await useTask());
     const ctx = usePageContext();
 
     async function handleSubmit() {
@@ -45,7 +46,7 @@
 
         await addComment({
             contentJson,
-            taskId: data.task.id,
+            taskId: task.id,
         }).finally(invalidateAll);
     }
 </script>
@@ -73,7 +74,7 @@
         }}
     ></div>
     <div class="mt-4 flex justify-end gap-2">
-        <input type="hidden" name="taskId" value={data.task.id} />
+        <input type="hidden" name="taskId" value={task.id} />
         <button
             disabled={editor.current == null || editor.current.isEmpty}
             type="button"

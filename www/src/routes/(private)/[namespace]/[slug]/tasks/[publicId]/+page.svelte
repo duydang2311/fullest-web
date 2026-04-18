@@ -1,30 +1,13 @@
 <script lang="ts">
-    import { browser } from '$app/environment';
-    import { watch } from '@duydang2311/svutils';
-    import { untrack } from 'svelte';
-    import { useRuntime } from '~/lib/utils/runtime';
-    import ActivitySection from './_page/ActivitySection.svelte';
-    import SelectAssignees from './_page/SelectAssignees.svelte';
-    import SelectPriority from './_page/SelectPriority.svelte';
-    import SelectStatus from './_page/SelectStatus.svelte';
-    import Task from './_page/Task.svelte';
-    import { fetchActivityList, setPageContext } from './_page/utils.svelte';
+    import ActivitySection from './__page__/ActivitySection.svelte';
+    import SelectAssignees from './__page__/SelectAssignees.svelte';
+    import SelectPriority from './__page__/SelectPriority.svelte';
+    import SelectStatus from './__page__/SelectStatus.svelte';
+    import Task from './__page__/Task.svelte';
+    import { setPageContext } from './__page__/utils.svelte';
 
-    const { data } = $props();
-    const { http } = useRuntime();
-    const ctx = setPageContext({ task: untrack(() => data.task) });
-
-    if (browser) {
-        untrack(() =>
-            fetchActivityList(http)(data.task.id, null, ctx.activityList?.items.length).then(
-                (list) => {
-                    ctx.activityList = list;
-                }
-            )
-        );
-    }
-    watch(() => ctx.task)(() => {
-        ctx.task = data.task;
+    const ctx = setPageContext({
+        activityListParams: [],
     });
 </script>
 

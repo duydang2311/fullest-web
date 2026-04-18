@@ -19,6 +19,6 @@
             {@html pageData.project.descriptionHtml}
         </div>
     {:else}
-        <div class="text-fg-muted text-sm">Description not available.</div>
+        <div class="text-fg-muted text-sm">No description added.</div>
     {/if}
 </div>
