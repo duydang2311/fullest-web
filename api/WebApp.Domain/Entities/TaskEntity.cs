@@ -26,4 +26,5 @@ public sealed record TaskEntity : ISoftDelete
     public Instant? DeletedTime { get; init; }
     public ICollection<Label> Labels { get; init; } = null!;
     public ICollection<Activity> Activities { get; init; } = null!;
+    public uint Version { get; init; }
 }

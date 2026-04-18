@@ -1,3 +1,4 @@
+using System.Data;
 using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using FastEndpoints;
@@ -12,7 +13,7 @@ using WebApp.Infrastructure.Data;
 namespace WebApp.Api.V1.Tasks.Patch;
 
 public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
-    : Endpoint<Request, Results<NotFound, NoContent>>
+    : Endpoint<Request, Results<NotFound, Conflict, Ok<Response>>>
 {
     public override void Configure()
     {
@@ -21,7 +22,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         PreProcessor<Authorize>();
     }
 
-    public override async Task<Results<NotFound, NoContent>> ExecuteAsync(
+    public override async Task<Results<NotFound, Conflict, Ok<Response>>> ExecuteAsync(
         Request req,
         CancellationToken ct
     )
@@ -30,7 +31,6 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
 
         var projectId = (ProjectId)HttpContext.Items["ProjectId"]!;
         var mappings = new List<string>();
-        var query = db.Tasks.Where(a => a.Id == req.TaskId && a.DeletedTime == null);
         var changes = new List<TaskPropertyChanged>();
         Action<UpdateSettersBuilder<TaskEntity>>? updateBuilder = null;
 
@@ -41,25 +41,21 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
             updateBuilder += a => a.SetProperty(b => b.Title, title);
             mappings.Add(nameof(TaskEntity.Title));
         }
-
         if (req.Patch.TryGetValue(a => a.StatusId, out var statusId))
         {
             updateBuilder += a => a.SetProperty(b => b.StatusId, statusId);
             mappings.Add(nameof(TaskEntity.StatusId));
         }
-
         if (req.Patch.TryGetValue(a => a.PriorityId, out var priorityId))
         {
             updateBuilder += a => a.SetProperty(b => b.PriorityId, priorityId);
             mappings.Add(nameof(TaskEntity.PriorityId));
         }
-
         if (req.Patch.TryGetValue(a => a.DueTime, out var dueTime))
         {
             updateBuilder += a => a.SetProperty(b => b.DueTime, dueTime);
             mappings.Add(nameof(TaskEntity.DueTime));
         }
-
         if (req.Patch.TryGetValue(a => a.DueTz, out var dueTz))
         {
             updateBuilder += a => a.SetProperty(b => b.DueTz, dueTz);
@@ -67,61 +63,70 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         }
 
         Guard.Against.Null(updateBuilder);
+        var newVersion = req.Version + 1;
+        updateBuilder += a => a.SetProperty(b => b.Version, newVersion);
 
-        if (mappings.Count > 0)
+        mappings.Add(nameof(TaskEntity.Version));
+        var snapshot = await db
+            .Tasks.Where(a => a.DeletedTime == null && a.Id == req.TaskId)
+            .Select(BuildSnapshotSelector<TaskEntity, TaskSnapshot>(mappings))
+            .FirstOrDefaultAsync(ct)
+            .ConfigureAwait(false);
+        if (snapshot is null)
         {
-            var snapshot = await db
-                .Tasks.Where(a => a.DeletedTime == null && a.Id == req.TaskId)
-                .Select(BuildSnapshotSelector<TaskEntity, TaskSnapshot>(mappings))
-                .FirstOrDefaultAsync(ct)
-                .ConfigureAwait(false);
-            if (snapshot is null)
-            {
-                return TypedResults.NotFound();
-            }
-            if (req.Patch.Has(a => a.StatusId))
-            {
-                changes.Add(
-                    new TaskStatusChanged(
-                        projectId,
-                        req.TaskId,
-                        req.CallerId,
-                        req.Patch.StatusId,
-                        snapshot.StatusId
-                    )
-                );
-            }
-            if (req.Patch.Has(a => a.PriorityId))
-            {
-                changes.Add(
-                    new TaskPriorityChanged(
-                        projectId,
-                        req.TaskId,
-                        req.CallerId,
-                        req.Patch.PriorityId,
-                        snapshot.PriorityId
-                    )
-                );
-            }
-            if (req.Patch.Has(a => a.DueTime) || req.Patch.Has(a => a.DueTz))
-            {
-                changes.Add(
-                    new TaskDueTimeChanged(
-                        projectId,
-                        req.TaskId,
-                        req.CallerId,
-                        req.Patch.DueTime,
-                        req.Patch.DueTz,
-                        snapshot.DueTime,
-                        snapshot.DueTz
-                    )
-                );
-            }
+            return TypedResults.NotFound();
         }
+        if (snapshot.Version != req.Version)
+        {
+            return TypedResults.Conflict();
+        }
+
+        if (req.Patch.Has(a => a.StatusId))
+        {
+            changes.Add(
+                new TaskStatusChanged(
+                    projectId,
+                    req.TaskId,
+                    req.CallerId,
+                    req.Patch.StatusId,
+                    snapshot.StatusId
+                )
+            );
+        }
+        if (req.Patch.Has(a => a.PriorityId))
+        {
+            changes.Add(
+                new TaskPriorityChanged(
+                    projectId,
+                    req.TaskId,
+                    req.CallerId,
+                    req.Patch.PriorityId,
+                    snapshot.PriorityId
+                )
+            );
+        }
+        if (req.Patch.Has(a => a.DueTime) || req.Patch.Has(a => a.DueTz))
+        {
+            changes.Add(
+                new TaskDueTimeChanged(
+                    projectId,
+                    req.TaskId,
+                    req.CallerId,
+                    req.Patch.DueTime,
+                    req.Patch.DueTz,
+                    snapshot.DueTime,
+                    snapshot.DueTz
+                )
+            );
+        }
+
+        var query = db.Tasks.Where(a =>
+            a.Id == req.TaskId && a.DeletedTime == null && a.Version == req.Version
+        );
         var count = await query.ExecuteUpdateAsync(updateBuilder, ct).ConfigureAwait(false);
         if (count == 0)
         {
-            return TypedResults.NotFound();
+            return TypedResults.Conflict();
         }
 
         if (changes.Count > 0)
@@ -133,7 +138,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         await db.SaveChangesAsync(ct).ConfigureAwait(false);
         await tx.CommitAsync(ct).ConfigureAwait(false);
 
-        return TypedResults.NoContent();
+        return TypedResults.Ok(new Response(newVersion));
     }
 
     private sealed record TaskSnapshot
@@ -143,6 +148,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         public PriorityId? PriorityId { get; init; }
         public Instant? DueTime { get; init; }
         public string? DueTz { get; init; }
+        public uint Version { get; init; }
     }
 
     private static Expression<Func<TEntity, TSnapshot>> BuildSnapshotSelector<TEntity, TSnapshot>(
@@ -157,7 +163,6 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
                 Expression.Property(parameter, name)
             )
         );
-
         var newExpr = Expression.New(typeof(TSnapshot));
         var memberInit = Expression.MemberInit(newExpr, bindings);
 

@@ -20,6 +20,7 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
         builder.Property(a => a.DescriptionJson);
         builder.Property(a => a.DescriptionPreview);
         builder.Property(a => a.DueTz);
+        builder.Property(a => a.Version);
 
         builder.HasKey(a => a.Id);
         builder.HasIndex(a => a.DeletedTime);

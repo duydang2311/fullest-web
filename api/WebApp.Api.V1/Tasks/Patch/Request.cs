@@ -11,6 +11,7 @@ namespace WebApp.Api.V1.Tasks.Patch;
 public sealed record Request()
 {
     public TaskId TaskId { get; init; }
+    public uint Version { get; init; }
     public TaskPatch? Patch { get; init; }
 
     [FromClaim(ClaimTypes.NameIdentifier)]
