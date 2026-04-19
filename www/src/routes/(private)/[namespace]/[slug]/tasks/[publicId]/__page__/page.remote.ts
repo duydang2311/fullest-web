@@ -16,7 +16,7 @@ import { makeFetchActivityList, makeFetchTask } from './utils.svelte';
 export const addComment = command(
     v.object({
         taskId: v.string(),
-        contentJson: v.record(v.string(), v.unknown()),
+        contentJson: v.string(),
     }),
     async (data) => {
         const e = getRequestEvent();
@@ -39,6 +39,7 @@ export const addComment = command(
             }
             return error(response.status, BadHttpResponse(response.status, await response.text()));
         }
+        await requested(getActivityList).refreshAll();
         return attempt.ok({ success: true });
     }
 );
@@ -278,6 +279,11 @@ export const patchTaskPriority = command(
         if (!body.ok) {
             return attempt.fail(body.error);
         }
+
+        await Promise.all([
+            requested(getActivityList).refreshAll(),
+            requested(getTask).refreshAll(),
+        ]);
         return attempt.ok(body.data);
     }
 );

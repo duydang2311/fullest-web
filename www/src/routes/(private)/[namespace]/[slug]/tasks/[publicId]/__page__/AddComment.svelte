@@ -10,44 +10,48 @@
     import { usePageData } from '~/lib/utils/kit';
     import { button } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
-    import { addComment } from './page.remote';
-    import { usePageContext, useTask } from './utils.svelte';
+    import { addComment, getActivityList } from './page.remote';
+    import { useActivityLists, usePageContext, useTask } from './utils.svelte';
+    import { guardNull } from '~/lib/utils/guard';
 
     const editor = createRef<Editor>();
     const data = usePageData<PageData>();
-    const task = $derived(await useTask());
     const ctx = usePageContext();
+    const activityLists = $derived(useActivityLists(ctx.activityListParams));
+    const task = $derived(await useTask());
 
     async function handleSubmit() {
-        invariant(editor.current, 'editor must not be null');
+        guardNull(editor.current);
+        const lastList = activityLists.at(-1);
+        guardNull(lastList);
+        guardNull(lastList.query.current);
 
         const contentJson = editor.current.getJSON();
         editor.current.commands.clearContent();
-        const oldActivityList = ctx.activityList;
-        invariant(oldActivityList, 'oldActivityList must not be null');
-        ctx.activityList = {
-            ...oldActivityList,
-            items: [
-                ...oldActivityList.items,
-                {
-                    id: crypto.randomUUID(),
-                    kind: ActivityKind.Commented,
-                    createdTime: new Date().toISOString(),
-                    actor: data.user,
-                    metadata: {
-                        comment: {
-                            id: crypto.randomUUID(),
-                            contentJson: JSON.stringify(contentJson),
-                        },
-                    },
-                },
-            ],
-        };
 
+        const optimisticActivity = {
+            id: crypto.randomUUID(),
+            kind: ActivityKind.Commented,
+            createdTime: new Date().toISOString(),
+            actor: data.user,
+            metadata: {
+                comment: {
+                    id: crypto.randomUUID(),
+                    contentJson: JSON.stringify(contentJson),
+                },
+            },
+        };
         await addComment({
-            contentJson,
+            contentJson: JSON.stringify(contentJson),
             taskId: task.id,
-        }).finally(invalidateAll);
+        }).updates(
+            getActivityList(lastList.param).withOverride((list) => {
+                return {
+                    ...list,
+                    items: [...list.items, optimisticActivity],
+                };
+            })
+        );
     }
 </script>
 
