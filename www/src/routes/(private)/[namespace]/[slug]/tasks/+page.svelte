@@ -19,7 +19,7 @@
         <div class="flex gap-4 items-start justify-between">
             <div>
                 <Breadcrumbs />
-                <h1 class="tracking-tight text-fg-emph mt-1">Tasks</h1>
+                <h1 class="tracking-tight text-fg-emph mt-1 text-title-xs">Tasks</h1>
             </div>
             <a
                 href="/{page.params.namespace}/{page.params.slug}/tasks/new"
