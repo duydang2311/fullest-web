@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { busy, watch } from '@duydang2311/svutils';
+    import { busy } from '@duydang2311/svutils';
     import { onDestroy } from 'svelte';
     import { Loader } from '~/lib/components/icons';
     import { guardNull } from '~/lib/utils/guard';
@@ -25,18 +25,12 @@
             afterId: lastItem.id,
         });
     }
-
-    watch(() => task.current)(() => {
-        if (task.current && ctx.activityListParams.length === 0) {
-            ctx.activityListParams.push({ taskId: task.current.id, size: 20 });
-        }
-    });
 </script>
 
 <section class="mt-8 max-w-container-lg mx-auto">
     <div data-stuck={stuck ? '' : undefined} class="data-stuck:animate-pulse relative">
         {#if activities.length > 0}
-            <ol class="mt-4 flex flex-col gap-6 duration-300 animate-fade-in">
+            <ol class="flex flex-col gap-6 duration-300 animate-fade-in">
                 {#each activities as activity (activity.id)}
                     <ActivityItem {activity} />
                 {/each}
