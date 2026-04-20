@@ -1,9 +1,16 @@
 <script lang="ts">
+    import { createInlineEdit } from '@duydang2311/sveltecraft';
     import { portal } from '@zag-js/svelte';
     import { createMenu } from '~/lib/components/builders.svelte';
-    import { MenuOutline, PencilOutline, TrashOutline } from '~/lib/components/icons';
+    import {
+        IconSaveOutline,
+        PencilOutline,
+        SettingsOutline,
+        TrashOutline,
+    } from '~/lib/components/icons';
     import { button, C } from '~/lib/utils/styles';
-    import { deleteTask } from './page.remote';
+    import Breadcrumbs from '../../../__page__/Breadcrumbs.svelte';
+    import { deleteTask, editTaskTitle } from './page.remote';
     import SelectAssignees from './SelectAssignees.svelte';
     import SelectPriority from './SelectPriority.svelte';
     import SelectStatus from './SelectStatus.svelte';
@@ -14,67 +21,137 @@
     const menu = createMenu({
         id,
     });
+    const edit = createInlineEdit();
 </script>
 
 <div>
-    <div class="border-b border-b-surface-border pb-4 px-4 lg:px-8">
-        <div class="flex justify-between items-center gap-8 max-w-container-lg mx-auto">
-            <p class="c-help-text px-2 bg-surface-subtle border border-surface-border rounded-sm">
-                #{task.publicId}
-            </p>
-            <div class="mt-4">
-                <button
-                    type="button"
-                    class={button({ ghost: true, icon: true })}
-                    {...menu.api.getTriggerProps()}
-                >
-                    <MenuOutline />
-                </button>
-                <div use:portal {...menu.api.getPositionerProps()}>
-                    <ul {...menu.api.getContentProps()} class={C.menu({ part: 'content' })}>
-                        <li>
-                            <button
-                                {...menu.api.getItemProps({ value: 'edit' })}
-                                type="submit"
-                                class="{C.menu({
-                                    part: 'item',
-                                })} w-full px-2 flex items-center gap-4"
+    <div class="px-8">
+        <div class="max-w-container-lg mx-auto">
+            <div class="flex justify-between items-start gap-8">
+                <div class="w-full">
+                    <Breadcrumbs />
+                    <div class="mt-1">
+                        {#if edit.enabled}
+                            <form
+                                {...editTaskTitle.enhance(async (e) => {
+                                    edit.enabled = false;
+                                    await e.submit().updates(
+                                        useTask().withOverride((task) => ({
+                                            ...task,
+                                            title: e.data.title,
+                                        }))
+                                    );
+                                })}
+                                class="relative"
                             >
-                                <PencilOutline />
-                                Edit
+                                <input
+                                    {...editTaskTitle.fields.taskId.as('text', task.id)}
+                                    type="hidden"
+                                />
+                                <input
+                                    {...editTaskTitle.fields.version.as('number', task.version)}
+                                    type="hidden"
+                                />
+                                <input
+                                    {...editTaskTitle.fields.title.as('text', task.title)}
+                                    class="text-title-xs font-semibold text-fg-emph w-full {C.input()} border-0 border-b-2 p-0 border-dashed ring-0 rounded-none"
+                                    spellcheck="false"
+                                    {@attach edit}
+                                />
+                                <div class="flex gap-2 mt-2 justify-end flex-wrap">
+                                    <button
+                                        type="button"
+                                        class={C.button({ size: 'sm', ghost: true })}
+                                        onclick={() => {
+                                            edit.enabled = false;
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        class="{C.button({
+                                            variant: 'primary',
+                                            size: 'sm',
+                                            filled: true,
+                                        })} flex gap-2 items-center"
+                                    >
+                                        <IconSaveOutline />
+                                        Save
+                                    </button>
+                                </div>
+                            </form>
+                        {:else}
+                            <button
+                                type="button"
+                                {@attach edit}
+                                class="text-left hover:ring-2 hover:ring-base rounded-sm hover:bg-base select-text"
+                            >
+                                <h1 class="text-title-xs text-fg-emph w-fit">
+                                    <span>
+                                        {task.title}
+                                    </span>
+                                    <span
+                                        class="text-xs text-fg-muted px-1 rounded-xs font-normal align-middle"
+                                    >
+                                        #{task.publicId}
+                                    </span>
+                                </h1>
                             </button>
-                        </li>
-                        <li>
-                            <form {...deleteTask}>
-                                <input {...deleteTask.fields.id.as('hidden', task.id)} />
+                        {/if}
+                    </div>
+                </div>
+                <div>
+                    <button
+                        type="button"
+                        class={button({ ghost: true, icon: true, size: 'sm' })}
+                        {...menu.api.getTriggerProps()}
+                    >
+                        <SettingsOutline />
+                    </button>
+                    <div use:portal {...menu.api.getPositionerProps()}>
+                        <ul {...menu.api.getContentProps()} class={C.menu({ part: 'content' })}>
+                            <li>
                                 <button
+                                    {...menu.api.getItemProps({ value: 'edit' })}
                                     type="submit"
-                                    {...menu.api.getItemProps({ value: 'delete' })}
                                     class="{C.menu({
                                         part: 'item',
-                                        variant: 'negative',
                                     })} w-full px-2 flex items-center gap-4"
                                 >
-                                    <TrashOutline />
-                                    Delete
+                                    <PencilOutline />
+                                    Edit
                                 </button>
-                            </form>
-                        </li>
-                    </ul>
+                            </li>
+                            <li>
+                                <form {...deleteTask}>
+                                    <input {...deleteTask.fields.id.as('hidden', task.id)} />
+                                    <button
+                                        type="submit"
+                                        {...menu.api.getItemProps({ value: 'delete' })}
+                                        class="{C.menu({
+                                            part: 'item',
+                                            variant: 'negative',
+                                        })} w-full px-2 flex items-center gap-4"
+                                    >
+                                        <TrashOutline />
+                                        Delete
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <h1 class="leading-none text-title-sm text-fg-emph font-bold max-w-container-lg mx-auto">
-            {task.title}
-        </h1>
-        <div class="mt-6 flex flex-wrap gap-x-2 gap-y-2 *:basis-40 *:flex-1 lg:hidden">
-            <SelectStatus />
-            <SelectPriority />
-            <SelectAssignees />
+            <div class="mt-4 flex flex-wrap gap-x-2 gap-y-2 *:basis-40 *:flex-1 lg:hidden">
+                <SelectStatus />
+                <SelectPriority />
+                <SelectAssignees />
+            </div>
         </div>
     </div>
-    <div class="px-4 lg:px-8">
-        <article class="prose wrap-anywhere mt-4 max-w-container-lg mx-auto">
+    <div class="px-8 mt-4">
+        <article class="prose wrap-anywhere max-w-container-lg mx-auto">
             {#if task.descriptionHtml && task.descriptionHtml.length > 0}
                 {@html task.descriptionHtml}
             {:else}

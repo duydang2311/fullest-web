@@ -1,6 +1,7 @@
 import { command, form, getRequestEvent, query, requested } from '$app/server';
 import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';
+import { type } from 'arktype';
 import sanitize from 'sanitize-html';
 import { renderToHTMLString } from '~/lib/components/editor';
 import { cursorList, offsetList, type CursorList, type OffsetList } from '~/lib/models/paginated';
@@ -356,6 +357,37 @@ export const unassignTask = command(
             return attempt.fail(BadHttpResponse(response.status, response.statusText));
         }
 
+        return attempt.ok<void>(void 0);
+    }
+);
+
+export const editTaskTitle = form(
+    type({
+        taskId: 'string > 0',
+        title: 'string > 0',
+        version: 'number.integer',
+    }),
+    async (data) => {
+        const e = getRequestEvent();
+        const result = await e.locals.http.patch(`tasks/${data.taskId}`, {
+            body: {
+                version: data.version,
+                patch: {
+                    title: data.title,
+                },
+            },
+        });
+        if (!result.ok) {
+            return result;
+        }
+
+        const resp = result.data;
+        if (!resp.ok) {
+            const error = await parseHttpError(resp);
+            return attempt.fail(error);
+        }
+
+        await requested(getTask).refreshAll();
         return attempt.ok<void>(void 0);
     }
 );
