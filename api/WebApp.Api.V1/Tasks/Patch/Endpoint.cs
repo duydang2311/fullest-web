@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using NodaTime;
+using WebApp.Application.Common;
 using WebApp.Domain.Entities;
 using WebApp.Domain.Events;
 using WebApp.Infrastructure.Data;
@@ -60,6 +61,14 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         {
             updateBuilder += a => a.SetProperty(b => b.DueTz, dueTz);
             mappings.Add(nameof(TaskEntity.DueTz));
+        }
+        if (req.Patch.TryGetValue(a => a.DescriptionJson, out var descriptionJson))
+        {
+            var (json, preview) = TextDocumentHelper.ParseDocumentPreview(descriptionJson);
+            updateBuilder += a =>
+                a.SetProperty(b => b.DescriptionJson, json)
+                    .SetProperty(b => b.DescriptionPreview, preview);
+            mappings.Add(nameof(TaskEntity.DescriptionJson));
         }
 
         Guard.Against.Null(updateBuilder);
@@ -119,6 +128,30 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
                 )
             );
         }
+        if (req.Patch.Has(a => a.Title))
+        {
+            changes.Add(
+                new TaskTitleChanged(
+                    projectId,
+                    req.TaskId,
+                    req.CallerId,
+                    Guard.Against.Null(req.Patch.Title),
+                    Guard.Against.Null(snapshot.Title)
+                )
+            );
+        }
+        if (req.Patch.Has(a => a.DescriptionJson))
+        {
+            changes.Add(
+                new TaskDescriptionChanged(
+                    projectId,
+                    req.TaskId,
+                    req.CallerId,
+                    req.Patch.DescriptionJson,
+                    snapshot.DescriptionJson
+                )
+            );
+        }
 
         var query = db.Tasks.Where(a =>
             a.Id == req.TaskId && a.DeletedTime == null && a.Version == req.Version
@@ -148,6 +181,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         public PriorityId? PriorityId { get; init; }
         public Instant? DueTime { get; init; }
         public string? DueTz { get; init; }
+        public string? DescriptionJson { get; init; }
         public uint Version { get; init; }
     }
 

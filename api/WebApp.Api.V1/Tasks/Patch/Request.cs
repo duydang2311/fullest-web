@@ -24,6 +24,7 @@ public sealed record Request()
         public PriorityId? PriorityId { get; init; }
         public Instant? DueTime { get; init; }
         public string? DueTz { get; init; }
+        public string? DescriptionJson { get; init; }
     }
 }
 
@@ -37,16 +38,7 @@ public sealed class RequestValidator : AbstractValidator<Request>
             () =>
             {
                 RuleFor(a => a.Patch)
-                    .Must(a =>
-                        a!.PresentProperties.Any(p =>
-                            p
-                                is nameof(Request.TaskPatch.Title)
-                                    or nameof(Request.TaskPatch.StatusId)
-                                    or nameof(Request.TaskPatch.PriorityId)
-                                    or nameof(Request.TaskPatch.DueTime)
-                                    or nameof(Request.TaskPatch.DueTz)
-                        )
-                    )
+                    .Must(a => a!.PresentProperties.Count > 0)
                     .WithErrorCode(ErrorCodes.Invalid)
                     .WithMessage("At least one property must be updated.");
                 RuleFor(a => a.Patch!.Title)

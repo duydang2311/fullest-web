@@ -34,6 +34,9 @@ public static class ServiceCollectionExtensions
         services.AddKeyedScoped<ITaskPropertyChangedHandler, CreateTaskTitleChangedActivity>(
             typeof(TaskTitleChanged)
         );
+        services.AddKeyedScoped<ITaskPropertyChangedHandler, CreateTaskDescriptionChangedActivity>(
+            typeof(TaskDescriptionChanged)
+        );
         AddTaskPropertyChangedHandler<TaskAssigned, CreateTaskAssignedActivity>(services);
         AddTaskPropertyChangedHandler<TaskUnassigned, CreateTaskUnassignedActivity>(services);
         return services;

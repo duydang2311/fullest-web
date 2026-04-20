@@ -58,3 +58,11 @@ public sealed record TaskUnassigned(
     UserId ActorId,
     UserId AssigneeId
 ) : TaskPropertyChanged(ProjectId, TaskId, ActorId);
+
+public sealed record TaskDescriptionChanged(
+    ProjectId ProjectId,
+    TaskId TaskId,
+    UserId ActorId,
+    string? DescriptionJson,
+    string? OldDescriptionJson
+) : TaskPropertyChanged(ProjectId, TaskId, ActorId);
