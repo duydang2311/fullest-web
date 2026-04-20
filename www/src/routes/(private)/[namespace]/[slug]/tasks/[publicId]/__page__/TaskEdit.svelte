@@ -4,7 +4,7 @@
     import { createRef } from '@duydang2311/svutils';
     import { Editor } from '@tiptap/core';
     import { untrack } from 'svelte';
-    import { createTextEditor } from '~/lib/components/editor';
+    import { createTextEditor } from '~/lib/components/editor.svelte';
     import { CheckOutline, XOutline } from '~/lib/components/icons';
     import type { Comment } from '~/lib/models/comment';
     import { tsap } from '~/lib/utils/gsap';

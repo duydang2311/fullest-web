@@ -4,7 +4,7 @@
     import { Editor } from '@tiptap/core';
     import { untrack } from 'svelte';
     import invariant from 'tiny-invariant';
-    import { createTextEditor } from '~/lib/components/editor';
+    import { createTextEditor } from '~/lib/components/editor.svelte';
     import { PlusOutline } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
     import { usePageData } from '~/lib/utils/kit';

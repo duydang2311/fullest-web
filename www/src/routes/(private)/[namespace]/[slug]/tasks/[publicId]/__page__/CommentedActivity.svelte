@@ -1,6 +1,6 @@
 <script lang="ts">
     import DOMPurify from 'dompurify';
-    import { renderToHTMLString } from '~/lib/components/editor';
+    import { renderToHTMLString } from '~/lib/components/editor.svelte';
     import RelativeDateTime from '~/lib/components/RelativeDateTime.svelte';
     import type { Activity } from '~/lib/models/activity';
     import type { User } from '~/lib/models/user';

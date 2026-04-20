@@ -6,7 +6,7 @@ import { NotFoundError, traced } from '~/lib/utils/errors';
 import { jsonify, parseHttpError } from '~/lib/utils/http';
 import type { PageServerLoad } from './$types';
 import sanitize from 'sanitize-html';
-import { renderToHTMLString } from '~/lib/components/editor';
+import { renderToHTMLString } from '~/lib/components/editor.svelte';
 
 export const load: PageServerLoad = async (e) => {
     const parent = await e.parent();

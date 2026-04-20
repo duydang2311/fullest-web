@@ -15,13 +15,15 @@
     import SelectPriority from './SelectPriority.svelte';
     import SelectStatus from './SelectStatus.svelte';
     import { useTask } from './utils.svelte';
+    import EditTaskDescription from './EditTaskDescription.svelte';
 
     const task = $derived(await useTask());
     const id = $props.id();
     const menu = createMenu({
         id,
     });
-    const edit = createInlineEdit();
+    const titleEdit = createInlineEdit();
+    const descEdit = createInlineEdit();
 </script>
 
 <div>
@@ -31,10 +33,10 @@
                 <div class="w-full">
                     <Breadcrumbs />
                     <div class="mt-1">
-                        {#if edit.enabled}
+                        {#if titleEdit.enabled}
                             <form
                                 {...editTaskTitle.enhance(async (e) => {
-                                    edit.enabled = false;
+                                    titleEdit.enabled = false;
                                     await e.submit().updates(
                                         useTask().withOverride((task) => ({
                                             ...task,
@@ -54,16 +56,16 @@
                                 />
                                 <input
                                     {...editTaskTitle.fields.title.as('text', task.title)}
-                                    class="text-title-xs font-semibold text-fg-emph w-full {C.input()} border-0 border-b-2 p-0 border-dashed ring-0 rounded-none"
+                                    class="text-title-xs font-semibold text-fg-emph w-full {C.input()}"
                                     spellcheck="false"
-                                    {@attach edit}
+                                    {@attach titleEdit}
                                 />
                                 <div class="flex gap-2 mt-2 justify-end flex-wrap">
                                     <button
                                         type="button"
                                         class={C.button({ size: 'sm', ghost: true })}
                                         onclick={() => {
-                                            edit.enabled = false;
+                                            titleEdit.enabled = false;
                                         }}
                                     >
                                         Cancel
@@ -84,7 +86,7 @@
                         {:else}
                             <button
                                 type="button"
-                                {@attach edit}
+                                {@attach titleEdit}
                                 class="text-left hover:ring-2 hover:ring-base rounded-sm hover:bg-base select-text"
                             >
                                 <h1 class="text-title-xs text-fg-emph w-fit">
@@ -151,12 +153,21 @@
         </div>
     </div>
     <div class="px-8 mt-4">
-        <article class="prose wrap-anywhere max-w-container-lg mx-auto">
-            {#if task.descriptionHtml && task.descriptionHtml.length > 0}
-                {@html task.descriptionHtml}
+        <div class="max-w-container-lg mx-auto">
+            {#if descEdit.enabled}
+                <EditTaskDescription edit={descEdit} />
             {:else}
-                <span class="text-fg-muted text-sm">No description added.</span>
+                <article
+                    class="max-w-none prose wrap-anywhere hover:bg-base hover:ring-4 hover:ring-base rounded-sm"
+                    {@attach descEdit}
+                >
+                    {#if task.descriptionHtml && task.descriptionHtml.length > 0}
+                        {@html task.descriptionHtml}
+                    {:else}
+                        <span class="text-fg-muted text-sm">No description added.</span>
+                    {/if}
+                </article>
             {/if}
-        </article>
+        </div>
     </div>
 </div>

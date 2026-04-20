@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { createRef } from '@duydang2311/svutils';
 	import type { Editor } from '@tiptap/core';
-	import { createTextEditor } from '~/lib/components/editor';
+	import { createTextEditor } from '~/lib/components/editor.svelte.js';
 	import Errors from '~/lib/components/Errors.svelte';
 	import { PlusOutline } from '~/lib/components/icons';
 	import InlineAlert from '~/lib/components/InlineAlert.svelte';
