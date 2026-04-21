@@ -332,6 +332,40 @@
     font-size: inherit;
 }
 
+.prose {
+    :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        font-size: 1.375rem;
+    }
+    :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        font-size: 1.1875rem;
+    }
+    :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        font-size: 1.0625rem;
+    }
+    :where(h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        font-size: 1rem;
+    }
+    :where(h5):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        font-size: 1rem;
+    }
+    :where(h6):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        font-size: 1rem;
+    }
+    :where(h1, h2, h3, h4, h5, h6, p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        margin-block: 1rem;
+    }
+    :where(& > :first-child) {
+        margin-block-start: 0 !important;
+    }
+    :where(& > :last-child) {
+        margin-block-end: 0 !important;
+    }
+    :where(td > *, th > *):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        margin-block: 0rem;
+        padding-block: 0.25rem;
+    }
+}
+
 [data-scope='collapsible'][data-part='content'][data-state='open'] {
     animation: slideDown 300ms ease;
 }
