@@ -63,7 +63,7 @@
 
 <div>
     <div {@attach editor}></div>
-    <div class="flex gap-2 justify-end mt-2">
+    <div class="flex gap-2 mt-2">
         <button
             type="button"
             class={C.button({ ghost: true, size: 'sm' })}
@@ -73,7 +73,11 @@
         >
         <button
             type="button"
-            class="{C.button({ variant: 'primary', filled: true, size: 'sm' })} flex gap-2"
+            class="{C.button({
+                variant: 'primary',
+                filled: true,
+                size: 'sm',
+            })} flex gap-2 items-center"
             onclick={editDescription}
         >
             <IconSaveOutline />

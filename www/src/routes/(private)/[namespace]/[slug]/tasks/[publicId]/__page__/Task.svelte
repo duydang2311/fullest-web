@@ -10,12 +10,12 @@
     } from '~/lib/components/icons';
     import { button, C } from '~/lib/utils/styles';
     import Breadcrumbs from '../../../__page__/Breadcrumbs.svelte';
+    import EditTaskDescription from './EditTaskDescription.svelte';
     import { deleteTask, editTaskTitle } from './page.remote';
     import SelectAssignees from './SelectAssignees.svelte';
     import SelectPriority from './SelectPriority.svelte';
     import SelectStatus from './SelectStatus.svelte';
     import { useTask } from './utils.svelte';
-    import EditTaskDescription from './EditTaskDescription.svelte';
 
     const task = $derived(await useTask());
     const id = $props.id();
@@ -29,80 +29,8 @@
 <div>
     <div class="px-8">
         <div class="max-w-container-lg mx-auto">
-            <div class="flex justify-between items-start gap-8">
-                <div class="w-full">
-                    <Breadcrumbs />
-                    <div class="mt-1">
-                        {#if titleEdit.enabled}
-                            <form
-                                {...editTaskTitle.enhance(async (e) => {
-                                    titleEdit.enabled = false;
-                                    await e.submit().updates(
-                                        useTask().withOverride((task) => ({
-                                            ...task,
-                                            title: e.data.title,
-                                        }))
-                                    );
-                                })}
-                                class="relative"
-                            >
-                                <input
-                                    {...editTaskTitle.fields.taskId.as('text', task.id)}
-                                    type="hidden"
-                                />
-                                <input
-                                    {...editTaskTitle.fields.version.as('number', task.version)}
-                                    type="hidden"
-                                />
-                                <input
-                                    {...editTaskTitle.fields.title.as('text', task.title)}
-                                    class="text-title-xs font-semibold text-fg-emph w-full {C.input()}"
-                                    spellcheck="false"
-                                    {@attach titleEdit}
-                                />
-                                <div class="flex gap-2 mt-2 justify-end flex-wrap">
-                                    <button
-                                        type="button"
-                                        class={C.button({ size: 'sm', ghost: true })}
-                                        onclick={() => {
-                                            titleEdit.enabled = false;
-                                        }}
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        class="{C.button({
-                                            variant: 'primary',
-                                            size: 'sm',
-                                            filled: true,
-                                        })} flex gap-2 items-center"
-                                    >
-                                        <IconSaveOutline />
-                                        Save
-                                    </button>
-                                </div>
-                            </form>
-                        {:else}
-                            <button
-                                type="button"
-                                {@attach titleEdit}
-                                class="text-left hover:ring-2 hover:ring-base rounded-sm hover:bg-base select-text"
-                            >
-                                <h1 class="text-title-xs text-fg-emph w-fit">
-                                    <span>
-                                        {task.title}
-                                    </span>
-                                    <span
-                                        class="text-xs text-fg-muted px-1 rounded-xs font-normal align-middle"
-                                    >
-                                        #{task.publicId}
-                                    </span>
-                                </h1>
-                            </button>
-                        {/if}
-                    </div>
-                </div>
+            <div class="flex justify-between gap-8 items-center">
+                <Breadcrumbs />
                 <div>
                     <button
                         type="button"
@@ -145,6 +73,73 @@
                     </div>
                 </div>
             </div>
+            <div class="mt-1">
+                {#if titleEdit.enabled}
+                    <form
+                        {...editTaskTitle.enhance(async (e) => {
+                            titleEdit.enabled = false;
+                            await e.submit().updates(
+                                useTask().withOverride((task) => ({
+                                    ...task,
+                                    title: e.data.title,
+                                }))
+                            );
+                        })}
+                        class="relative"
+                    >
+                        <input {...editTaskTitle.fields.taskId.as('text', task.id)} type="hidden" />
+                        <input
+                            {...editTaskTitle.fields.version.as('number', task.version)}
+                            type="hidden"
+                        />
+                        <input
+                            {...editTaskTitle.fields.title.as('text', task.title)}
+                            class="text-title-sm font-semibold text-fg-emph w-full outline-none"
+                            spellcheck="false"
+                            {@attach titleEdit}
+                        />
+                        <div class="flex gap-2 mt-2 flex-wrap">
+                            <button
+                                type="button"
+                                class={C.button({ size: 'sm', ghost: true })}
+                                onclick={() => {
+                                    titleEdit.enabled = false;
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                class="{C.button({
+                                    variant: 'primary',
+                                    size: 'sm',
+                                    filled: true,
+                                })} flex gap-2 items-center"
+                            >
+                                <IconSaveOutline />
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                {:else}
+                    <button
+                        type="button"
+                        {@attach titleEdit}
+                        class="text-left text-fg-emph select-text cursor-text w-full"
+                    >
+                        <h1 class="text-title-sm w-fit">
+                            <span>
+                                {task.title}
+                            </span>
+                            <span
+                                class="text-xs text-fg-muted px-1 rounded-xs font-normal align-middle"
+                            >
+                                #{task.publicId}
+                            </span>
+                        </h1>
+                    </button>
+                {/if}
+            </div>
             <div class="mt-4 flex flex-wrap gap-x-2 gap-y-2 *:basis-40 *:flex-1 lg:hidden">
                 <SelectStatus />
                 <SelectPriority />
@@ -157,10 +152,7 @@
             {#if descEdit.enabled}
                 <EditTaskDescription edit={descEdit} />
             {:else}
-                <article
-                    class="max-w-none prose wrap-anywhere hover:bg-base hover:ring-4 hover:ring-base rounded-sm"
-                    {@attach descEdit}
-                >
+                <article class="max-w-none prose wrap-anywhere" {@attach descEdit}>
                     {#if task.descriptionHtml && task.descriptionHtml.length > 0}
                         {@html task.descriptionHtml}
                     {:else}
