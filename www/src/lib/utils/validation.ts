@@ -1,86 +1,62 @@
 import { attempt, type Attempt } from '@duydang2311/attempt';
-import * as v from 'valibot';
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 import { ValidationError } from './errors';
 
-export interface Validator<TInput, TOutput> {
-    check(value: unknown): value is TInput;
-    parse(value: unknown): Attempt<TOutput, ValidationError>;
+export interface Validator<T> {
+    check(value: unknown): value is T;
+    parse(value: unknown): Attempt<T, ValidationError>;
 }
 
-export type InferOutput<T extends Validator<unknown, unknown>> =
-    T extends Validator<unknown, infer TOutput> ? TOutput : never;
+export type InferOutput<T extends Validator<unknown>> =
+    T extends Validator<infer TOutput> ? TOutput : never;
 
 export interface AsyncValidator<T> {
     parseAsync(value: unknown): Promise<Attempt<T, ValidationError>>;
 }
 
-export const createValidator: {
-    <TSchema extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>(
-        schema: TSchema
-    ): Validator<v.InferInput<TSchema>, v.InferOutput<TSchema>>;
-    <TSchema extends v.BaseSchemaAsync<unknown, unknown, v.BaseIssue<unknown>>>(
-        schema: TSchema
-    ): AsyncValidator<v.InferOutput<TSchema>>;
-} = (
-    schema:
-        | v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>
-        | v.BaseSchemaAsync<unknown, unknown, v.BaseIssue<unknown>>
-) => {
-    return (
-        schema.async ? new AsyncValibotValidator(schema) : new ValibotValidator(schema)
-    ) as never;
-};
+export function createValidator<T extends StandardSchemaV1>(schema: T) {
+    return new StandardValidator(schema) as Validator<
+        T extends StandardSchemaV1<unknown, infer O> ? O : never
+    >;
+}
 
-class ValibotValidator<TInput, TOutput> implements Validator<TInput, TOutput> {
-    readonly #schema: v.BaseSchema<TInput, TOutput, v.BaseIssue<unknown>>;
+class StandardValidator<TOutput> implements Validator<TOutput> {
+    readonly #schema: StandardSchemaV1<unknown, TOutput>;
 
-    constructor(schema: v.BaseSchema<TInput, TOutput, v.BaseIssue<unknown>>) {
+    constructor(schema: StandardSchemaV1<unknown, TOutput>) {
         this.#schema = schema;
     }
 
-    public check(value: unknown) {
-        return v.is(this.#schema, value);
+    public check(value: unknown): value is TOutput {
+        const result = this.#schema['~standard'].validate(value);
+        if (result instanceof Promise) {
+            throw new TypeError('Schema validation must be synchronous');
+        }
+        return result.issues ? false : true;
     }
 
     public parse(value: unknown) {
-        const result = v.safeParse(this.#schema, value);
-        if (result.success) {
-            return attempt.ok(result.output);
+        const result = this.#schema['~standard'].validate(value);
+        if (result instanceof Promise) {
+            throw new TypeError('Schema validation must be synchronous');
         }
-        return attempt.fail(transformValibotIssues(result.issues));
+        return result.issues
+            ? attempt.fail(
+                  ValidationError(
+                      result.issues.reduce(
+                          (acc, cur) => {
+                              const k = cur.path?.join('.') ?? '$';
+                              if (!acc[k]) {
+                                  acc[k] = [cur.message];
+                              } else {
+                                  acc[k].push(cur.message);
+                              }
+                              return acc;
+                          },
+                          {} as Record<string, string[]>
+                      )
+                  )
+              )
+            : attempt.ok(result.value);
     }
 }
-
-class AsyncValibotValidator<T> implements AsyncValidator<T> {
-    readonly #schema: v.BaseSchemaAsync<unknown, T, v.BaseIssue<unknown>>;
-
-    constructor(schema: v.BaseSchemaAsync<unknown, T, v.BaseIssue<unknown>>) {
-        this.#schema = schema;
-    }
-
-    public async parseAsync(value: unknown) {
-        const result = await v.safeParseAsync(this.#schema, value);
-        if (result.success) {
-            return attempt.ok(result.output);
-        }
-        return attempt.fail(transformValibotIssues(result.issues));
-    }
-}
-
-const transformValibotIssues = (issues: v.BaseIssue<unknown>[]) => {
-    return ValidationError(
-        issues.reduce<Record<string, string[]>>((acc, cur) => {
-            const path = v.getDotPath(cur) ?? '$';
-            let type = cur.received === 'undefined' ? 'required' : cur.type;
-            if (cur.requirement) {
-                type = `${type}:${cur.requirement}`;
-            }
-            if (!acc[path]) {
-                acc[path] = [type];
-            } else {
-                acc[path].push(type);
-            }
-            return acc;
-        }, {})
-    );
-};
