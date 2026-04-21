@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { invalidateAll } from '$app/navigation';
     import { liteDebounce } from '@tanstack/pacer-lite';
     import { ListCollection } from '@zag-js/collection';
     import { portal } from '@zag-js/svelte';
@@ -11,13 +10,15 @@
     import { usePageData } from '~/lib/utils/kit';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
-    import { assignTask, searchUsers, unassignTask } from './page.remote';
-    import { usePageContext, useTask } from './utils.svelte';
+    import { getActivityList, searchUsers, updateTaskAssignees } from './page.remote';
+    import { useActivityLists, usePageContext, useTask } from './utils.svelte';
+    import { guardNull } from '~/lib/utils/guard';
 
     const data = usePageData<PageData>();
     const ctx = usePageContext();
     const id = $props.id();
     const task = $derived(await useTask());
+    const activityLists = $derived(useActivityLists(ctx.activityListParams));
     let searchQuery = $state.raw('');
     let users = $derived(
         searchQuery ? await searchUsers({ query: searchQuery }).then((a) => a.items) : []
@@ -65,65 +66,56 @@
         unassigned: Set<string>;
     }) {
         const users = $state.snapshot(listboxUsers);
-
-        const oldTask = $state.snapshot(task);
-        const oldActivityList = $state.snapshot(ctx.activityList);
-        invariant(oldTask, 'oldTask must not be null');
-        invariant(oldActivityList, 'oldActivityList must not be null');
-
-        ctx.activityList = {
-            ...oldActivityList,
-            items: [
-                ...oldActivityList.items,
-                ...Array.from(assigned).map((a) => {
-                    const user = users.find((b) => b.id === a);
-                    invariant(user, 'user must not be null');
-                    return {
-                        id: self.crypto.randomUUID(),
-                        actor: data.user,
-                        createdTime: new Date().toISOString(),
-                        kind: ActivityKind.Assigned,
-                        metadata: {
-                            assignee: user,
-                        },
-                    };
-                }),
-                ...Array.from(unassigned).map((a) => {
-                    const user = users.find((b) => b.id === a);
-                    invariant(user, 'user must not be null');
-                    return {
-                        id: self.crypto.randomUUID(),
-                        actor: data.user,
-                        createdTime: new Date().toISOString(),
-                        kind: ActivityKind.Unassigned,
-                        metadata: {
-                            assignee: user,
-                        },
-                    };
-                }),
-            ],
-        };
-        // task = {
-        //     ...oldTask,
-        //     assignees: [
-        //         ...task.assignees.filter((a) => unassigned.has(a.id)),
-        //         ...users.filter((a) => assigned.has(a.id)),
-        //     ],
-        // };
-        await Promise.all([
-            ...Array.from(assigned).map((userId) =>
-                assignTask({
-                    taskId: task.id,
-                    userId,
-                })
-            ),
-            ...Array.from(unassigned).map((userId) =>
-                unassignTask({
-                    taskId: task.id,
-                    userId,
-                })
-            ),
-        ]).finally(invalidateAll);
+        const lastList = activityLists.at(-1);
+        guardNull(lastList);
+        guardNull(lastList.query.current);
+        await updateTaskAssignees({
+            taskId: task.id,
+            assigned: Array.from(assigned),
+            unassigned: Array.from(unassigned),
+        }).updates(
+            useTask().withOverride((task) => ({
+                ...task,
+                assignees: [
+                    ...task.assignees.filter((a) => unassigned.has(a.id)),
+                    ...users.filter((a) => assigned.has(a.id)),
+                ],
+            })),
+            getActivityList(lastList.param).withOverride((list) => {
+                return {
+                    ...list,
+                    items: [
+                        ...list.items,
+                        ...Array.from(assigned).map((a) => {
+                            const user = users.find((b) => b.id === a);
+                            guardNull(user);
+                            return {
+                                id: self.crypto.randomUUID(),
+                                actor: data.user,
+                                createdTime: new Date().toISOString(),
+                                kind: ActivityKind.Assigned,
+                                metadata: {
+                                    assignee: user,
+                                },
+                            };
+                        }),
+                        ...Array.from(unassigned).map((a) => {
+                            const user = users.find((b) => b.id === a);
+                            guardNull(user);
+                            return {
+                                id: self.crypto.randomUUID(),
+                                actor: data.user,
+                                createdTime: new Date().toISOString(),
+                                kind: ActivityKind.Unassigned,
+                                metadata: {
+                                    assignee: user,
+                                },
+                            };
+                        }),
+                    ],
+                };
+            })
+        );
     }
     const updateSearchQueryDebounced = liteDebounce(
         (value: string) => {

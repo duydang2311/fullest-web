@@ -331,32 +331,44 @@ export const assignTask = command(
             return result;
         }
 
-        const response = result.data;
-        if (!response.ok) {
-            return attempt.fail(BadHttpResponse(response.status, response.statusText));
+        const resp = result.data;
+        if (!resp.ok) {
+            const error = await parseHttpError(resp);
+            return attempt.fail(error);
         }
-
+        await requested(getTask).refreshAll();
         return attempt.ok<void>(void 0);
     }
 );
 
-export const unassignTask = command(
-    v.object({
-        taskId: v.string(),
-        userId: v.string(),
+export const updateTaskAssignees = command(
+    type({
+        taskId: 'string > 0',
+        assigned: 'string[]',
+        unassigned: 'string[]',
     }),
     async (data) => {
         const e = getRequestEvent();
-        const result = await e.locals.http.delete(`tasks/${data.taskId}/assignees/${data.userId}`);
+        const result = await e.locals.http.post('task-assignees/batch', {
+            body: {
+                taskId: data.taskId,
+                assigned: data.assigned,
+                unassigned: data.unassigned,
+            },
+        });
         if (!result.ok) {
             return result;
         }
 
-        const response = result.data;
-        if (!response.ok) {
-            return attempt.fail(BadHttpResponse(response.status, response.statusText));
+        const resp = result.data;
+        if (!resp.ok) {
+            const error = await parseHttpError(resp);
+            return attempt.fail(error);
         }
-
+        await Promise.all([
+            requested(getActivityList).refreshAll(),
+            requested(getTask).refreshAll(),
+        ]);
         return attempt.ok<void>(void 0);
     }
 );

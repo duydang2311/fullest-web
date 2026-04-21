@@ -35,7 +35,7 @@
                     placeholder: 'Enter your comment...',
                     editorProps: {
                         attributes: {
-                            class: 'c-editor--inner prose max-w-none',
+                            class: 'c-editor--inner prose max-w-none p-0',
                         },
                     },
                     onTransaction: (props) => {

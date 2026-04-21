@@ -1,5 +1,6 @@
 import { page } from '$app/state';
 import { attempt } from '@duydang2311/attempt';
+import { type } from 'arktype';
 import { getContext, setContext } from 'svelte';
 import { ActivityKind, type Activity } from '~/lib/models/activity';
 import type { KeysetList } from '~/lib/models/paginated';
@@ -14,11 +15,20 @@ import { getActivityList, getTask } from './page.remote';
 
 export const validators = {
     [ActivityKind.Commented]: createValidator(
-        v.object({
-            comment: v.object({
-                id: v.string(),
-                contentJson: v.nullable(v.string()),
-            }),
+        type({
+            createdTime: 'string',
+            actor: {
+                name: 'string',
+                displayName: 'string | null',
+                imageKey: 'string | null',
+                imageVersion: 'string | null',
+            },
+            metadata: {
+                comment: {
+                    id: 'string',
+                    contentJson: 'string | null',
+                },
+            },
         })
     ),
     [ActivityKind.StatusChanged]: createValidator(

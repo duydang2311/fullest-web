@@ -1,11 +1,15 @@
 <script lang="ts">
     import { busy } from '@duydang2311/svutils';
     import { onDestroy } from 'svelte';
+    import ActivityFeed from '~/lib/components/activity-feed/ActivityFeed.svelte';
     import { Loader } from '~/lib/components/icons';
+    import { ActivityKind } from '~/lib/models/activity';
     import { guardNull } from '~/lib/utils/guard';
-    import ActivityItem from './ActivityItem.svelte';
+    import ActivityShell from './ActivityShell.svelte';
     import AddComment from './AddComment.svelte';
-    import { useActivityLists, usePageContext, useTask } from './utils.svelte';
+    import CommentedActivity from './CommentedActivity.svelte';
+    import { useActivityLists, usePageContext, useTask, validators } from './utils.svelte';
+    import { boolAttr } from 'runed';
 
     const ctx = usePageContext();
     const task = $derived(useTask());
@@ -25,16 +29,28 @@
             afterId: lastItem.id,
         });
     }
+
+    const renderers = {
+        [ActivityKind.Commented]: {
+            validator: validators.commented,
+            component: CommentedActivity,
+        },
+    } as const;
 </script>
 
-<section class="mt-8 max-w-container-lg mx-auto">
-    <div data-stuck={stuck ? '' : undefined} class="data-stuck:animate-pulse relative">
+<section class="mt-10 max-w-container-lg mx-auto">
+    <div data-stuck={boolAttr(stuck)} class="data-stuck:animate-pulse relative">
         {#if activities.length > 0}
-            <ol class="flex flex-col gap-6 duration-300 animate-fade-in">
-                {#each activities as activity (activity.id)}
-                    <ActivityItem {activity} />
-                {/each}
-            </ol>
+            <ActivityFeed
+                {activities}
+                {renderers}
+                shell={ActivityShell}
+                class="relative flex flex-col gap-6 duration-300 animate-fade-in"
+            >
+                <div
+                    class="absolute h-full w-px bg-surface-border left-[calc(var(--spacing-avatar-xs)/2+var(--spacing)*3)] top-0"
+                ></div>
+            </ActivityFeed>
         {/if}
         {#if stuck}
             <div class="absolute left-1/2 -translate-x-1/2 bottom-0">

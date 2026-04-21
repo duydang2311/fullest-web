@@ -6,6 +6,6 @@
     const { user }: { user: UserPreset['Avatar'] } = $props();
 </script>
 
-<a href={namespaceUrl(user.name)}>
+<a href={namespaceUrl(user.name)} class="shrink-0">
     <Avatar {user} class="size-avatar-xs rounded-full" />
 </a>

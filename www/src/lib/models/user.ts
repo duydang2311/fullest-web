@@ -7,9 +7,9 @@ export interface User {
     deletedTime?: string | null;
     projects: Project[];
     projectMembers: ProjectMember[];
-    displayName?: string |  null;
-    imageKey?: string | null;
-    imageVersion?: number;
+    displayName: string |  null;
+    imageKey: string | null;
+    imageVersion: string | null;
 }
 
 export type UserPreset = {
