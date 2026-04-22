@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { page } from '$app/state';
     import AuthenticatedHeader from '~/lib/components/AuthenticatedHeader.svelte';
     import Footer from '~/lib/components/Footer.svelte';
     import SidebarLayout from '~/lib/components/SidebarLayout.svelte';
@@ -12,11 +11,11 @@
     const tabs = createTabs({
         id,
         get value() {
-            const idx = indexOf(page.url.pathname, '/'.charCodeAt(0), 3);
+            const idx = indexOf(data.pathname, '/'.charCodeAt(0), 3);
             if (idx === -1) {
-                return page.url.pathname;
+                return data.pathname;
             }
-            return page.url.pathname.substring(0, idx);
+            return data.pathname.substring(0, idx);
         },
     });
 </script>

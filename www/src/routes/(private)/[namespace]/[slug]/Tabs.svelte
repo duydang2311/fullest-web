@@ -39,29 +39,14 @@
             lastActiveEl = null;
             return;
         }
-        const tl = gsap.timeline();
-        tl.add(
-            Flip.from(flipState, {
-                targets: activeEl,
-                absolute: true,
-                duration: 0.2,
-                ease: 'circ.inOut',
-                clearProps: 'transform',
-            }),
-            0
-        );
-        tl.to(
-            activeEl,
-            {
-                scaleX: 0.98,
-                scaleY: 1.1,
-                duration: 0.1,
-                ease: 'sine.inOut',
-                yoyo: true,
-                repeat: 1,
-            },
-            0
-        );
+
+        Flip.from(flipState, {
+            targets: activeEl,
+            absolute: true,
+            duration: 0.2,
+            ease: 'circ.inOut',
+            clearProps: 'transform',
+        });
         lastActiveEl = null;
         flipState = null;
     });
@@ -80,6 +65,7 @@
                         bind:this={activeEl}
                         data-flip-id="active"
                         class="bg-base-emph rounded-md absolute top-0 left-0 size-full"
+                        style="view-transition-name: active;"
                     ></div>
                 {/if}
                 <a

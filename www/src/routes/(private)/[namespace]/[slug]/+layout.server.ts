@@ -25,6 +25,7 @@ export const load: LayoutServerLoad = async (e) => {
         user: e.locals.session.user,
         project: project.data,
         namespace: ns.data,
+        pathname: e.url.pathname
     };
 };
 
