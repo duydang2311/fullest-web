@@ -16,7 +16,7 @@
         activity: InferOutput<(typeof validators)[ActivityKind.Commented]>;
     } = $props();
 
-    const task = $derived(await useTask());
+    const task = $derived(useTask());
     const comment = $derived(activity.metadata.comment);
     let isEditing = $state.raw(false);
 </script>
@@ -37,7 +37,9 @@
         </div>
     </div>
     {#if isEditing}
-        <CommentEdit taskId={task.id} {comment} bind:isEditing />
+        {#if task.current}
+            <CommentEdit taskId={task.current.id} {comment} bind:isEditing />
+        {/if}
     {:else}
         <article class="prose max-w-none wrap-anywhere">
             {#if comment.contentJson && comment?.contentJson.length > 0}
