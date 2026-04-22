@@ -8,8 +8,8 @@
 
     gsap.registerPlugin(Flip);
 
-    let activeEl = $state.raw<HTMLElement>();
     const { tabs }: { tabs: Tabs } = $props();
+    const id = $props.id();
     const tabItems = [
         {
             icon: DashboardOutline,
@@ -26,29 +26,26 @@
     ];
 
     let flipState: Flip.FlipState | null = null;
-    let lastActiveEl: HTMLElement | null = null;
+
     beforeNavigate(() => {
-        if (!activeEl) return;
-        lastActiveEl = activeEl;
-        flipState = Flip.getState(activeEl, { simple: true });
+        flipState = Flip.getState(`#active-${id}`, { simple: true });
     });
 
     afterNavigate(() => {
-        if (!flipState || !activeEl || lastActiveEl === activeEl) {
-            flipState = null;
-            lastActiveEl = null;
+        if (!flipState) {
             return;
         }
 
         Flip.from(flipState, {
-            targets: activeEl,
+            targets: `#active-${id}`,
             absolute: true,
             duration: 0.2,
             ease: 'circ.inOut',
             clearProps: 'transform',
+            onComplete() {
+                flipState = null;
+            },
         });
-        lastActiveEl = null;
-        flipState = null;
     });
 </script>
 
@@ -62,10 +59,9 @@
             >
                 {#if active}
                     <div
-                        bind:this={activeEl}
-                        data-flip-id="active"
+                        id="active-{id}"
+                        data-flip-id="active-{id}"
                         class="bg-base-emph rounded-md absolute top-0 left-0 size-full"
-                        style="view-transition-name: active;"
                     ></div>
                 {/if}
                 <a
