@@ -9,11 +9,18 @@ binding = "ASSETS"
 directory = ".svelte-kit/cloudflare"
 
 [observability]
-[observability.logs]
 enabled = true
-invocation_logs = true
+
+[env.production.observability]
+enabled = true
+head_sampling_rate = 0.5
+
+[observability.logs]
+invocation_logs = false
 
 [observability.traces]
+enabled = true
+head_sampling_rate = 0.5
 
 [[kv_namespaces]]
 binding = "APP_KV"
