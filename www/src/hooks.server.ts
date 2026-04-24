@@ -43,20 +43,15 @@ export const handle: Handle = sequence(
         ) {
             const searchIndex = event.request.url.indexOf('?');
             const search = searchIndex === -1 ? '' : event.request.url.substring(searchIndex);
-            const headers = new Headers(event.request.headers);
-            headers.delete('Cookie');
-            headers.delete('Host');
-            headers.delete('Origin');
-            headers.delete('Referrer');
-            if (!headers.has('Authorization')) {
-                const token = event.cookies.get('session_token');
-                if (token) {
-                    headers.set('Authorization', `Bearer ${event.cookies.get('session_token')}`);
-                }
-            }
             return fetch(
                 `${env.API_URL_PREFIX}/${trimEnd(pathname.substring(7), CODE_SLASH)}/${env.API_URL_SUFFIX}${search}`,
-                new Request(event.request, { headers })
+                {
+                    method: event.request.method,
+                    body: event.request.body,
+                    headers: {
+                        Authorization: `Bearer ${event.cookies.get('session_token')}`,
+                    },
+                }
             );
         }
 

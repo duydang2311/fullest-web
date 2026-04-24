@@ -25,20 +25,17 @@ public sealed class SessionAuthSchemeHandler(
     {
         if (Context.GetEndpoint()?.Metadata.GetMetadata<IAllowAnonymous>() is not null)
         {
-            Console.WriteLine("Anonymous");
             return Task.FromResult(AuthenticateResult.NoResult());
         }
 
         if (!Context.Request.Headers.TryGetValue("Authorization", out var headerValue))
         {
-            Console.WriteLine("tryGetValue");
             return Task.FromResult(AuthenticateResult.NoResult());
         }
 
         var value = headerValue.FirstOrDefault();
         if (string.IsNullOrEmpty(value))
         {
-            Console.WriteLine("IsNullOrEmpty");
             return Task.FromResult(AuthenticateResult.NoResult());
         }
 
@@ -46,7 +43,6 @@ public sealed class SessionAuthSchemeHandler(
         var delimiterIndex = span.IndexOf(' ');
         if (delimiterIndex == -1)
         {
-            Console.WriteLine("delimiterIndex");
             return Task.FromResult(AuthenticateResult.NoResult());
         }
 
@@ -55,13 +51,11 @@ public sealed class SessionAuthSchemeHandler(
 
         if (!scheme.Equals("Bearer", StringComparison.OrdinalIgnoreCase))
         {
-            Console.WriteLine("Bearer");
             return Task.FromResult(AuthenticateResult.NoResult());
         }
 
         if (token.IsEmpty || token.IsWhiteSpace())
         {
-            Console.WriteLine("token is empty");
             return Task.FromResult(AuthenticateResult.NoResult());
         }
 
@@ -72,7 +66,6 @@ public sealed class SessionAuthSchemeHandler(
         }
         catch (FormatException)
         {
-            Console.WriteLine("format exception");
             return Task.FromResult(AuthenticateResult.NoResult());
         }
 
@@ -91,7 +84,6 @@ public sealed class SessionAuthSchemeHandler(
             .ConfigureAwait(false);
         if (userId is null)
         {
-            Console.WriteLine("user id is null");
             return AuthenticateResult.NoResult();
         }
         return AuthenticateResult.Success(
