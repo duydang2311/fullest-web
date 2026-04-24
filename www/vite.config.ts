@@ -14,7 +14,7 @@ export default defineConfig((e) => {
             sentrySvelteKit({
                 org: 'duy-dang',
                 project: 'fullest-web',
-                authToken: env.SENTRY_AUTH_TOKEN,
+                authToken: process.env.SENTRY_AUTH_TOKEN || env.SENTRY_AUTH_TOKEN,
             }),
             tailwindcss(),
             sveltekit(),
