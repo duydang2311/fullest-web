@@ -1,8 +1,12 @@
+import { error } from '@sveltejs/kit';
 import { reverseKeysetList } from '~/lib/models/paginated';
+import { Err } from '~/lib/utils/errors';
+import { observableServerLoad } from '~/lib/utils/observability';
 import type { PageServerLoad } from './$types';
 import { getProjectList } from './_page/utils.svelte';
 
-export const load: PageServerLoad = async (e) => {
+export const load = observableServerLoad<PageServerLoad>(async (e) => {
+    error(500, Err('ERR_MISSING_OAUTH_STATE'));
     const session = e.locals.session;
     if (session) {
         const lastId = e.untrack(() => e.url.searchParams.get('p'));
@@ -21,4 +25,4 @@ export const load: PageServerLoad = async (e) => {
     return {
         session,
     };
-};
+});

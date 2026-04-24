@@ -1,4 +1,5 @@
 import isNetworkError from 'is-network-error';
+import { isPlainObject } from 'is-what';
 import * as v from 'valibot';
 import type { ProblemDetails } from './problem';
 import { createValidator, type Validator } from './validation';
@@ -183,6 +184,15 @@ export function HttpErr<T extends number>(status: T, message?: string) {
     };
 }
 
+export function isHttpErr(obj: unknown): obj is ReturnType<typeof HttpErr<number>> {
+    return (
+        isPlainObject(obj) &&
+        'kind' in obj &&
+        typeof obj.kind === 'string' &&
+        obj.kind === 'HttpError'
+    );
+}
+
 export function ValidationErr(errors: Record<string, string[]>, message?: string) {
     return {
         kind: 'ValidationError' as const,
@@ -202,6 +212,15 @@ export function HttpValidationErr(
         errors,
         message: message ?? `An HTTP validation error occurred`,
     };
+}
+
+export function isHttpValidationErr(obj: unknown): obj is ReturnType<typeof HttpErr<number>> {
+    return (
+        isPlainObject(obj) &&
+        'kind' in obj &&
+        typeof obj.kind === 'string' &&
+        obj.kind === 'HttpValidationError'
+    );
 }
 
 export const enrich =

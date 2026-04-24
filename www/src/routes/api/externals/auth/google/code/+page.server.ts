@@ -7,9 +7,10 @@ import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';
 import type { HttpClient } from '~/lib/services/http_client';
 import { guardNull } from '~/lib/utils/guard';
+import { withObservability } from '~/lib/utils/observability';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (e) => {
+export const load = withObservability((async (e) => {
     const oauthState = e.cookies.get('oauth_state');
     if (!oauthState) {
         return error(400, Err('ERR_MISSING_OAUTH_STATE'));
@@ -114,7 +115,7 @@ export const load: PageServerLoad = async (e) => {
         sameSite: 'lax',
     });
     return redirect(303, '/');
-};
+}) as PageServerLoad);
 
 const createSession = (http: HttpClient) => async (googleIdToken: string) => {
     const created = await http.post('sessions', {

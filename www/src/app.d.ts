@@ -16,6 +16,8 @@ declare global {
 		interface Error {
 			kind: string;
 			message: string;
+			traceId?: string;
+			eventId?: string;
 		}
 		interface Locals {
 			http: HttpClient;
