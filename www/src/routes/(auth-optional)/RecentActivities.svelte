@@ -112,7 +112,12 @@
             transition:fly={{ y: -2, duration: 200, easing: circInOut }}
         >
             {#each ctx.activityList.items as activity (activity.id)}
-                <RenderActivity {activity} />
+                <RenderActivity
+                    activity={{
+                        ...activity,
+                        metadata: activity.metadata == null ? null : JSON.parse(activity.metadata),
+                    }}
+                />
             {/each}
         </ol>
         {#if ctx.activityList.hasNext}

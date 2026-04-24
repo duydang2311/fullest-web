@@ -73,7 +73,14 @@
     {#each activities as activity (activity.id)}
         {@const renderer = mergedRenders[activity.kind]}
         {#if renderer}
-            <RenderActivity {activity} renderer={renderer as any} {shell} />
+            <RenderActivity
+                activity={{
+                    ...activity,
+                    metadata: activity.metadata == null ? null : JSON.parse(activity.metadata),
+                }}
+                renderer={renderer as any}
+                {shell}
+            />
         {/if}
     {/each}
 </ol>
