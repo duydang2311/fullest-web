@@ -27,7 +27,7 @@ public sealed class PriorityChangedHydratorStrategy(
         using var metadata = JsonDocument.Parse(activity.Metadata);
         var bag = new DataBag();
         if (
-            metadata.RootElement.TryGetProperty("PriorityId", out var priorityIdElement)
+            metadata.RootElement.TryGetProperty("priorityId", out var priorityIdElement)
             && priorityIdElement.ValueKind == JsonValueKind.Number
             && priorityIdElement.TryGetInt64(out var priorityIdValue)
         )
@@ -38,7 +38,7 @@ public sealed class PriorityChangedHydratorStrategy(
             bag.PriorityId = priorityId;
         }
         if (
-            metadata.RootElement.TryGetProperty("OldPriorityId", out priorityIdElement)
+            metadata.RootElement.TryGetProperty("oldPriorityId", out priorityIdElement)
             && priorityIdElement.ValueKind == JsonValueKind.Number
             && priorityIdElement.TryGetInt64(out priorityIdValue)
         )

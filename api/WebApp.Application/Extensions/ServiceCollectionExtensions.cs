@@ -1,3 +1,4 @@
+using System.Text.Json;
 using WebApp.Application.Events;
 using WebApp.Application.Features.Activities.Create;
 using WebApp.Application.Features.Activities.Delete;
@@ -14,6 +15,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddEventHandlersGroup(this IServiceCollection services)
     {
+        services.Configure<JsonSerializerOptions>(options =>
+        {
+            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        });
         services.AddScoped<IProjectCreatedHandler, AddProjectCreatorAsProjectOwner>();
         services.AddScoped<IProjectCreatedHandler, CreateDefaultStatuses>();
         services.AddScoped<IProjectCreatedHandler, CreateDefaultPriorities>();

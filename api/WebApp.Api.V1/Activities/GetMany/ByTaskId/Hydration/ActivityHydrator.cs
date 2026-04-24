@@ -1,4 +1,6 @@
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
 using WebApp.Domain.Entities;
@@ -119,14 +121,79 @@ public sealed class ActivityHydrator(
                     TaskId = a.TaskId,
                     Task = a.Task,
                     Kind = a.Kind,
-                    Metadata = JsonSerializer.SerializeToElement(
-                        metadata,
-                        jsonOptions.Value.SerializerOptions
-                    ),
+                    Metadata = metadata is null
+                        ? a.Metadata
+                        : JsonSerializer.Serialize(metadata, jsonOptions.Value.SerializerOptions),
                 }
             );
         }
         return results;
+    }
+
+    public static string WriteJsonCamelCase(JsonObject obj, JsonNamingPolicy? namingPolicy)
+    {
+        using var stream = new MemoryStream();
+        using var writer = new Utf8JsonWriter(stream);
+
+        WriteObject(obj, writer, namingPolicy);
+
+        writer.Flush();
+        return Encoding.UTF8.GetString(stream.GetBuffer(), 0, (int)stream.Length);
+    }
+
+    private static void WriteObject(JsonObject obj, Utf8JsonWriter writer, JsonNamingPolicy? policy)
+    {
+        writer.WriteStartObject();
+
+        foreach (var kvp in obj)
+        {
+            var name = policy?.ConvertName(kvp.Key) ?? kvp.Key;
+            Console.WriteLine("Write name = " + name);
+            writer.WritePropertyName(name);
+
+            WriteNode(kvp.Value, writer, policy);
+        }
+
+        writer.WriteEndObject();
+    }
+
+    private static void WriteArray(JsonArray array, Utf8JsonWriter writer, JsonNamingPolicy? policy)
+    {
+        writer.WriteStartArray();
+
+        foreach (var item in array)
+        {
+            WriteNode(item, writer, policy);
+        }
+
+        writer.WriteEndArray();
+    }
+
+    private static void WriteNode(JsonNode? node, Utf8JsonWriter writer, JsonNamingPolicy? policy)
+    {
+        if (node is null)
+        {
+            writer.WriteNullValue();
+            return;
+        }
+
+        switch (node)
+        {
+            case JsonObject obj:
+                WriteObject(obj, writer, policy);
+                break;
+            case JsonArray arr:
+                WriteArray(arr, writer, policy);
+                break;
+            case JsonValue val:
+                WriteValue(val, writer);
+                break;
+        }
+    }
+
+    private static void WriteValue(JsonValue val, Utf8JsonWriter writer)
+    {
+        JsonSerializer.Serialize(writer, val);
     }
 
     // private async Task<Dictionary<ProjectId, Project>> GetProjectsAsync(

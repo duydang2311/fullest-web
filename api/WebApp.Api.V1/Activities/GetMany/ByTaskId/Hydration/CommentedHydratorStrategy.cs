@@ -26,7 +26,7 @@ public sealed class CommentedHydratorStrategy(
 
         using var metadata = JsonDocument.Parse(activity.Metadata);
         if (
-            metadata.RootElement.TryGetProperty("CommentId", out var commentIdElement)
+            metadata.RootElement.TryGetProperty("commentId", out var commentIdElement)
             && commentIdElement.TryGetInt64(out var commentIdValue)
         )
         {

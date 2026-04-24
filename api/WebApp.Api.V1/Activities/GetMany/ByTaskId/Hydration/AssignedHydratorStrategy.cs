@@ -26,7 +26,7 @@ public sealed class AssignedHydratorStrategy(
 
         using var metadata = JsonDocument.Parse(activity.Metadata);
         if (
-            metadata.RootElement.TryGetProperty("AssigneeId", out var assigneeIdElement)
+            metadata.RootElement.TryGetProperty("assigneeId", out var assigneeIdElement)
             && assigneeIdElement.TryGetInt64(out var assigneeIdValue)
         )
         {

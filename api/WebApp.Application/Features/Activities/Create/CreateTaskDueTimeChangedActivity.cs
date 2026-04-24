@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 using NodaTime;
 using WebApp.Application.Data;
 using WebApp.Domain.Entities;
@@ -6,8 +7,10 @@ using WebApp.Domain.Events;
 
 namespace WebApp.Application.Features.Activities.Create;
 
-public sealed class CreateTaskDueTimeChangedActivity(BaseDbContext db)
-    : TaskPropertyChangedHandler<TaskDueTimeChanged>
+public sealed class CreateTaskDueTimeChangedActivity(
+    BaseDbContext db,
+    IOptions<JsonSerializerOptions> jsonSerializerOptions
+) : TaskPropertyChangedHandler<TaskDueTimeChanged>
 {
     public override async Task HandleAsync(TaskDueTimeChanged changed, CancellationToken ct)
     {
@@ -27,7 +30,8 @@ public sealed class CreateTaskDueTimeChangedActivity(BaseDbContext db)
                             ? (Instant?)changed.OldDueTime.Value
                             : null,
                         changed.OldDueTz,
-                    }
+                    },
+                    jsonSerializerOptions.Value
                 ),
             },
             ct

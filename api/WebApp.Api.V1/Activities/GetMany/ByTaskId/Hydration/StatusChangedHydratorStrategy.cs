@@ -27,7 +27,7 @@ public sealed class StatusChangedHydratorStrategy(
         using var metadata = JsonDocument.Parse(activity.Metadata);
         var bag = new DataBag();
         if (
-            metadata.RootElement.TryGetProperty("StatusId", out var statusIdElement)
+            metadata.RootElement.TryGetProperty("statusId", out var statusIdElement)
             && statusIdElement.ValueKind == JsonValueKind.Number
             && statusIdElement.TryGetInt64(out var statusIdValue)
         )
@@ -38,7 +38,7 @@ public sealed class StatusChangedHydratorStrategy(
             bag.StatusId = statusId;
         }
         if (
-            metadata.RootElement.TryGetProperty("OldStatusId", out statusIdElement)
+            metadata.RootElement.TryGetProperty("oldStatusId", out statusIdElement)
             && statusIdElement.ValueKind == JsonValueKind.Number
             && statusIdElement.TryGetInt64(out statusIdValue)
         )

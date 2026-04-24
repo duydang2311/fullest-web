@@ -1,12 +1,15 @@
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 using WebApp.Application.Data;
 using WebApp.Domain.Entities;
 using WebApp.Domain.Events;
 
 namespace WebApp.Application.Features.Activities.Create;
 
-public sealed class CreateTaskPriorityChangedActivity(BaseDbContext db)
-    : TaskPropertyChangedHandler<TaskPriorityChanged>
+public sealed class CreateTaskPriorityChangedActivity(
+    BaseDbContext db,
+    IOptions<JsonSerializerOptions> jsonSerializerOptions
+) : TaskPropertyChangedHandler<TaskPriorityChanged>
 {
     public override async Task HandleAsync(TaskPriorityChanged changed, CancellationToken ct)
     {
@@ -22,7 +25,8 @@ public sealed class CreateTaskPriorityChangedActivity(BaseDbContext db)
                     {
                         PriorityId = changed.PriorityId?.Value,
                         OldPriorityId = changed.OldPriorityId?.Value,
-                    }
+                    },
+                    jsonSerializerOptions.Value
                 ),
             },
             ct
