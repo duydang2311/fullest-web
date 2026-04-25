@@ -1,4 +1,4 @@
-using System.Text.Json;
+using System.Text.Json.Nodes;
 using NodaTime;
 using WebApp.Domain.Entities;
 
@@ -15,5 +15,5 @@ public sealed record HydratedActivity
     public TaskId? TaskId { get; init; }
     public TaskEntity? Task { get; init; }
     public ActivityKind Kind { get; init; }
-    public string? Metadata { get; init; }
+    public JsonObject? Metadata { get; init; }
 }
