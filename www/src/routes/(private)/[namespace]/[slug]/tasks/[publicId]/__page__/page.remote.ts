@@ -399,7 +399,10 @@ export const editTaskTitle = form(
             return attempt.fail(error);
         }
 
-        await requested(getTask).refreshAll();
+        await Promise.all([
+            requested(getTask).refreshAll(),
+            requested(getActivityList).refreshAll(),
+        ]);
         return attempt.ok<void>(void 0);
     }
 );
