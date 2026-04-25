@@ -7,7 +7,7 @@ export const load: PageServerLoad = async (e) => {
     const server = new URL('https://accounts.google.com/.well-known/openid-configuration');
     const clientId = env.GOOGLE_OAUTH_CLIENT_ID;
     const clientSecret = env.GOOGLE_OAUTH_CLIENT_SECRET;
-    const redirect_uri = 'http://localhost:5173/api/externals/auth/google/code';
+    const redirect_uri = `${e.url.origin}/api/externals/auth/google/code`;
     const scope = 'openid email';
     const config = await openIdClient.discovery(server, clientId, clientSecret);
     const code_verifier = openIdClient.randomPKCECodeVerifier();
