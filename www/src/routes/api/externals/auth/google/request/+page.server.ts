@@ -1,40 +1,45 @@
 import { env } from '$env/dynamic/private';
-import { InternalServerError } from '$lib/utils/errors';
-import { attempt } from '@duydang2311/attempt';
-import { error, redirect } from '@sveltejs/kit';
-import { randomBytes } from 'node:crypto';
+import { redirect } from '@sveltejs/kit';
+import * as openIdClient from 'openid-client';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ url, cookies }) => {
-	const createOAuthState = new Promise<string>((resolve, reject) => {
-		randomBytes(32, (err, buf) => {
-			if (err) {
-				reject(err);
-				return;
-			}
-			resolve(buf.toString('base64url'));
-		});
-	});
-	const created = await attempt.async(() => createOAuthState)((e) => e as Error);
-	if (!created.ok) {
-		return error(500, InternalServerError(created.error.message));
-	}
+export const load: PageServerLoad = async (e) => {
+    const server = new URL('https://accounts.google.com/.well-known/openid-configuration');
+    const clientId = env.GOOGLE_OAUTH_CLIENT_ID;
+    const clientSecret = env.GOOGLE_OAUTH_CLIENT_SECRET;
+    const redirect_uri = 'http://localhost:5173/api/externals/auth/google/code';
+    const scope = 'openid email';
+    const config = await openIdClient.discovery(server, clientId, clientSecret);
+    const code_verifier = openIdClient.randomPKCECodeVerifier();
+    e.cookies.set('oauth_code_verifier', code_verifier, {
+        path: '/api/externals/auth/google/code',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60,
+    });
+    const code_challenge = await openIdClient.calculatePKCECodeChallenge(code_verifier);
+    let state!: string;
 
-	cookies.set('oauth_state', created.data, {
-		path: '/api/externals/auth/google/code',
-		httpOnly: true,
-		secure: true,
-		sameSite: 'lax',
-		maxAge: 60,
-	});
+    const parameters: Record<string, string> = {
+        redirect_uri,
+        scope,
+        code_challenge,
+        code_challenge_method: 'S256',
+    };
 
-	const oauthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-	oauthUrl.searchParams.set('client_id', env.GOOGLE_OAUTH_CLIENT_ID!);
-	oauthUrl.searchParams.set('redirect_uri', `${url.origin}/api/externals/auth/google/code`);
-	oauthUrl.searchParams.set('response_type', 'code');
-	oauthUrl.searchParams.set('scope', 'openid email profile');
-	oauthUrl.searchParams.set('state', created.data);
-	oauthUrl.searchParams.set('include_granted_scopes', 'true');
+    if (!config.serverMetadata().supportsPKCE()) {
+        state = openIdClient.randomState();
+        parameters.state = state;
+        e.cookies.set('oauth_state', state, {
+            path: '/api/externals/auth/google/code',
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 60,
+        });
+    }
 
-	return redirect(303, oauthUrl);
+    const authUrl = openIdClient.buildAuthorizationUrl(config, parameters);
+    return redirect(303, authUrl);
 };

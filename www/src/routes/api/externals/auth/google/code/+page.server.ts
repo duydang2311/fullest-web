@@ -5,68 +5,45 @@ import { jsonify, parseHttpError } from '$lib/utils/http';
 import { problemDetailsValidator } from '$lib/utils/problem';
 import { attempt } from '@duydang2311/attempt';
 import { error, redirect } from '@sveltejs/kit';
+import * as openIdClient from 'openid-client';
 import type { HttpClient } from '~/lib/services/http_client';
 import { guardNull } from '~/lib/utils/guard';
 import { withObservability } from '~/lib/utils/observability';
 import type { PageServerLoad } from './$types';
 
 export const load = withObservability((async (e) => {
+    const oauthCodeVerifier =
+        e.cookies.get('oauth_code_verifier') ?? error(400, Err('ERR_MISSING_OAUTH_CODE_VERIFIER'));
     const oauthState = e.cookies.get('oauth_state');
-    if (!oauthState) {
-        return error(400, Err('ERR_MISSING_OAUTH_STATE'));
+    if (oauthState) {
+        e.cookies.delete('oauth_state', {
+            path: '/api/externals/auth/google/code',
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+        });
     }
-    e.cookies.delete('oauth_state', {
+    e.cookies.delete('oauth_code_verifier', {
         path: '/api/externals/auth/google/code',
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
     });
 
-    if (oauthState !== e.url.searchParams.get('state')) {
-        return error(400, Err('ERR_MISMATCH_OAUTH_STATE'));
+    const server = new URL('https://accounts.google.com/.well-known/openid-configuration');
+    const clientId = env.GOOGLE_OAUTH_CLIENT_ID;
+    const clientSecret = env.GOOGLE_OAUTH_CLIENT_SECRET;
+    const config = await openIdClient.discovery(server, clientId, clientSecret);
+    const grantResp = await openIdClient.authorizationCodeGrant(config, e.request, {
+        pkceCodeVerifier: oauthCodeVerifier,
+        expectedState: oauthState,
+    });
+
+    if (!grantResp.id_token) {
+        return error(400, Err('ERR_MISSING_ID_TOKEN'));
     }
 
-    const code = e.url.searchParams.get('code');
-    if (!code) {
-        return error(400, Err('ERR_MISSING_GOOGLE_AUTHORIZAITION_CODE'));
-    }
-
-    const exchanged = await attempt.async(() =>
-        fetch('https://oauth2.googleapis.com/token', {
-            method: 'post',
-            body: new URLSearchParams({
-                code,
-                client_id: env.GOOGLE_OAUTH_CLIENT_ID,
-                client_secret: env.GOOGLE_OAUTH_CLIENT_SECRET,
-                grant_type: 'authorization_code',
-                redirect_uri: `${e.url.origin}/api/externals/auth/google/code`,
-            }),
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        })
-    )();
-    if (!exchanged.ok) {
-        return error(500, Err('ERR_EXCHANGE_TOKEN_FAILED'));
-    }
-
-    if (!exchanged.data.ok) {
-        const err = await parseHttpError(exchanged.data);
-        return error(err.status, err);
-    }
-
-    const parsed = await jsonify(() =>
-        exchanged.data.json<{
-            access_token: string;
-            expires_in: number;
-            scope: string;
-            token_type: string;
-            id_token: string;
-        }>()
-    );
-    if (!parsed.ok) {
-        return error(500, Err('ERR_PARSE_TOKEN_BODY_FAILED'));
-    }
-
-    const created = await createSession(e.locals.http)(parsed.data.id_token);
+    const created = await createSession(e.locals.http)(grantResp.id_token);
     if (
         !created.ok &&
         problemDetailsValidator.check(created.error) &&
@@ -82,7 +59,7 @@ export const load = withObservability((async (e) => {
             CacheKey.completeOAuthRegistration(id),
             JSON.stringify({
                 provider: 'google',
-                idToken: parsed.data.id_token,
+                idToken: grantResp.id_token,
             }),
             { expirationTtl: 60 * 5 }
         );

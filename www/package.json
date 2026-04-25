@@ -57,6 +57,7 @@
 		"magic-string": "^0.30.21",
 		"marked": "^18.0.2",
 		"mitata": "^1.0.34",
+		"openid-client": "^6.8.3",
 		"oxc-parser": "^0.126.0",
 		"prettier": "^3.8.3",
 		"prettier-plugin-svelte": "^3.5.1",
