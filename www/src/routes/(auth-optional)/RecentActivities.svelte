@@ -41,6 +41,7 @@
                     items: [...ctx.activityList.items, ...list.items],
                     hasPrevious: ctx.activityList.hasPrevious,
                     hasNext: list.hasNext,
+                    totalCount: 0
                 };
                 await goto(
                     fluentSearchParams(page.url.searchParams)
@@ -58,6 +59,7 @@
                     items: [...list.items, ...ctx.activityList.items],
                     hasPrevious: list.hasPrevious,
                     hasNext: ctx.activityList.hasNext,
+                    totalCount: 0
                 };
             }
         } finally {
@@ -112,12 +114,7 @@
             transition:fly={{ y: -2, duration: 200, easing: circInOut }}
         >
             {#each ctx.activityList.items as activity (activity.id)}
-                <RenderActivity
-                    activity={{
-                        ...activity,
-                        metadata: activity.metadata == null ? null : JSON.parse(activity.metadata),
-                    }}
-                />
+                <RenderActivity {activity} />
             {/each}
         </ol>
         {#if ctx.activityList.hasNext}

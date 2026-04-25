@@ -44,28 +44,41 @@ export function offsetList<T>(
 }
 
 export function keysetList<T>(): KeysetList<T>;
-export function keysetList<T>(
-    items: T[],
-    hasPrevious: boolean,
-    hasNext: boolean,
-    totalCount: number
-): KeysetList<T>;
-export function keysetList<T>(
-    items?: T[],
-    hasPrevious?: boolean,
-    hasNext?: boolean,
-    totalCount?: number
-): KeysetList<T> {
+export function keysetList<T>(options: {
+    items?: T[];
+    hasPrevious?: boolean;
+    hasNext?: boolean;
+    totalCount?: number;
+}): KeysetList<T>;
+export function keysetList<T>(options?: {
+    items?: T[];
+    hasPrevious?: boolean;
+    hasNext?: boolean;
+    totalCount?: number;
+}): KeysetList<T> {
+    if (options == null) {
+        return {
+            items: [],
+            hasPrevious: false,
+            hasNext: false,
+            totalCount: 0,
+        };
+    }
     return {
-        items: items ?? [],
-        hasPrevious: hasPrevious ?? false,
-        hasNext: hasNext ?? false,
-        totalCount: totalCount ?? 0,
+        items: options.items ?? [],
+        hasPrevious: options.hasPrevious ?? false,
+        hasNext: options.hasNext ?? false,
+        totalCount: options.totalCount ?? 0,
     };
 }
 
 export function reverseKeysetList<T>(list: KeysetList<T>) {
-    return keysetList(list.items.toReversed(), list.hasNext, list.hasPrevious);
+    return keysetList({
+        items: list.items.toReversed(),
+        hasPrevious: list.hasNext,
+        hasNext: list.hasPrevious,
+        totalCount: list.totalCount,
+    });
 }
 
 export function cursorList<T, TKey>(): CursorList<T, TKey>;

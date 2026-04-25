@@ -74,10 +74,7 @@
         {@const renderer = mergedRenders[activity.kind]}
         {#if renderer}
             <RenderActivity
-                activity={{
-                    ...activity,
-                    metadata: activity.metadata == null ? null : JSON.parse(activity.metadata),
-                }}
+                {activity}
                 renderer={renderer as any}
                 {shell}
             />

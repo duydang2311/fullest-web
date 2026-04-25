@@ -6,7 +6,7 @@
     import invariant from 'tiny-invariant';
     import Avatar from '~/lib/components/Avatar.svelte';
     import { PlusOutline } from '~/lib/components/icons';
-    import { reverseKeysetList } from '~/lib/models/paginated';
+    import { keysetList, reverseKeysetList } from '~/lib/models/paginated';
     import { usePageData } from '~/lib/utils/kit';
     import { useRuntime } from '~/lib/utils/runtime';
     import { C } from '~/lib/utils/styles';
@@ -33,11 +33,12 @@
                     'asc',
                     5
                 );
-                ctx.projectList = {
+                ctx.projectList = keysetList({
                     items: [...ctx.projectList.items, ...list.items],
                     hasPrevious: ctx.projectList.hasPrevious,
                     hasNext: list.hasNext,
-                };
+                    totalCount: list.totalCount,
+                });
                 await goto(
                     fluentSearchParams(page.url.searchParams)
                         .set('p', list.items.at(-1)?.id)
@@ -49,11 +50,12 @@
                 const list = reverseKeysetList(
                     await getProjectList(http)(data.session.user.id, lastId, null, 'desc', 5)
                 );
-                ctx.projectList = {
+                ctx.projectList = keysetList({
                     items: [...list.items, ...ctx.projectList.items],
                     hasPrevious: list.hasPrevious,
                     hasNext: ctx.projectList.hasNext,
-                };
+                    totalCount: list.totalCount,
+                });
             }
         } finally {
             listBusy.unset();

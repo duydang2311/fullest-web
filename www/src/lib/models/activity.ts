@@ -8,7 +8,7 @@ export interface Activity {
     actor: User;
     projectId: string | null;
     taskId: string | null;
-    metadata: string | null;
+    metadata: unknown | null;
 }
 
 export enum ActivityKind {
