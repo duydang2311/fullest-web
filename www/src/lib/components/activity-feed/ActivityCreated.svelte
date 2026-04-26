@@ -13,5 +13,5 @@
     <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium">
         {activity.actor.displayName ?? activity.actor.name}
     </a>
-    <span>created a new task.</span>
+    <span>created a new task</span>
 </div>

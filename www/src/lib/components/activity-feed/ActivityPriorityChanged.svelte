@@ -16,11 +16,11 @@
             {activity.actor.displayName ?? activity.actor.name}
         </a>
         <span>changed the priority to</span>
-        <span class="px-2 bg-base rounded-sm">
+        <span class="px-2 bg-base rounded-sm font-medium">
             {activity.metadata.priority?.name ?? 'None'}
         </span>
     </div>
-    <div class="ml-auto px-2 bg-surface-subtle rounded-sm text-sm line-through text-fg-muted">
+    <div class="ml-auto px-2 bg-base rounded-sm font-medium line-through opacity-40">
         {activity.metadata.oldPriority?.name ?? 'None'}
     </div>
 </div>

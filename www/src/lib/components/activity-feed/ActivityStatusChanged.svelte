@@ -16,11 +16,13 @@
             {activity.actor.displayName ?? activity.actor.name}
         </a>
         <span>changed the status to</span>
-        <span class="px-2 bg-base rounded-sm">
+        <span class="px-2 bg-base rounded-sm font-medium">
             {activity.metadata.status?.name ?? 'None'}
         </span>
     </div>
-    <div class="ml-auto px-2 bg-surface-subtle rounded-sm text-sm line-through text-fg-muted">
+    <div
+        class="ml-auto px-2 bg-base rounded-sm font-medium line-through opacity-40"
+    >
         {activity.metadata.oldStatus?.name ?? 'None'}
     </div>
 </div>

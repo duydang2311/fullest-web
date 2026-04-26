@@ -14,11 +14,11 @@
         {activity.actor.displayName ?? activity.actor.name}
     </a>
     {#if activity.metadata.assignee.id === activity.actor.id}
-        <span>self-assigned.</span>
+        <span>self-assigned</span>
     {:else}
         <span>
             assigned
-            {activity.metadata.assignee.displayName ?? activity.metadata.assignee.name}.
+            {activity.metadata.assignee.displayName ?? activity.metadata.assignee.name}
         </span>
     {/if}
 </div>

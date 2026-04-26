@@ -13,7 +13,7 @@
     <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium">
         {activity.actor.displayName ?? activity.actor.name}
     </a>
-    <span>left a comment.</span>
+    <span>left a comment</span>
     <!-- <a
         href="/{activity.project.namespace.user.name}/{activity.project.identifier}/tasks/{activity
             .task.publicId}"
