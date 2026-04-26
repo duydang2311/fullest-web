@@ -1,15 +1,17 @@
 <script lang="ts">
     import { busy } from '@duydang2311/svutils';
+    import { boolAttr } from 'runed';
     import { onDestroy } from 'svelte';
     import ActivityFeed from '~/lib/components/activity-feed/ActivityFeed.svelte';
+    import { activityValidators } from '~/lib/components/activity-feed/utils.svelte';
     import { Loader } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
     import { guardNull } from '~/lib/utils/guard';
+    import ActivityCreated from './ActivityCreated.svelte';
     import ActivityShell from './ActivityShell.svelte';
     import AddComment from './AddComment.svelte';
     import CommentedActivity from './CommentedActivity.svelte';
     import { useActivityLists, usePageContext, useTask, validators } from './utils.svelte';
-    import { boolAttr } from 'runed';
 
     const ctx = usePageContext();
     const task = $derived(useTask());
@@ -35,6 +37,10 @@
             validator: validators.commented,
             component: CommentedActivity,
         },
+        [ActivityKind.Created]: {
+            validator: activityValidators.created,
+            component: ActivityCreated
+        }
     } as const;
 </script>
 
