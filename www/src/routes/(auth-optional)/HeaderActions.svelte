@@ -15,8 +15,7 @@
 </script>
 
 <div class="hidden items-center gap-2 sm:flex">
-    <a href="/sign-in" class={button({ variant: 'base', ghost: true })}> Sign in </a>
-    <a href="/sign-up" class={button({ variant: 'primary', filled: true })}> Sign up </a>
+    <a href="/sign-in" class={button({ variant: 'primary', filled: true })}>Sign In</a>
 </div>
 <div class="sm:hidden">
     <button
