@@ -1,5 +1,5 @@
 <script lang="ts">
-    import '@fontsource-variable/dm-sans';
+    import '@fontsource-variable/inter';
     import '../app.css';
 
     import favicon from '$lib/assets/favicon.svg';

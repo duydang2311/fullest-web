@@ -91,7 +91,7 @@
     --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
 
     --default-font-family:
-        'DM Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica,
+        'Inter Variable', 'DM Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica,
         Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
     --default-mono-font-family:
         ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
