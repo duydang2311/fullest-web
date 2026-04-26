@@ -9,22 +9,22 @@ import * as openIdClient from 'openid-client';
 import type { HttpClient } from '~/lib/services/http_client';
 import { guardNull } from '~/lib/utils/guard';
 import { withObservability } from '~/lib/utils/observability';
-import type { PageServerLoad } from './$types';
+import type { RequestHandler } from './$types';
 
-export const load = withObservability((async (e) => {
+export const GET = withObservability((async (e) => {
     const oauthCodeVerifier =
         e.cookies.get('oauth_code_verifier') ?? error(400, Err('ERR_MISSING_OAUTH_CODE_VERIFIER'));
     const oauthState = e.cookies.get('oauth_state');
     if (oauthState) {
         e.cookies.delete('oauth_state', {
-            path: '/api/externals/auth/google/code',
+            path: '/auth/google/callback',
             httpOnly: true,
             secure: true,
             sameSite: 'lax',
         });
     }
     e.cookies.delete('oauth_code_verifier', {
-        path: '/api/externals/auth/google/code',
+        path: '/auth/google/callback',
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
@@ -92,7 +92,7 @@ export const load = withObservability((async (e) => {
         sameSite: 'lax',
     });
     return redirect(303, '/');
-}) as PageServerLoad);
+}) satisfies RequestHandler);
 
 const createSession = (http: HttpClient) => async (googleIdToken: string) => {
     const created = await http.post('sessions', {

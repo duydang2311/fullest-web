@@ -45,13 +45,12 @@
 			<div class="bg-base-border h-px flex-1"></div>
 		</div>
 		<a
-			href="/api/externals/auth/google/request"
+			href="/auth/google/start"
 			class="{button({
 				variant: 'base',
 				filled: true,
 				outlined: true,
 			})} flex w-full items-center justify-center gap-2"
-			tabindex="0"
 		>
 			<Google />
 			Sign in with Google
