@@ -9,7 +9,7 @@ public sealed class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
     public void Configure(EntityTypeBuilder<TaskEntity> builder)
     {
         builder.ToTable("tasks");
-        builder.Property(a => a.CreatedTime);
+        builder.Property(a => a.CreatedTime).HasDefaultValueSql("now()");
         builder.Property(a => a.UpdatedTime);
         builder.Property(a => a.Id).ValueGeneratedOnAdd().UseHiLo("TaskHiLoSequence");
         builder.Property(a => a.ProjectId).ValueGeneratedNever();
