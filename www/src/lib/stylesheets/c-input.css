@@ -38,4 +38,10 @@
             @apply ring-focus-negative;
         }
     }
+
+    &:where(:disabled) {
+        background-color: var(--color-base);
+        border-color: transparent;
+        opacity: 0.4;
+    }
 }

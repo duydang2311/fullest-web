@@ -213,7 +213,7 @@
         outline: none;
     }
 
-    &:where(:disabled, [data-disabled]) {
+    &:where(:disabled, [aria-disabled], [data-disabled]) {
         opacity: 0.4;
         pointer-events: none;
     }
