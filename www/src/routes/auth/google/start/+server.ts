@@ -13,7 +13,7 @@ export const GET = withObservability((async (e) => {
     const config = await openIdClient.discovery(server, clientId, clientSecret);
     const code_verifier = openIdClient.randomPKCECodeVerifier();
     e.cookies.set('oauth_code_verifier', code_verifier, {
-        path: '/api/externals/auth/google/code',
+        path: '/auth/google/callback',
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
@@ -31,7 +31,7 @@ export const GET = withObservability((async (e) => {
         const state = openIdClient.randomState();
         parameters.state = state;
         e.cookies.set('oauth_state', state, {
-            path: '/api/externals/auth/google/code',
+            path: '/auth/google/callback',
             httpOnly: true,
             secure: true,
             sameSite: 'lax',
