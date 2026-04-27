@@ -31,11 +31,13 @@ export function guardPlugin() {
                             }
                             const arg = decl.arguments[0];
                             s.appendLeft(decl.end - 1, `, "${code.slice(arg.start, arg.end)}"`);
-                        } else if (decl.callee.name === 'guard' && prod) {
-                            s ??= new MagicString(code);
-                            s.remove(decl.start, decl.end);
-                            return;
                         }
+                        // note: this strips the function completely in production
+                        // else if (decl.callee.name === 'guard' && prod) {
+                        //     s ??= new MagicString(code);
+                        //     s.remove(decl.start, decl.end);
+                        //     return;
+                        // }
                     }
                 },
             });
@@ -43,7 +45,11 @@ export function guardPlugin() {
             return s
                 ? {
                       code: (s as MagicString).toString(),
-                      map: (s as MagicString).generateMap(),
+                      map: (s as MagicString).generateMap({
+                          hires: true,
+                          source: id,
+                          includeContent: true,
+                      }),
                   }
                 : null;
         },
