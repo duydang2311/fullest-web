@@ -12,15 +12,15 @@
 
 <div class="flex gap-2 items-center">
     <div>
-        <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium">
+        <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium text-fg">
             {activity.actor.displayName ?? activity.actor.name}
         </a>
         <span>changed the priority to</span>
-        <span class="px-2 bg-base rounded-sm font-medium">
+        <span class="ml-2 outline-4 outline-base bg-base rounded-sm font-medium text-fg">
             {activity.metadata.priority?.name ?? 'None'}
         </span>
     </div>
-    <div class="ml-auto px-2 bg-base rounded-sm font-medium line-through opacity-40">
+    <div class="ml-auto font-medium line-through opacity-40">
         {activity.metadata.oldPriority?.name ?? 'None'}
     </div>
 </div>

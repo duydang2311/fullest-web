@@ -21,11 +21,11 @@
     let isEditing = $state.raw(false);
 </script>
 
-<div class="bg-surface border border-surface-border flex-1 px-3 py-2 overflow-auto rounded-md">
-    <div class="flex items-center gap-2 rounded-m mb-2">
+<div class="bg-surface border border-surface-border flex-1 px-3 py-2 overflow-auto rounded-lg">
+    <div class="flex items-center gap-2 rounded-m mb-2 text-sm">
         <ActivityAvatar user={activity.actor} />
         <span>
-            <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium">
+            <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium text-fg">
                 {activity.actor.displayName ?? activity.actor.name}
             </a>
             <span class="text-sm text-fg-muted">

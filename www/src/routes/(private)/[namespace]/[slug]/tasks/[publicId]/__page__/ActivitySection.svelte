@@ -17,8 +17,28 @@
     const task = $derived(useTask());
     const listBusy = busy();
     const stuck = $derived(listBusy.for(1000));
-    const activityLists = $derived(useActivityLists(ctx.activityListParams));
-    const activities = $derived(activityLists.flatMap((a) => a.query.current?.items ?? []));
+    const activityQueries = $derived(useActivityLists(ctx.activityListParams));
+    const activityLists = $derived(
+        await Promise.all(
+            activityQueries.map(async (a) => ({
+                param: a.param,
+                list: await a.query,
+            }))
+        )
+    );
+    const activities = $derived.by(() => {
+        const seen = new Set();
+        const result = [];
+        for (const a of activityLists) {
+            for (const item of a.list.items) {
+                if (!seen.has(item.id)) {
+                    seen.add(item.id);
+                    result.push(item);
+                }
+            }
+        }
+        return result;
+    });
 
     async function loadMore() {
         const currentTask = task.current;
@@ -39,24 +59,21 @@
         },
         [ActivityKind.Created]: {
             validator: activityValidators.created,
-            component: ActivityCreated
-        }
+            component: ActivityCreated,
+        },
     } as const;
 </script>
 
-<section class="mt-10 max-w-container-lg mx-auto">
-    <div data-stuck={boolAttr(stuck)} class="data-stuck:animate-pulse relative">
+<section class="max-w-container-lg mx-auto">
+    <h2 class="text-fg-emph text-body-sm">Activity</h2>
+    <div data-stuck={boolAttr(stuck)} class="data-stuck:animate-pulse relative mt-4">
         {#if activities.length > 0}
             <ActivityFeed
                 {activities}
                 {renderers}
                 shell={ActivityShell}
-                class="relative flex flex-col gap-6 duration-300 animate-fade-in"
-            >
-                <div
-                    class="absolute h-full w-px bg-surface-border left-[calc(var(--spacing-avatar-xs)/2+var(--spacing)*3)] top-0"
-                ></div>
-            </ActivityFeed>
+                class="flex flex-col gap-6 duration-300 animate-fade-in text-fg-dim"
+            />
         {/if}
         {#if stuck}
             <div class="absolute left-1/2 -translate-x-1/2 bottom-0">
@@ -71,8 +88,8 @@
                     return;
                 }
 
-                const lastList = activityLists.at(-1);
-                if (!lastList || lastList.query.loading || !lastList.query.current?.hasNext) {
+                const lastQuery = activityQueries.at(-1);
+                if (!lastQuery || lastQuery.query.loading || !lastQuery.query.current?.hasNext) {
                     return;
                 }
 

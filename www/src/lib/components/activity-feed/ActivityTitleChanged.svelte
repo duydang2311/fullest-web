@@ -10,8 +10,13 @@
 </script>
 
 <div>
-    <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium">
+    <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium text-fg">
         {activity.actor.displayName ?? activity.actor.name}
     </a>
-    <span>changed the title to <span class="px-2 bg-base rounded-sm font-medium">{activity.metadata.title}</span></span>
+    <span>
+        changed the title to
+        <span class="outline-4 outline-base ml-2 bg-base rounded-sm font-medium text-fg">
+            {activity.metadata.title}
+        </span>
+    </span>
 </div>

@@ -10,8 +10,8 @@
 </script>
 
 <div>
-    <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium">
+    <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium text-fg">
         {activity.actor.displayName ?? activity.actor.name}
     </a>
-    <span>created the task</span>
+    <span>created this task</span>
 </div>

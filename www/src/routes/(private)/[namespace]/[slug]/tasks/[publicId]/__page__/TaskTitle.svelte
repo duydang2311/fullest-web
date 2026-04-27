@@ -86,12 +86,7 @@
         class="text-left text-fg-emph select-text cursor-text w-full"
     >
         <h1 class="text-title-sm w-fit">
-            <span>
-                {task.title}
-            </span>
-            <span class="text-xs text-fg-muted px-1 rounded-xs font-normal align-middle">
-                #{task.publicId}
-            </span>
+            {task.title}
         </h1>
     </button>
 {/if}

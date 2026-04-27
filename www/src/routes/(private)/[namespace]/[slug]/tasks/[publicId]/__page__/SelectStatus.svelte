@@ -14,9 +14,9 @@
 
     const pageData = usePageData<PageData>();
     const id = $props.id();
-    const task = $derived(await useTask());
     const ctx = usePageContext();
     const activityLists = $derived(useActivityLists(ctx.activityListParams));
+    const task = $derived(await useTask());
     const menu = createMenu({
         id,
         defaultHighlightedValue: untrack(() => task.status?.id),

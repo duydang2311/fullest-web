@@ -91,8 +91,8 @@
     --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
 
     --default-font-family:
-        'Inter Variable', 'DM Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica,
-        Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+        'Inter Variable', 'DM Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+        'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
     --default-mono-font-family:
         ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
 }
@@ -245,13 +245,11 @@
 @layer components {
     .c-avatar {
         background-color: var(--color-surface);
-        outline: 1px solid var(--color-base-border);
         border-radius: calc(infinity * 1px);
     }
 
     .c-avatar--fallback {
         background-color: var(--color-surface);
-        border: 1px solid var(--color-base-border);
         border-radius: calc(infinity * 1px);
     }
 }

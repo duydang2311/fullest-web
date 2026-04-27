@@ -9,7 +9,7 @@ import type { Priority } from '~/lib/models/priority';
 import type { Status } from '~/lib/models/status';
 import type { Task } from '~/lib/models/task';
 import type { User, UserPreset } from '~/lib/models/user';
-import { BadHttpResponse, enrichStep, ValidationError } from '~/lib/utils/errors';
+import { BadHttpResponse, enrichStep, Err, ValidationError } from '~/lib/utils/errors';
 import { jsonify, parseHttpError, parseHttpProblem } from '~/lib/utils/http';
 import { v } from '~/lib/utils/valibot';
 import { makeFetchActivityList, makeFetchTask } from './utils.svelte';
@@ -90,19 +90,24 @@ export const editComment = command(
 );
 
 export const deleteComment = command(
-    v.object({
-        id: v.string(),
+    type({
+        id: 'string',
     }),
     async (data) => {
         const e = getRequestEvent();
-        return (await e.locals.http.delete(`comments/${data.id}`)).pipe(
-            attempt.flatMap(async (response) => {
-                if (response.ok) {
-                    return attempt.ok<void>(void 0);
-                }
-                return attempt.fail(BadHttpResponse(response.status, await response.text()));
-            })
-        );
+        const result = await e.locals.http.delete(`comments/${data.id}`);
+        if (!result.ok) {
+            return result;
+        }
+
+        const resp = result.data;
+        if (!resp.ok) {
+            const error = await parseHttpError(resp);
+            return attempt.fail(error);
+        }
+
+        await requested(getActivityList).refreshAll();
+        return attempt.ok<void>(void 0);
     }
 );
 
@@ -223,7 +228,7 @@ export const patchTaskStatus = command(
 
         await Promise.all([
             requested(getActivityList).refreshAll(),
-            requested(getTask).refreshAll(),
+            requested(getTask, 1).refreshAll(),
         ]);
         return attempt.ok(body.data);
     }
@@ -283,7 +288,7 @@ export const patchTaskPriority = command(
 
         await Promise.all([
             requested(getActivityList).refreshAll(),
-            requested(getTask).refreshAll(),
+            requested(getTask, 1).refreshAll(),
         ]);
         return attempt.ok(body.data);
     }
@@ -336,7 +341,7 @@ export const assignTask = command(
             const error = await parseHttpError(resp);
             return attempt.fail(error);
         }
-        await requested(getTask).refreshAll();
+        await requested(getTask, 1).refreshAll();
         return attempt.ok<void>(void 0);
     }
 );
@@ -367,7 +372,7 @@ export const updateTaskAssignees = command(
         }
         await Promise.all([
             requested(getActivityList).refreshAll(),
-            requested(getTask).refreshAll(),
+            requested(getTask, 1).refreshAll(),
         ]);
         return attempt.ok<void>(void 0);
     }
@@ -400,7 +405,7 @@ export const editTaskTitle = form(
         }
 
         await Promise.all([
-            requested(getTask).refreshAll(),
+            requested(getTask, 1).refreshAll(),
             requested(getActivityList).refreshAll(),
         ]);
         return attempt.ok<void>(void 0);
@@ -433,7 +438,7 @@ export const editTaskDescription = command(
             return attempt.fail(error);
         }
 
-        await requested(getTask).refreshAll();
+        await requested(getTask, 1).refreshAll();
         return attempt.ok<void>(void 0);
     }
 );

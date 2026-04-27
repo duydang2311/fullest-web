@@ -13,9 +13,9 @@
     import { useActivityLists, usePageContext, useTask } from './utils.svelte';
 
     const data = usePageData<PageData>();
-    const task = $derived(await useTask());
     const ctx = usePageContext();
     const activityLists = $derived(useActivityLists(ctx.activityListParams));
+    const task = $derived(await useTask());
     const id = $props.id();
     const menu = createMenu({
         id,

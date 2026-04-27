@@ -10,7 +10,7 @@
 </script>
 
 <div>
-    <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium">
+    <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium text-fg">
         {activity.actor.displayName ?? activity.actor.name}
     </a>
     {#if activity.metadata.assignee.id === activity.actor.id}

@@ -10,7 +10,7 @@
 </script>
 
 <div>
-    <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium">
+    <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium text-fg">
         {activity.actor.displayName ?? activity.actor.name}
     </a>
     {#if activity.metadata.assignee.id === activity.actor.id}
@@ -18,7 +18,9 @@
     {:else}
         <span>
             unassigned
-            {activity.metadata.assignee.displayName ?? activity.metadata.assignee.name}
+            <span class="outline-4 outline-base ml-2 bg-base rounded-sm font-medium text-fg">
+                {activity.metadata.assignee.displayName ?? activity.metadata.assignee.name}
+            </span>
         </span>
     {/if}
 </div>

@@ -18,6 +18,9 @@
 <div class="divide-surface-border mx-auto w-full flex-1 lg:flex lg:divide-x max-h-full">
     <div class="flex-1 py-4">
         <Task />
+        <div class="max-w-container-lg mx-auto">
+            <hr class="border-surface-border mt-4" />
+        </div>
         <div class="mt-8 px-8">
             <ActivitySection />
         </div>
