@@ -6,8 +6,10 @@ using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Comments.Delete;
 
-public sealed class Endpoint(AppDbContext db, IEnumerable<ICommentDeletedHandler> commentDeletedHandlers)
-    : Endpoint<Request, Results<NotFound, Ok>>
+public sealed class Endpoint(
+    AppDbContext db,
+    IEnumerable<ICommentDeletedHandler> commentDeletedHandlers
+) : Endpoint<Request, Results<NotFound, Ok>>
 {
     public override void Configure()
     {

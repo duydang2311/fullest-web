@@ -44,6 +44,14 @@ public sealed class AppDbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        modelBuilder
+            .HasDbFunction(
+                typeof(BaseDbContext).GetMethod(
+                    nameof(JsonExtractPathText),
+                    [typeof(string), typeof(string)]
+                )!
+            )
+            .HasName("jsonb_extract_path_text");
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

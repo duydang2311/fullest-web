@@ -27,4 +27,7 @@ public abstract class BaseDbContext : DbContext
     public DbSet<Priority> Priorities => Set<Priority>();
     public DbSet<Comment> Comments => Set<Comment>();
     public DbSet<Activity> Activities => Set<Activity>();
+
+    public static string JsonExtractPathText(string json, string path) =>
+        throw new NotSupportedException();
 }

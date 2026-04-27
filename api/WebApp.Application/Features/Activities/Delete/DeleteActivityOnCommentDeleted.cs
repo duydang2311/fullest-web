@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Application.Data;
 using WebApp.Domain.Entities;
@@ -14,7 +13,7 @@ public sealed class DeleteActivityOnCommentDeleted(BaseDbContext db) : ICommentD
             .Activities.Where(a =>
                 a.Kind == ActivityKind.Commented
                 && a.Metadata != null
-                && ((JsonElement)(object)a.Metadata).GetProperty("CommentId").GetInt64()
+                && Convert.ToInt64(BaseDbContext.JsonExtractPathText(a.Metadata, "commentId"))
                     == deleted.CommentId.Value
             )
             .ExecuteDeleteAsync(ct)
