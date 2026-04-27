@@ -77,7 +77,7 @@
             useTask().withOverride((task) => ({
                 ...task,
                 assignees: [
-                    ...task.assignees.filter((a) => unassigned.has(a.id)),
+                    ...task.assignees.filter((a) => !unassigned.has(a.id)),
                     ...users.filter((a) => assigned.has(a.id)),
                 ],
             })),
