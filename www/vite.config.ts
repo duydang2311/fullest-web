@@ -27,5 +27,8 @@ export default defineConfig((e) => {
             }),
             guardPlugin(),
         ],
+        build: {
+            sourcemap: 'hidden',
+        },
     };
 });
