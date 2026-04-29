@@ -8,7 +8,7 @@
     import type { Comment } from '~/lib/models/comment';
     import { guardNull } from '~/lib/utils/guard';
     import { button, C } from '~/lib/utils/styles';
-    import { deleteComment } from './page.remote';
+    import { deleteComment, getActivityList } from './page.remote';
     import { useActivityLists, usePageContext } from './utils.svelte';
 
     let { comment, isEditing = $bindable() }: { comment: Pick<Comment, 'id'>; isEditing: boolean } =
@@ -36,9 +36,7 @@
                     return list.query.current?.items.some(matchActivity);
                 });
 
-                let updates: RemoteQueryUpdate[] = activityLists
-                    .filter((l) => l !== list)
-                    .map((a) => a.query);
+                let updates: RemoteQueryUpdate[] = [];
                 if (list) {
                     guardNull(list.query.current);
                     updates.push(
@@ -49,9 +47,12 @@
                     );
                 }
                 const result = await deleteComment({ id: comment.id }).updates(...updates);
-                if (list) {
-                    if (result.ok) {
-                        // TODO: this causes another refetch, pls improve this sveltekit
+                if (result.ok) {
+                    if (list) {
+                        getActivityList({
+                            ...list.param,
+                            size: list.param.size - 1,
+                        }).set(list.query.current!);
                         list.param.size -= 1;
                     }
                 }
