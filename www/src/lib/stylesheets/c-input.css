@@ -15,10 +15,6 @@
     color: var(--_text);
     @apply transition;
 
-    &:where(::placeholder) {
-        color: var(--color-fg-muted);
-    }
-
     &:where(:focus-visible) {
         outline: none;
         border-color: var(--_border-focus);
@@ -37,5 +33,9 @@
         background-color: var(--color-base);
         border-color: transparent;
         opacity: 0.4;
+    }
+
+    &::placeholder {
+        color: var(--color-fg-muted);
     }
 }

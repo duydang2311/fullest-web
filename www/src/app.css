@@ -266,31 +266,6 @@
     @apply ring-2 ring-negative/20;
 }
 
-.tiptap p.is-editor-empty:first-child::before {
-    color: var(--color-fg-muted);
-    content: attr(data-placeholder);
-    float: left;
-    height: 0;
-    pointer-events: none;
-}
-.tiptap ul[data-type='taskList'] li,
-.prose ul[data-type='taskList'] li {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 1ch;
-
-    & > div > p {
-        margin: 0;
-    }
-
-    & > label > input {
-        display: block;
-        transform: translateY(calc(1rem - 0.5lh));
-        accent-color: var(--color-primary);
-    }
-}
-
 @utility prose {
     --tw-prose-body: var(--color-fg);
     --tw-prose-headings: var(--color-fg-emph);
@@ -361,6 +336,31 @@
     :where(td > *, th > *):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
         margin-block: 0rem;
         padding-block: 0.25rem;
+    }
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+    color: var(--color-fg-muted);
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+.tiptap ul[data-type='taskList'] li,
+.prose ul[data-type='taskList'] li {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1ch;
+
+    & > div > p {
+        margin: 0;
+    }
+
+    & > label > input {
+        display: block;
+        transform: translateY(calc(1rem - 0.5lh));
+        accent-color: var(--color-primary);
     }
 }
 
