@@ -11,7 +11,7 @@ import { usePageData } from '~/lib/utils/kit';
 import { v } from '~/lib/utils/valibot';
 import { createValidator } from '~/lib/utils/validation';
 import type { PageData } from '../$types';
-import { getActivityList, getTask } from './page.remote';
+import { getActivityList, getPriorities, getStatuses, getTask } from './page.remote';
 
 export const validators = {
     [ActivityKind.Commented]: createValidator(
@@ -114,6 +114,16 @@ export function useActivityLists(params: ActivityListParams[]) {
         param,
         query: getActivityList(param),
     }));
+}
+
+export function usePriorityList() {
+    const pageData = usePageData<PageData>();
+    return getPriorities(pageData.project.id);
+}
+
+export function useStatusList() {
+    const pageData = usePageData<PageData>();
+    return getStatuses(pageData.project.id);
 }
 
 export function setPageContext(initial: { activityListParams: ActivityListParams[] }) {

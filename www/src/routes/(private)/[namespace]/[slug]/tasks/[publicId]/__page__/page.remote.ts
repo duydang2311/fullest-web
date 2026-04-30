@@ -240,7 +240,7 @@ export const getPriorities = query(v.string(), async (projectId) => {
         await e.locals.http.get('priorities', {
             query: {
                 projectId,
-                fields: 'Id,Name,Color,Rank',
+                fields: 'Id,Name,Color,Rank,Category',
                 sort: 'Rank',
                 size: 20,
             },
@@ -248,7 +248,9 @@ export const getPriorities = query(v.string(), async (projectId) => {
     ).pipe(
         attempt.flatMap((response) =>
             jsonify(() =>
-                response.json<OffsetList<Pick<Priority, 'id' | 'name' | 'color' | 'rank'>>>()
+                response.json<
+                    OffsetList<Pick<Priority, 'id' | 'name' | 'color' | 'rank' | 'category'>>
+                >()
             )
         ),
         attempt.unwrapOrElse(() => offsetList())

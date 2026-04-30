@@ -160,7 +160,7 @@
     <div use:portal {...popover.api.getPositionerProps()}>
         <div
             {...popover.api.getContentProps()}
-            class="{C.menu({ part: 'content' })} w-(--reference-width) p-0 min-h-48"
+            class="{C.menu({ part: 'content' })} w-(--reference-width) p-0 min-h-48 overflow-hidden"
         >
             <input
                 type="input"

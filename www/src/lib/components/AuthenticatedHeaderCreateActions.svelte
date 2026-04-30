@@ -23,8 +23,8 @@
     {...menu.api.getTriggerProps()}
     class="{button({
         variant: 'base',
-        icon: true,
-        ghost: true
+        ghost: true,
+        size: 'sm',
     })} flex items-center gap-1"
 >
     <PlusOutline />
@@ -32,12 +32,12 @@
 </button>
 <div use:portal {...menu.api.getPositionerProps()}>
     <ul {...menu.api.getContentProps()} class="c-menu-content flex flex-col gap-1 min-w-40">
-        {#each [{ icon: CubeOutline, href: '/new', label: 'New project' }, { icon: CircleDotOutline, href: '/new-task', label: 'New task' }] as item (item.href)}
+        {#each [{ icon: CubeOutline, href: '/new', label: 'Create project' }] as item (item.href)}
             <li>
                 <a
                     href={item.href}
                     {...menu.api.getItemProps({ value: item.href })}
-                    class="c-menu-item flex items-center gap-4"
+                    class="c-menu-item flex items-center gap-2"
                 >
                     <item.icon />
                     <span>

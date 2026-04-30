@@ -76,12 +76,12 @@
         <MenuOutline />
     </button>
     <div use:portal {...menu.api.getPositionerProps()}>
-        <ul {...menu.api.getContentProps()} class="{C.menu({ part: 'content' })} min-w-32 text-sm">
+        <ul {...menu.api.getContentProps()} class="{C.menu({ part: 'content' })} min-w-32">
             <li>
                 <button
                     {...menu.api.getItemProps({ value: 'edit' })}
                     type="button"
-                    class="{C.menu({ part: 'item' })} flex items-center gap-4 w-full"
+                    class="{C.menu({ part: 'item' })} flex items-center gap-2 w-full"
                 >
                     <PencilOutline {...menu.api.getItemIndicatorProps({ value: 'edit' })} />
                     <span>Edit</span>
@@ -94,7 +94,7 @@
                     class="{C.menu({
                         part: 'item',
                         variant: 'negative',
-                    })} flex items-center gap-4 w-full"
+                    })} flex items-center gap-2 w-full"
                 >
                     <TrashOutline />
                     <span>Delete</span>

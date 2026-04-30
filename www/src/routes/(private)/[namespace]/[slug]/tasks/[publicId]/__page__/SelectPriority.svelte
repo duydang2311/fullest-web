@@ -10,29 +10,32 @@
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
     import { getActivityList, getPriorities, patchTaskPriority } from './page.remote';
-    import { useActivityLists, usePageContext, useTask } from './utils.svelte';
+    import { useActivityLists, usePageContext, usePriorityList, useTask } from './utils.svelte';
+    import { getPriorityIcon } from '~/lib/utils/priority';
 
     const data = usePageData<PageData>();
     const ctx = usePageContext();
     const activityLists = $derived(useActivityLists(ctx.activityListParams));
     const task = $derived(await useTask());
     const id = $props.id();
+    let priorityList = $state.raw<Awaited<ReturnType<typeof usePriorityList>>>();
     const menu = createMenu({
         id,
         defaultHighlightedValue: untrack(() => task.priority?.id),
-        onOpenChange: async (details) => {
+        async onOpenChange(details) {
             if (details.open) {
-                priorities = await getPriorities(data.project.id)
-                    .run()
-                    .then((a) => a.items);
+                priorityList ??= await usePriorityList().run();
                 menu.api.setHighlightedValue(task.priority?.id);
             }
         },
-        onSelect: (details) => updatePriority(details.value),
+        onSelect(details) {
+            return updatePriority(details.value);
+        },
     });
 
     async function updatePriority(priorityId: string) {
-        const priority = priorities?.find((a) => a.id === priorityId);
+        guardNull(priorityList);
+        const priority = priorityList.items.find((a) => a.id === priorityId);
         guardNull(priority);
         const lastList = activityLists.at(-1);
         guardNull(lastList);
@@ -65,8 +68,6 @@
             })
         );
     }
-
-    let priorities = $state.raw<Pick<Priority, 'id' | 'name'>[]>();
 </script>
 
 <div class="text-sm">
@@ -88,14 +89,16 @@
             {...menu.api.getContentProps()}
             class="{C.menu({ part: 'content' })} flex flex-col gap-1 w-(--reference-width)"
         >
-            {#each priorities as priority (priority.id)}
+            {#each priorityList?.items as priority (priority.id)}
+                {@const Icon = getPriorityIcon(priority)}
                 <li>
                     <button
                         {...menu.api.getItemProps({ value: priority.id })}
                         type="button"
-                        class="{C.menu({ part: 'item' })} flex items-center gap-4 w-full"
+                        class="{C.menu({ part: 'item' })} flex items-center gap-2 w-full"
                     >
-                        {priority.name}
+                        <Icon />
+                        <span>{priority.name}</span>
                     </button>
                 </li>
             {/each}

@@ -5,7 +5,7 @@
         background-color: var(--color-base);
         border-top-color: var(--color-base-border-emph);
     }
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     padding: --spacing(1);
     @apply shadow-xs;
 
@@ -46,14 +46,13 @@
     color: var(--_text);
     background-color: var(--_bg);
     padding: --spacing(1) --spacing(2);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     @apply transition duration-75;
 
     &:where([data-highlighted]),
     &:where([data-state='checked']) {
         color: var(--_text-highlighted);
         background-color: var(--_bg-hover);
-        font-weight: 500;
     }
 
     &:where(:active) {

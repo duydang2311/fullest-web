@@ -4,27 +4,26 @@
     import { createMenu } from '~/lib/components/builders.svelte';
     import { SettingsOutline } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
-    import type { Status } from '~/lib/models/status';
     import { guardNull } from '~/lib/utils/guard';
     import { usePageData } from '~/lib/utils/kit';
+    import { getStatusIcon } from '~/lib/utils/status';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
     import { getActivityList, getStatuses, patchTaskStatus } from './page.remote';
-    import { useActivityLists, usePageContext, useTask } from './utils.svelte';
+    import { useActivityLists, usePageContext, useStatusList, useTask } from './utils.svelte';
 
     const pageData = usePageData<PageData>();
     const id = $props.id();
     const ctx = usePageContext();
     const activityLists = $derived(useActivityLists(ctx.activityListParams));
     const task = $derived(await useTask());
+    let statusList = $state.raw<Awaited<ReturnType<typeof useStatusList>>>();
     const menu = createMenu({
         id,
         defaultHighlightedValue: untrack(() => task.status?.id),
         onOpenChange: async (details) => {
             if (details.open) {
-                statuses = await getStatuses(pageData.project.id)
-                    .run()
-                    .then((a) => a.items);
+                statusList ??= await getStatuses(pageData.project.id).run();
                 menu.api.setHighlightedValue(task.status?.id);
             }
         },
@@ -32,7 +31,8 @@
     });
 
     async function updateStatus(statusId: string) {
-        const status = statuses?.find((a) => a.id === statusId);
+        guardNull(statusList);
+        const status = statusList.items.find((a) => a.id === statusId);
         guardNull(status);
         const lastList = activityLists.at(-1);
         guardNull(lastList);
@@ -65,8 +65,6 @@
             })
         );
     }
-
-    let statuses = $state.raw<Pick<Status, 'id' | 'name'>[]>();
 </script>
 
 <div class="text-sm">
@@ -88,13 +86,15 @@
             {...menu.api.getContentProps()}
             class="{C.menu({ part: 'content' })} flex flex-col gap-1 w-(--reference-width)"
         >
-            {#each statuses as status (status.id)}
+            {#each statusList?.items as status (status.id)}
+                {@const Icon = getStatusIcon(status)}
                 <li>
                     <button
                         {...menu.api.getItemProps({ value: status.id })}
                         type="button"
-                        class="{C.menu({ part: 'item' })} flex items-center gap-4 w-full"
+                        class="{C.menu({ part: 'item' })} flex items-center gap-2 w-full"
                     >
+                        <Icon />
                         {status.name}
                     </button>
                 </li>

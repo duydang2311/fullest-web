@@ -69,7 +69,6 @@
             class="{button({
                 variant: 'primary',
                 filled: true,
-                size: 'sm',
             })} flex items-center gap-2"
             onclick={handleSubmit}
         >
