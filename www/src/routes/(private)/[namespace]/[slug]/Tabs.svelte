@@ -55,13 +55,13 @@
             {@const active = tabs.value === item.href}
             <button
                 {...tabs.getTriggerProps({ value: item.href })}
-                class="group relative w-full text-left rounded-md focus-visible:outline-none focus-visible:ring focus-visible:ring-base-border"
+                class="group relative w-full text-left rounded-lg focus-visible:outline-none focus-visible:ring focus-visible:ring-base-border"
             >
                 {#if active}
                     <div
                         id="active-{id}"
                         data-flip-id="active-{id}"
-                        class="bg-base-emph rounded-md absolute top-0 left-0 size-full"
+                        class="bg-base-emph rounded-lg absolute top-0 left-0 size-full"
                     ></div>
                 {/if}
                 <a
