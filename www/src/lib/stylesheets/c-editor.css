@@ -31,3 +31,18 @@
         @apply ring ring-base-border-emph;
     }
 }
+
+.c-editor-new {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--color-base-border);
+    border-radius: var(--radius-lg);
+    padding: --spacing(2) --spacing(3);
+    overflow: auto;
+
+    &:where(:focus-visible) {
+        outline: none;
+        border-color: var(--color-base-border-emph);
+        @apply ring ring-base-border-emph;
+    }
+}

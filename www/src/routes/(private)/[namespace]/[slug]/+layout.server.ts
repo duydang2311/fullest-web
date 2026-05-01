@@ -1,10 +1,12 @@
 import { attempt } from '@duydang2311/attempt';
+import type { User } from '@sentry/sveltekit';
 import { error } from '@sveltejs/kit';
 import invariant from 'tiny-invariant';
 import type { Project } from '~/lib/models/project';
+import type { UserPreset } from '~/lib/models/user';
 import type { HttpClient } from '~/lib/services/http_client';
 import { NotFoundError, traced } from '~/lib/utils/errors';
-import { jsonify, parseHttpError } from '~/lib/utils/http';
+import { fields, jsonify, parseHttpError } from '~/lib/utils/http';
 import { useRuntime } from '~/lib/utils/runtime.server';
 import type { LayoutServerLoad } from './$types';
 
@@ -32,7 +34,7 @@ async function fetchNamespace(namespace: string) {
     const { http } = useRuntime();
     const ns = await http.get(`namespaces/${namespace}`, {
         query: {
-            fields: 'Id,Kind,User.Id,User.Name,User.DisplayName',
+            fields: fields('Id,Kind', { User: 'Id,Name,DisplayName' }),
         },
     });
     return await ns.pipe(
@@ -44,7 +46,7 @@ async function fetchNamespace(namespace: string) {
                             id: string;
                         } & {
                             kind: 'user';
-                            user: { id: string; name: string; displayName: string };
+                            user: Pick<User, 'id'> & UserPreset['Avatar'];
                         }
                     >()
                 );

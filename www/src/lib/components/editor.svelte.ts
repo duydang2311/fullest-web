@@ -141,3 +141,15 @@ export const MarkdownClipboard = Extension.create({
         ];
     },
 });
+
+export const SubmitShortcutExtension = Extension.create<{ onSubmit: VoidFunction }>({
+    name: 'submitShortcutExtension',
+    addKeyboardShortcuts() {
+        return {
+            'Ctrl-Enter': () => {
+                this.options.onSubmit();
+                return true;
+            },
+        };
+    },
+});
