@@ -22,8 +22,12 @@
 .c-editor--outlined {
     border: 1px solid var(--color-base-border);
     border-radius: var(--radius-lg);
+    transition-property: box-shadow, border-color;
+    transition-duration: var(--default-transition-duration);
+    transition-timing-function: var(--default-transition-timing-function);
 
     &:where(:focus-within) {
-        @apply ring-focus-fg;
+        border-color: var(--color-base-border-emph);
+        @apply ring ring-base-border-emph;
     }
 }
