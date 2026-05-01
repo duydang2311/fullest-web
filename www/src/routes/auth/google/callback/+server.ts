@@ -46,12 +46,8 @@ export const GET = withObservability((async (e) => {
     const created = await createSession(e.locals.http)(grantResp.id_token);
     if (
         !created.ok &&
-        problemDetailsValidator.check(created.error) &&
-        created.error.errors?.some(
-            (a) =>
-                (a.field === 'GoogleIdToken' && a.code === ErrorCode.NotFound) ||
-                (a.field === '$' && a.code === ErrorCode.UserNotFound)
-        )
+        (created.error.kind === 'HttpError' || created.error.kind === 'HttpValidationError') &&
+        created.error.status === 404
     ) {
         const id = crypto.randomUUID();
         guardNull(e.platform);
