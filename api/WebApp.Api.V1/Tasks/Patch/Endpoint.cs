@@ -72,10 +72,15 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         }
 
         Guard.Against.Null(updateBuilder);
+        var useOptimisticLock =
+            req.Patch.Has(a => a.Title) || req.Patch.Has(a => a.DescriptionJson);
         var newVersion = req.Version + 1;
         updateBuilder += a => a.SetProperty(b => b.Version, newVersion);
 
-        mappings.Add(nameof(TaskEntity.Version));
+        if (useOptimisticLock)
+        {
+            mappings.Add(nameof(TaskEntity.Version));
+        }
         var snapshot = await db
             .Tasks.Where(a => a.DeletedTime == null && a.Id == req.TaskId)
             .Select(BuildSnapshotSelector<TaskEntity, TaskSnapshot>(mappings))
@@ -85,7 +90,7 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
         {
             return TypedResults.NotFound();
         }
-        if (snapshot.Version != req.Version)
+        if (useOptimisticLock && snapshot.Version != req.Version)
         {
             return TypedResults.Conflict();
         }
@@ -153,9 +158,11 @@ public sealed class Endpoint(AppDbContext db, IEventHub eventHub)
             );
         }
 
-        var query = db.Tasks.Where(a =>
-            a.Id == req.TaskId && a.DeletedTime == null && a.Version == req.Version
-        );
+        var query = db.Tasks.Where(a => a.Id == req.TaskId && a.DeletedTime == null);
+        if (useOptimisticLock)
+        {
+            query = query.Where(a => a.Version == req.Version);
+        }
         var count = await query.ExecuteUpdateAsync(updateBuilder, ct).ConfigureAwait(false);
         if (count == 0)
         {
