@@ -1,6 +1,8 @@
 <script lang="ts">
     import { afterNavigate, beforeNavigate } from '$app/navigation';
     import { page } from '$app/state';
+    import { circOut } from 'svelte/easing';
+    import { scale } from 'svelte/transition';
     import { Tabs } from '~/lib/components/builders.svelte';
     import { Dashboard, DashboardOutline, TaskIcon, TaskIconOutline } from '~/lib/components/icons';
     import { Flip, gsap } from '~/lib/utils/gsap';
@@ -64,12 +66,24 @@
                         class="bg-base-emph rounded-lg absolute top-0 left-0 size-full"
                     ></div>
                 {/if}
+                {#if active}
+                    <div
+                        in:scale={{
+                            delay: 200,
+                            duration: 300,
+                            start: 1.4,
+                            opacity: 0.05,
+                            easing: circOut,
+                        }}
+                        class="size-2 rounded-full bg-fg-emph absolute right-2 top-1/2 -translate-y-1/2"
+                    ></div>
+                {/if}
                 <a
                     href={item.href}
                     class="{C.button({
                         variant: 'base',
                         ghost: true,
-                    })} z-1 relative flex items-center gap-4 font-normal group-data-selected:font-medium bg-transparent"
+                    })} z-1 relative flex items-center gap-4 font-normal group-data-selected:font-medium group-data-selected:text-fg-emph bg-transparent"
                     data-sveltekit-keepfocus
                     data-sveltekit-replacestate
                 >
