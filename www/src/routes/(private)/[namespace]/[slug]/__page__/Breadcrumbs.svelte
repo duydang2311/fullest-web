@@ -1,6 +1,5 @@
 <script lang="ts">
     import { page } from '$app/state';
-    import type { Snippet } from 'svelte';
     import { usePageData } from '~/lib/utils/kit';
     import type { PageData } from '../$types';
 

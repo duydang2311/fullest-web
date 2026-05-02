@@ -4,26 +4,27 @@ import type { Tag } from './tag';
 import type { User } from './user';
 
 export interface Project {
-	createdTime: string;
-	namespaceId: string;
-	namespace: Namespace;
-	id: string;
-	name: string;
-	summary: string | null;
-	descriptionJson: string | null;
-	identifier: string;
-	deletedTime: string | null;
-	projectMembers: string;
-	tags: Tag[];
+    createdTime: string;
+    namespaceId: string;
+    namespace: Namespace;
+    id: string;
+    name: string;
+    summary: string | null;
+    descriptionJson: string | null;
+    identifier: string;
+    deletedTime: string | null;
+    projectMembers: string;
+    tags: Tag[];
+    version: number;
 }
 
 export interface ProjectMember {
-	createdTime: string;
-	id: string;
-	projectId: string;
-	project: Project;
-	userId: string;
-	user: User;
-	roleId: string;
-	role: Role;
+    createdTime: string;
+    id: string;
+    projectId: string;
+    project: Project;
+    userId: string;
+    user: User;
+    roleId: string;
+    role: Role;
 }
