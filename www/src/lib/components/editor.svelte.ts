@@ -38,7 +38,6 @@ export function createExtensions(): Extensions {
         }),
         TableKit,
         Markdown,
-        MarkdownClipboard,
     ];
 }
 
