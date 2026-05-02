@@ -10,15 +10,14 @@ namespace WebApp.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateSequence(
-                name: "PriorityHiLoSequence",
-                incrementBy: 10);
+            migrationBuilder.CreateSequence(name: "PriorityHiLoSequence", incrementBy: 10);
 
             migrationBuilder.AddColumn<long>(
                 name: "default_priority_id",
                 table: "projects",
                 type: "bigint",
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.CreateTable(
                 name: "priorities",
@@ -29,7 +28,7 @@ namespace WebApp.Api.Migrations
                     name = table.Column<string>(type: "text", nullable: false),
                     color = table.Column<string>(type: "text", nullable: false),
                     rank = table.Column<string>(type: "text", nullable: false, collation: "C"),
-                    description = table.Column<string>(type: "text", nullable: true)
+                    description = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -39,26 +38,31 @@ namespace WebApp.Api.Migrations
                         column: x => x.project_id,
                         principalTable: "projects",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "ix_projects_default_priority_id",
                 table: "projects",
                 column: "default_priority_id",
-                unique: true);
+                unique: true
+            );
 
             migrationBuilder.CreateIndex(
                 name: "ix_priorities_project_id",
                 table: "priorities",
-                column: "project_id");
+                column: "project_id"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "fk_projects_priorities_default_priority_id",
                 table: "projects",
                 column: "default_priority_id",
                 principalTable: "priorities",
-                principalColumn: "id");
+                principalColumn: "id"
+            );
         }
 
         /// <inheritdoc />
@@ -66,21 +70,16 @@ namespace WebApp.Api.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "fk_projects_priorities_default_priority_id",
-                table: "projects");
+                table: "projects"
+            );
 
-            migrationBuilder.DropTable(
-                name: "priorities");
+            migrationBuilder.DropTable(name: "priorities");
 
-            migrationBuilder.DropIndex(
-                name: "ix_projects_default_priority_id",
-                table: "projects");
+            migrationBuilder.DropIndex(name: "ix_projects_default_priority_id", table: "projects");
 
-            migrationBuilder.DropColumn(
-                name: "default_priority_id",
-                table: "projects");
+            migrationBuilder.DropColumn(name: "default_priority_id", table: "projects");
 
-            migrationBuilder.DropSequence(
-                name: "PriorityHiLoSequence");
+            migrationBuilder.DropSequence(name: "PriorityHiLoSequence");
         }
     }
 }

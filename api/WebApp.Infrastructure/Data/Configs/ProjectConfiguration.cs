@@ -18,6 +18,7 @@ public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(a => a.DescriptionJson);
         builder.Property(a => a.DescriptionPreview);
         builder.Property(a => a.DeletedTime);
+        builder.Property(a => a.Version);
 
         builder.HasIndex(a => new { a.NamespaceId, a.Identifier }).IsUnique();
         builder.HasIndex(a => a.DeletedTime);

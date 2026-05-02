@@ -23,4 +23,5 @@ public sealed record Project : ISoftDelete
     public Status? DefaultStatus { get; init; }
     public PriorityId? DefaultPriorityId { get; init; }
     public Priority? DefaultPriority { get; init; }
+    public uint Version { get; init; }
 }

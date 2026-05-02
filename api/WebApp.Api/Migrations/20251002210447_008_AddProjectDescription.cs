@@ -17,21 +17,21 @@ namespace WebApp.Api.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "character varying(32)",
-                oldMaxLength: 32);
+                oldMaxLength: 32
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "description",
                 table: "projects",
                 type: "text",
-                nullable: true);
+                nullable: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "description",
-                table: "projects");
+            migrationBuilder.DropColumn(name: "description", table: "projects");
 
             migrationBuilder.AlterColumn<string>(
                 name: "identifier",
@@ -40,7 +40,8 @@ namespace WebApp.Api.Migrations
                 maxLength: 32,
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "text");
+                oldType: "text"
+            );
         }
     }
 }

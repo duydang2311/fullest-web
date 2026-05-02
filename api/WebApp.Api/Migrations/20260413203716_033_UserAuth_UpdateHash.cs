@@ -17,7 +17,8 @@ namespace WebApp.Api.Migrations
                 nullable: true,
                 oldClrType: typeof(byte[]),
                 oldType: "bytea",
-                oldNullable: true);
+                oldNullable: true
+            );
         }
 
         /// <inheritdoc />
@@ -30,7 +31,8 @@ namespace WebApp.Api.Migrations
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "text",
-                oldNullable: true);
+                oldNullable: true
+            );
         }
     }
 }
