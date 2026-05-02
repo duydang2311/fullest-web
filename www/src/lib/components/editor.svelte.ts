@@ -1,3 +1,4 @@
+import type { InlineEdit } from '@duydang2311/sveltecraft';
 import {
     Editor,
     Extension,
@@ -148,6 +149,18 @@ export const SubmitShortcutExtension = Extension.create<{ onSubmit: VoidFunction
         return {
             'Ctrl-Enter': () => {
                 this.options.onSubmit();
+                return true;
+            },
+        };
+    },
+});
+
+export const DisableInlineEditShortcutExtension = Extension.create<{ edit: InlineEdit }>({
+    name: 'disableInlineEditShortcutExtension',
+    addKeyboardShortcuts() {
+        return {
+            Escape: () => {
+                this.options.edit.enabled = false;
                 return true;
             },
         };
