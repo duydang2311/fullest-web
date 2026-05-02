@@ -58,7 +58,7 @@
 </script>
 
 <div>
-    <div class="flex items-center mt-6 gap-2 text-fg-muted text-sm">
+    <div class="flex items-center mt-6 gap-2 text-fg-emph text-sm">
         <IconDocumentTextOutline />
         <h2>Description</h2>
     </div>
