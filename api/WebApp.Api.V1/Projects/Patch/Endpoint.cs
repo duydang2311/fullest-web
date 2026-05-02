@@ -9,7 +9,8 @@ using WebApp.Infrastructure.Data;
 
 namespace WebApp.Api.V1.Projects.Patch;
 
-public sealed class Endpoint(AppDbContext db) : Endpoint<Request, Results<NotFound, Conflict, Ok<Response>>>
+public sealed class Endpoint(AppDbContext db)
+    : Endpoint<Request, Results<NotFound, Conflict, Ok<Response>>>
 {
     public override void Configure()
     {

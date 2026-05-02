@@ -38,16 +38,19 @@ public sealed partial class RequestValidator : AbstractValidator<Request>
                     .Must(a => a!.PresentProperties.Count > 0)
                     .WithErrorCode(ErrorCodes.Invalid)
                     .WithMessage("At least one property must be updated.");
-                When(a => a.Patch is not null && a.Patch.Has(p => p.Name), () =>
-                {
-                    RuleFor(a => a.Patch!.Name)
-                        .NotEmpty()
-                        .WithErrorCode(ErrorCodes.Required)
-                        .Matches(NamePattern())
-                        .WithErrorCode(ErrorCodes.Invalid)
-                        .MaximumLength(100)
-                        .WithErrorCode(ErrorCodes.MaxLength);
-                });
+                When(
+                    a => a.Patch is not null && a.Patch.Has(p => p.Name),
+                    () =>
+                    {
+                        RuleFor(a => a.Patch!.Name)
+                            .NotEmpty()
+                            .WithErrorCode(ErrorCodes.Required)
+                            .Matches(NamePattern())
+                            .WithErrorCode(ErrorCodes.Invalid)
+                            .MaximumLength(100)
+                            .WithErrorCode(ErrorCodes.MaxLength);
+                    }
+                );
                 RuleFor(a => a.Patch!.Summary)
                     .MaximumLength(350)
                     .When(a => a.Patch!.Has(p => p.Summary) && a.Patch!.Summary is not null)

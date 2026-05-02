@@ -23,7 +23,9 @@ public sealed class Endpoint(
         CancellationToken ct
     )
     {
-        await using var transaction = await db.Database.BeginTransactionAsync(ct).ConfigureAwait(false);
+        await using var transaction = await db
+            .Database.BeginTransactionAsync(ct)
+            .ConfigureAwait(false);
         var count = await db
             .Comments.Where(a => a.Id == req.CommentId)
             .ExecuteDeleteAsync(ct)
