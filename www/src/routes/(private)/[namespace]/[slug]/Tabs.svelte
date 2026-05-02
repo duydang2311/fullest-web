@@ -75,7 +75,7 @@
                             opacity: 0.05,
                             easing: circOut,
                         }}
-                        class="size-2 rounded-full bg-fg-emph absolute right-2 top-1/2 -translate-y-1/2"
+                        class="size-2 rounded-full bg-fg-emph absolute right-4 top-1/2 -translate-y-1/2"
                     ></div>
                 {/if}
                 <a
