@@ -240,6 +240,31 @@
     h6 {
         font-weight: 600;
     }
+
+    [data-scope='dialog'][data-part='content'] {
+        transition-property: transform, opacity;
+        transition-duration: 200ms;
+        transition-timing-function: var(--default-transition-timing-function);
+    }
+    [data-scope='dialog'][data-part='backdrop'] {
+        transition-property: opacity;
+        transition-duration: 400ms;
+        transition-timing-function: var(--default-transition-timing-function);
+    }
+    [data-scope='dialog'][data-part='backdrop'][data-state='open'] {
+        opacity: 1;
+        @starting-style {
+            opacity: 0;
+        }
+    }
+    [data-scope='dialog'][data-part='content'][data-state='open'] {
+        opacity: 1;
+        transform: scale(1);
+        @starting-style {
+            opacity: 0;
+            transform: scale(0.96);
+        }
+    }
 }
 
 @layer components {
@@ -264,6 +289,12 @@
 
 @utility ring-focus-negative {
     @apply ring-2 ring-negative/20;
+}
+
+@utility translate-center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 @utility prose {

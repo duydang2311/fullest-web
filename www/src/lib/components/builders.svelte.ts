@@ -1,10 +1,15 @@
+import { watch } from '@duydang2311/svutils';
 import * as collapsible from '@zag-js/collapsible';
+import * as dialog from '@zag-js/dialog';
 import * as fileUpload from '@zag-js/file-upload';
 import * as listbox from '@zag-js/listbox';
 import * as menu from '@zag-js/menu';
 import * as popover from '@zag-js/popover';
 import { normalizeProps, useMachine } from '@zag-js/svelte';
 import * as tabs from '@zag-js/tabs';
+import * as zagTooltip from '@zag-js/tooltip';
+import { mount, unmount } from 'svelte';
+import Tooltip from './Tooltip.svelte';
 
 export function createTabs(props: tabs.Props) {
     return new Tabs(props);
@@ -116,6 +121,60 @@ export function createListbox<T>(props: listbox.Props<T>) {
 
 export function createPopover(props: popover.Props) {
     return new Popover(props);
+}
+
+export function createTooltip(props: zagTooltip.Props) {
+    const service = useMachine(zagTooltip.machine, props);
+    const api = $derived(zagTooltip.connect(service, normalizeProps));
+    return {
+        get api() {
+            return api;
+        },
+    };
+}
+
+export function tooltip(content: string) {
+    return (node: HTMLElement) => {
+        const componentInstance = mount(Tooltip, {
+            target: node.parentElement ?? node,
+            props: {
+                content,
+            },
+        });
+        const t = componentInstance.getTooltip();
+        watch(() => t.api)(() => {
+            const props = t.api.getTriggerProps();
+            const listeners: [string, EventListener][] = [];
+
+            for (const [key, value] of Object.entries(props)) {
+                if (key.startsWith('on') && typeof value === 'function') {
+                    const event = key.slice(2).toLowerCase();
+                    node.addEventListener(event, value as EventListener);
+                    listeners.push([event, value as EventListener]);
+                } else {
+                    node.setAttribute(key, String(value));
+                }
+            }
+            return () => {
+                for (const [event, handler] of listeners) {
+                    node.removeEventListener(event, handler);
+                }
+            };
+        });
+        return () => {
+            unmount(componentInstance, { outro: true });
+        };
+    };
+}
+
+export function createDialog(props: dialog.Props) {
+    const service = useMachine(dialog.machine, props);
+    const api = $derived(dialog.connect(service, normalizeProps));
+    return {
+        get api() {
+            return api;
+        },
+    };
 }
 
 class FileUpload {
