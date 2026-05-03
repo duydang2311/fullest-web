@@ -42,7 +42,7 @@
             targets: `#active-${id}`,
             absolute: true,
             duration: 0.2,
-            ease: 'circ.inOut',
+            ease: 'circ.out',
             clearProps: 'transform',
             onComplete() {
                 flipState = null;
@@ -83,7 +83,7 @@
                     class="{C.button({
                         variant: 'base',
                         ghost: true,
-                    })} z-1 relative flex items-center gap-4 font-normal group-data-selected:font-medium group-data-selected:text-fg-emph bg-transparent"
+                    })} relative flex items-center gap-4 font-normal group-data-selected:font-medium group-data-selected:text-fg-emph bg-transparent"
                     data-sveltekit-keepfocus
                     data-sveltekit-replacestate
                 >
