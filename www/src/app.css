@@ -14,6 +14,7 @@
 @custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
 
 @theme {
+    --color-surface-1: oklch(100% 0 240);
     --color-surface: oklch(100% 0 240);
     --color-surface-subtle: oklch(99% 0 240);
     --color-surface-emph: oklch(97% 0 240);
@@ -139,32 +140,28 @@
 @layer base {
     [data-theme='dark'],
     [data-theme='dark'] * {
-        --color-neutral-950: oklch(18% 0 0);
-        --color-surface: var(--static-black);
-        --color-surface-subtle: var(--color-neutral-950);
-        --color-surface-emph: var(--color-neutral-900);
-        --color-surface-border: var(--color-neutral-900);
+        --color-surface-1: oklch(19% 0 240);
+        --color-surface: oklch(20% 0 240);
+        --color-surface-subtle: oklch(24% 0 240);
+        --color-surface-emph: oklch(26% 0 240);
+        --color-surface-border: oklch(32% 0 240);
 
-        --color-base: var(--color-neutral-950);
-        --color-surface: var(--color-neutral-900);
-        --color-base-subtle: var(--color-neutral-850);
-        --color-base-subtle: var(--color-neutral-900);
-        --color-base-emph: var(--color-neutral-850);
-        --color-base-emph: var(--color-neutral-800);
-        --color-base-border: var(--color-neutral-850);
-        --color-base-border-emph: var(--color-neutral-800);
-        --color-surface-border: var(--color-neutral-900);
-        --color-fg: var(--color-neutral-300);
-        --color-fg-weak: var(--color-neutral-300);
-        --color-fg-emph: var(--color-neutral-300);
-        --color-fg-dim: var(--color-neutral-500);
-        --color-fg-muted: var(--color-neutral-600);
+        --color-base: oklch(24% 0 240);
+        --color-base-subtle: oklch(30% 0 240);
+        --color-base-emph: oklch(32% 0 240);
+        --color-base-border: oklch(36% 0 240);
+        --color-base-border-emph: oklch(40% 0 240);
 
-        --color-primary: oklch(80% 0.0626 230);
-        --color-primary-subtle: oklch(82% 0.0726 230);
-        --color-primary-emph: oklch(84% 0.0826 230);
-        --color-primary-border: oklch(76% 0.0626 230);
-        --color-primary-fg: var(--color-neutral-950);
+        --color-fg: oklch(90% 0 240);
+        --color-fg-emph: white;
+        --color-fg-dim: oklch(75% 0 240);
+        --color-fg-muted: oklch(60% 0 240);
+
+        --color-primary: oklch(46% 0.1 240);
+        --color-primary-subtle: oklch(48% 0.1 240);
+        --color-primary-emph: oklch(50% 0.11 240);
+        --color-primary-border: oklch(52% 0.1 240);
+        --color-primary-fg: oklch(59% 0.117 240);
 
         /* --color-primary: oklch(52.93% 0.2346 261.46);
     --color-primary-subtle: oklch(55.93% 0.2346 261.46);

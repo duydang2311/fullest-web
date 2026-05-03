@@ -80,13 +80,10 @@
     --_text: var(--color-primary-fg);
 
     &:where(.c-button--filled) {
-        --_text: var(--color-fg);
+        --_text: var(--color-fg-emph);
         --_bg: var(--color-primary);
         --_bg-hover: var(--color-primary-subtle);
         --_bg-active: var(--color-primary-emph);
-        @variant dark {
-            --_text: var(--color-primary-fg);
-        }
     }
 
     &:where([data-state='open']) {

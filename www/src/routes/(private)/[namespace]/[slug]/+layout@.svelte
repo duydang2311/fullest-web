@@ -32,7 +32,7 @@
         </div>
     {/snippet}
     {#snippet main()}
-        <main class="bg-surface flex flex-1 flex-col">
+        <main class="flex flex-1 flex-col">
             <div
                 {...tabs.getContentProps({ value: tabs.value! })}
                 class="flex w-full flex-1 flex-col"

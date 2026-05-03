@@ -69,7 +69,7 @@
     });
 </script>
 
-<div class="bg-surface-subtle flex flex-col h-screen overflow-hidden">
+<div class="bg-surface-subtle dark:bg-surface-1 flex flex-col h-screen overflow-hidden">
     {@render top()}
     <div class="flex flex-1 overflow-hidden">
         <div class="min-w-72">
