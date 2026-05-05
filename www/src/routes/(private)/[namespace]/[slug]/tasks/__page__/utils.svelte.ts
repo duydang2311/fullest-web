@@ -19,7 +19,7 @@ export function selectLocalTask() {
     return fields('Id,PublicId,Title,Status.Id', {
         Author: 'Name,DisplayName,ImageKey,ImageVersion',
         Assignees: 'Name,DisplayName,ImageKey,ImageVersion',
-        Priority: 'Category,Name,Color'
+        Priority: 'Category,Name,Color',
     });
 }
 

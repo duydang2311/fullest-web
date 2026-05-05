@@ -5,7 +5,7 @@ import type { Status } from '~/lib/models/status';
 import { enrichStep, traced } from '~/lib/utils/errors';
 import { jsonify, parseHttpError } from '~/lib/utils/http';
 import type { PageServerLoad } from './$types';
-import { selectLocalTask, type LocalTask } from './utils.svelte';
+import { selectLocalTask, type LocalTask } from './__page__/utils.svelte';
 
 export const load: PageServerLoad = async (e) => {
     const parent = await e.parent();

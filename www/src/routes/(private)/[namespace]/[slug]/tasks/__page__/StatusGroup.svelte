@@ -19,7 +19,7 @@
     import { useRuntime } from '~/lib/utils/runtime';
     import { getStatusColor, getStatusIcon } from '~/lib/utils/status';
     import { C } from '~/lib/utils/styles';
-    import type { PageData } from './$types';
+    import type { PageData } from '../$types';
     import { makeFetchTaskList, usePageContext, type LocalTask } from './utils.svelte';
 
     interface Props {
@@ -93,7 +93,7 @@
                 <PlusOutline />
             </a>
             <ChevronDownOutline
-                class="transition-transform group-data-[state=closed]:-rotate-180 duration-200 text-fg-muted"
+                class="transition-transform group-data-[state=open]:-rotate-180 duration-200 text-fg-muted"
             />
         </div>
         <div

@@ -6,8 +6,8 @@
     import { StatusCategory } from '~/lib/models/status';
     import { button } from '~/lib/utils/styles';
     import Breadcrumbs from '../__page__/Breadcrumbs.svelte';
-    import StatusGroup from './StatusGroup.svelte';
-    import { setPageContext } from './utils.svelte';
+    import StatusGroup from './__page__/StatusGroup.svelte';
+    import { setPageContext } from './__page__/utils.svelte';
 
     const { data } = $props();
 
@@ -26,11 +26,10 @@
                 class="{button({
                     variant: 'primary',
                     filled: true,
-                    size: 'sm',
-                })} ml-auto flex items-center gap-2 text-nowrap tracking-tight"
+                })} ml-auto flex items-center gap-2 text-nowrap"
             >
                 <PlusOutline />
-                New
+                New task
             </a>
         </div>
     </div>

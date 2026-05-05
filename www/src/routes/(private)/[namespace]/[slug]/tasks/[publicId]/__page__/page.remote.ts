@@ -40,7 +40,7 @@ export const addComment = command(
             }
             return error(response.status, BadHttpResponse(response.status, await response.text()));
         }
-        await requested(getActivityList).refreshAll();
+        await requested(getActivityList, Infinity).refreshAll();
         return attempt.ok({ success: true });
     }
 );
@@ -106,7 +106,7 @@ export const deleteComment = command(
             return attempt.fail(error);
         }
 
-        await requested(getActivityList).refreshAll();
+        await requested(getActivityList, Infinity).refreshAll();
         return attempt.ok<void>(void 0);
     }
 );
@@ -227,7 +227,7 @@ export const patchTaskStatus = command(
         }
 
         await Promise.all([
-            requested(getActivityList).refreshAll(),
+            requested(getActivityList, Infinity).refreshAll(),
             requested(getTask, 1).refreshAll(),
         ]);
         return attempt.ok(body.data);
@@ -289,7 +289,7 @@ export const patchTaskPriority = command(
         }
 
         await Promise.all([
-            requested(getActivityList).refreshAll(),
+            requested(getActivityList, Infinity).refreshAll(),
             requested(getTask, 1).refreshAll(),
         ]);
         return attempt.ok(body.data);
@@ -373,7 +373,7 @@ export const updateTaskAssignees = command(
             return attempt.fail(error);
         }
         await Promise.all([
-            requested(getActivityList).refreshAll(),
+            requested(getActivityList, Infinity).refreshAll(),
             requested(getTask, 1).refreshAll(),
         ]);
         return attempt.ok<void>(void 0);
@@ -408,7 +408,7 @@ export const editTaskTitle = form(
 
         await Promise.all([
             requested(getTask, 1).refreshAll(),
-            requested(getActivityList).refreshAll(),
+            requested(getActivityList, Infinity).refreshAll(),
         ]);
         return attempt.ok<void>(void 0);
     }
