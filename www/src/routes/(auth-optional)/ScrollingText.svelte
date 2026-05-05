@@ -1,86 +1,81 @@
 <script lang="ts">
     import { untrack } from 'svelte';
-    import { Flip, gsap } from '~/lib/utils/gsap';
+    import { gsap } from '~/lib/utils/gsap';
 
-    gsap.registerPlugin(Flip);
-
-    const texts = [
-        'transparency',
-        'productivity',
-        'community',
-        'efficiency',
-        'reliability',
-        'creativity',
-    ];
+    const texts = ['devs', 'creators', 'builders', 'everyone'];
     let index = 0;
 </script>
 
-<div
-    class="bg-primary text-primary-fg ml-0.5 px-2"
-    {@attach (node) => {
-        return untrack(() => {
-            const interval = setInterval(() => {
-                index = (index + 1) % texts.length;
-                const child = node.firstChild!;
-                const oldWidth = node.clientWidth;
-                const oldContent = child.textContent;
-                child.textContent = texts[index];
+<div class="leading-none">
+    <span>Task management for</span>
+    <span
+        class="inline-block text-primary-fg align-top"
+        {@attach (node) => {
+            return untrack(() => {
+                const interval = setInterval(() => {
+                    index = (index + 1) % texts.length;
+                    const oldWidth = node.clientWidth;
+                    const oldContent = node.textContent;
+                    node.textContent = texts[index];
+                    const tl = gsap.timeline();
+                    const newWidth = node.clientWidth;
+                    node.textContent = oldContent;
+                    tl.set(node, { width: oldWidth })
+                        .to(node, {
+                            opacity: 0,
+                            yPercent: -10,
+                            scaleY: 1.1,
+                            filter: 'blur(1px)',
+                            duration: 0.2,
+                            ease: 'circ.out',
+                            onComplete() {
+                                node.textContent = texts[index];
+                            },
+                        })
+                        .set(node, {
+                            yPercent: 30,
+                            scaleY: 1.4,
+                            filter: 'blur(1px)',
+                        })
+                        .to(
+                            node,
+                            {
+                                width: newWidth,
+                                duration: 0.2,
+                                ease: 'sine.inOut',
+                            },
+                            'animateWidth'
+                        )
+                        .to(
+                            node,
+                            {
+                                yPercent: 0,
+                                scaleY: 1,
+                                filter: 'none',
+                                duration: 0.2,
+                                ease: 'circ.out',
+                            },
+                            'animateWidth+=0.15'
+                        )
+                        .to(
+                            node,
+                            {
+                                opacity: 1,
+                                duration: 0.2,
+                                ease: 'circ.out',
+                            },
+                            'animateWidth+=0.15'
+                        )
+                        .set(node, {
+                            clearProps: 'all',
+                        });
+                }, 3000);
 
-                const tl = gsap.timeline();
-                const newWidth = node.clientWidth;
-                child.textContent = oldContent;
-                tl.set(node, { width: oldWidth, overflow: 'hidden' })
-                    .to(child, {
-                        duration: 0.2,
-                        yPercent: 100,
-                        ease: 'circ.inOut',
-                        onComplete: () => {
-                            child.textContent = texts[index];
-                        },
-                    })
-                    .set(child, {
-                        opacity: 0,
-                        yPercent: -40,
-                    })
-                    .to(node, {
-                        borderRadius: '1rem',
-                        scale: 0.96,
-                        duration: 0.4,
-                        ease: 'circ.inOut',
-                    })
-                    .to(
-                        node,
-                        {
-                            width: newWidth,
-                            ease: 'power3.inOut',
-                            clearProps: 'width',
-                            duration: 0.4,
-                        },
-                        '0.2'
-                    )
-                    .to(
-                        child,
-                        {
-                            opacity: 1,
-                            yPercent: 0,
-                            duration: 0.4,
-                            ease: 'circ.inOut',
-                        },
-                        '0.4'
-                    )
-                    .to(
-                        node,
-                        { borderRadius: 0, duration: 0.2, rotate: 0, scale: 1, ease: 'circ.out' },
-                        '0.8'
-                    )
-                    .set(node, { clearProps: 'overflow,borderRadius,scale,rotate' });
-            }, 3000);
-
-            return () => clearInterval(interval);
-        });
-    }}
->
-    <span class="inline-block leading-normal">
+                return () => clearInterval(interval);
+            });
+        }}
+    >
         {texts[index]}
     </span>
+    <!-- <span class="-ml-2">.</span> -->
 </div>
