@@ -47,7 +47,6 @@
     background-color: var(--_bg);
     padding: --spacing(1) --spacing(2);
     border-radius: var(--radius-lg);
-    font-weight: 500;
     @apply transition duration-75;
 
     &:where([data-highlighted]),
