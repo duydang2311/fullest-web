@@ -158,7 +158,7 @@
 
             <!-- Collaboration -->
             <div
-                class="flex border border-surface-border rounded-xl *:flex-1 divide-x divide-surface-border overflow-hidden"
+                class="flex flex-col md:flex-row max-md:divide-y md:divide-x divide-surface-border border border-surface-border rounded-xl *:flex-1 overflow-auto"
             >
                 <div class="p-8">
                     <div
