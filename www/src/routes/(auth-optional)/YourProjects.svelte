@@ -12,7 +12,7 @@
     import { C } from '~/lib/utils/styles';
     import { fluentSearchParams } from '~/lib/utils/url';
     import type { PageData } from './$types';
-    import { getProjectList, usePageContext } from './_page/utils.svelte';
+    import { getProjectList, usePageContext } from './__page__/utils.svelte';
 
     const ctx = usePageContext();
     const data = usePageData<PageData>();

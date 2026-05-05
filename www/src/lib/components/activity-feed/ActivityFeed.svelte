@@ -42,42 +42,38 @@
 </script>
 
 <script lang="ts">
+    import type { Component, Snippet } from 'svelte';
+    import type { HTMLAttributes } from 'svelte/elements';
     import { type Activity } from '~/lib/models/activity';
     import type { UserPreset } from '~/lib/models/user';
     import RenderActivity from './RenderActivity.svelte';
-    import type { Component, Snippet } from 'svelte';
 
     const {
         activities,
         renderers,
         shell,
-        class: cls,
         children,
+        ...props
     }: {
         activities: (Pick<Activity, 'id' | 'createdTime' | 'kind' | 'metadata'> & {
             actor: UserPreset['Avatar'];
         })[];
         renderers?: Partial<Record<ActivityKind, ActivityRender<any>>>;
         shell?: Component<any>;
-        class?: string;
         children?: Snippet;
-    } = $props();
+    } & HTMLAttributes<HTMLElement> = $props();
     const mergedRenders = $derived({
         ...defaultRenderers,
         ...renderers,
     });
 </script>
 
-<ol class={cls}>
+<ol {...props}>
     {@render children?.()}
     {#each activities as activity (activity.id)}
         {@const renderer = mergedRenders[activity.kind]}
         {#if renderer}
-            <RenderActivity
-                {activity}
-                renderer={renderer as any}
-                {shell}
-            />
+            <RenderActivity {activity} renderer={renderer as any} {shell} />
         {/if}
     {/each}
 </ol>

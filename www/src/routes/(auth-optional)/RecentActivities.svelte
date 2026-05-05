@@ -7,14 +7,14 @@
     import { circInOut } from 'svelte/easing';
     import { fly } from 'svelte/transition';
     import invariant from 'tiny-invariant';
+    import ActivityFeed from '~/lib/components/activity-feed/ActivityFeed.svelte';
     import { reverseKeysetList } from '~/lib/models/paginated';
     import { usePageData } from '~/lib/utils/kit';
     import { useRuntime } from '~/lib/utils/runtime';
     import { C } from '~/lib/utils/styles';
     import { fluentSearchParams } from '~/lib/utils/url';
     import type { PageData } from './$types';
-    import RenderActivity from './_page/RenderActivity.svelte';
-    import { makeFetchActivityList, usePageContext } from './_page/utils.svelte';
+    import { makeFetchActivityList, usePageContext } from './__page__/utils.svelte';
 
     const { http } = useRuntime();
     const data = usePageData<PageData>();
@@ -41,7 +41,7 @@
                     items: [...ctx.activityList.items, ...list.items],
                     hasPrevious: ctx.activityList.hasPrevious,
                     hasNext: list.hasNext,
-                    totalCount: 0
+                    totalCount: 0,
                 };
                 await goto(
                     fluentSearchParams(page.url.searchParams)
@@ -59,7 +59,7 @@
                     items: [...list.items, ...ctx.activityList.items],
                     hasPrevious: list.hasPrevious,
                     hasNext: ctx.activityList.hasNext,
-                    totalCount: 0
+                    totalCount: 0,
                 };
             }
         } finally {
@@ -108,15 +108,13 @@
                 Load more
             </button>
         {/if}
-        <ol
-            data-busy={boolAttr(activityListBusy.for(1000))}
-            class="flex flex-col gap-4 mt-2 data-busy:animate-pulse"
-            transition:fly={{ y: -2, duration: 200, easing: circInOut }}
-        >
-            {#each ctx.activityList.items as activity (activity.id)}
-                <RenderActivity {activity} />
-            {/each}
-        </ol>
+        <div transition:fly={{ y: -2, duration: 200, easing: circInOut }}>
+            <ActivityFeed
+                data-busy={boolAttr(activityListBusy.for(1000))}
+                activities={ctx.activityList.items}
+                class="flex flex-col gap-4 mt-2 data-busy:animate-pulse"
+            />
+        </div>
         {#if ctx.activityList.hasNext}
             <button
                 type="button"

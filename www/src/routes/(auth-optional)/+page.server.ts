@@ -1,7 +1,7 @@
 import { reverseKeysetList } from '~/lib/models/paginated';
 import { observableServerLoad } from '~/lib/utils/observability';
 import type { PageServerLoad } from './$types';
-import { getProjectList } from './_page/utils.svelte';
+import { getProjectList } from './__page__/utils.svelte';
 
 export const load = observableServerLoad<PageServerLoad>(async (e) => {
     const session = e.locals.session;
