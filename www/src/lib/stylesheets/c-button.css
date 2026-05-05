@@ -192,7 +192,6 @@
     border: 1px solid var(--_border);
     background-color: var(--_bg);
     color: var(--_text);
-    font-weight: 500;
     transition-property: color, background-color, font-weight, box-shadow, border-color, opacity;
     transition-duration: var(--default-transition-duration);
     transition-timing-function: var(--default-transition-timing-function);
