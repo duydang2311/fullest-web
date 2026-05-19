@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 
-@import './lib/assets/fonts/cal/font-face.css' layer(base);
 @import './lib/stylesheets/c-button.css' layer(components);
 @import './lib/stylesheets/c-input.css' layer(components);
 @import './lib/stylesheets/c-typo.css' layer(components);
@@ -99,11 +98,11 @@
     --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
 
     --font-sans:
-        'Cal Sans Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica,
-        Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+        'Google Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+        Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
     --font-ui:
-        'Cal Sans UI', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial,
-        sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+        'Inter Tight Variable', 'Google Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+        Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
     --default-mono-font-family:
         ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
 }
@@ -156,20 +155,20 @@
     [data-theme='dark'] * {
         --color-surface-1: oklch(19% 0 240);
         --color-surface: oklch(20% 0 240);
-        --color-surface-subtle: oklch(24% 0 240);
-        --color-surface-emph: oklch(26% 0 240);
-        --color-surface-border: oklch(32% 0 240);
+        --color-surface-subtle: oklch(22% 0 240);
+        --color-surface-emph: oklch(24% 0 240);
+        --color-surface-border: oklch(28% 0 240);
 
-        --color-base: oklch(24% 0 240);
-        --color-base-subtle: oklch(30% 0 240);
-        --color-base-emph: oklch(32% 0 240);
-        --color-base-border: oklch(36% 0 240);
-        --color-base-border-emph: oklch(40% 0 240);
+        --color-base: oklch(26% 0 240);
+        --color-base-subtle: oklch(28% 0 240);
+        --color-base-emph: oklch(30% 0 240);
+        --color-base-border: oklch(32% 0 240);
+        --color-base-border-emph: oklch(36% 0 240);
 
-        --color-fg: oklch(90% 0 240);
-        --color-fg-emph: white;
-        --color-fg-dim: oklch(75% 0 240);
-        --color-fg-muted: oklch(60% 0 240);
+        --color-fg: oklch(82% 0 240);
+        --color-fg-emph: oklch(94% 0 240);
+        --color-fg-dim: oklch(65% 0 240);
+        --color-fg-muted: oklch(50% 0 240);
 
         --color-primary: oklch(46% 0.1 240);
         --color-primary-subtle: oklch(48% 0.1 240);
@@ -252,6 +251,12 @@
         font-weight: 600;
     }
 
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
     button,
     .c-button,
     .c-menu-item {

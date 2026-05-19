@@ -13,6 +13,8 @@
         "@duydang2311/svutils": "^0.0.10",
         "@eslint/compat": "^2.1.0",
         "@eslint/js": "^10.0.1",
+        "@fontsource-variable/google-sans": "^5.2.1",
+        "@fontsource-variable/inter-tight": "^5.2.7",
         "@iconify-json/heroicons": "^1.2.3",
         "@iconify-json/lucide": "^1.2.107",
         "@iconify-json/ph": "^1.2.2",
@@ -302,6 +304,10 @@
     "@floating-ui/dom": ["@floating-ui/dom@1.7.6", "", { "dependencies": { "@floating-ui/core": "^1.7.5", "@floating-ui/utils": "^0.2.11" } }, "sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
+
+    "@fontsource-variable/google-sans": ["@fontsource-variable/google-sans@5.2.1", "", {}, "sha512-dMyMlJVRJgQvvYlJLcrg2oiVzlKAuIMrbDxIMchEiMBGmpOA6VnVblj3cPfJyA0/fNPQS6krZaiJyJjHJZmkzw=="],
+
+    "@fontsource-variable/inter-tight": ["@fontsource-variable/inter-tight@5.2.7", "", {}, "sha512-uU0qW9vlzVQQv8GVrhn8SlNl2A44C0CE9IC6N9P0D9mwhmJcg8UF/fxvmdRayDPlMAnYqxlXtYENDIeZyVvxkg=="],
 
     "@humanfs/core": ["@humanfs/core@0.19.1", "", {}, "sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA=="],
 

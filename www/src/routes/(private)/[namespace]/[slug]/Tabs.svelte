@@ -63,7 +63,7 @@
                     <div
                         id="active-{id}"
                         data-flip-id="active-{id}"
-                        class="bg-base-emph rounded-lg absolute top-0 left-0 size-full"
+                        class="bg-base rounded-lg absolute top-0 left-0 size-full"
                     ></div>
                 {/if}
                 {#if active}
