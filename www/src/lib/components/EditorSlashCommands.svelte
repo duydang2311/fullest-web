@@ -6,7 +6,18 @@
     import { boolAttr } from 'runed';
     import { guard, guardNull } from '../utils/guard';
     import { SlashCommandsExtension } from './editor.svelte';
-    import { IconH1, IconH2, IconH3, IconH4, IconH5, IconH6, IconMinus, IconText } from './icons';
+    import {
+        IconH1,
+        IconH2,
+        IconH3,
+        IconH4,
+        IconH5,
+        IconH6,
+        IconListOrdered,
+        IconListUnordered,
+        IconMinus,
+        IconText,
+    } from './icons';
 
     const { editor }: { editor: Editor } = $props();
     const BASE_OPTIONS = [
@@ -72,6 +83,22 @@
             icon: IconMinus,
             onSelect() {
                 editor.commands.setHorizontalRule();
+            },
+        },
+        {
+            title: 'Bullet List',
+            keywords: ['ul', 'bulleted list', 'unordered list', 'list'],
+            icon: IconListUnordered,
+            onSelect() {
+                editor.commands.toggleBulletList();
+            },
+        },
+        {
+            title: 'Numbered List',
+            keywords: ['ul', 'numbered list', 'ordered list', 'list'],
+            icon: IconListOrdered,
+            onSelect() {
+                editor.commands.toggleOrderedList();
             },
         },
     ];
