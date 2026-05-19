@@ -5,7 +5,7 @@
         background-color: var(--color-base);
         border-top-color: var(--color-base-border-emph);
     }
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
     padding: --spacing(1);
     @apply shadow-xs;
 
@@ -46,7 +46,7 @@
     color: var(--_text);
     background-color: var(--_bg);
     padding: --spacing(1) --spacing(2);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     @apply transition duration-75;
 
     &:where([data-highlighted]),

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { untrack } from 'svelte';
     import ActivitySection from './__page__/ActivitySection.svelte';
+    import AddComment from './__page__/AddComment.svelte';
     import SelectAssignees from './__page__/SelectAssignees.svelte';
     import SelectPriority from './__page__/SelectPriority.svelte';
     import SelectStatus from './__page__/SelectStatus.svelte';
@@ -22,7 +23,12 @@
             <hr class="border-surface-border mt-4" />
         </div>
         <div class="mt-8 px-8">
-            <ActivitySection />
+            <div class="max-w-container-lg mx-auto">
+                <ActivitySection />
+                <div class="mt-6">
+                    <AddComment />
+                </div>
+            </div>
         </div>
     </div>
     <div class="hidden lg:block w-72 h-fit sticky top-0">

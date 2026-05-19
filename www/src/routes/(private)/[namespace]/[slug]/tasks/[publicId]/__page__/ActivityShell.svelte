@@ -2,9 +2,6 @@
     import { boolAttr } from 'runed';
     import type { Snippet } from 'svelte';
     import Avatar from '~/lib/components/Avatar.svelte';
-    import {
-        IconChatDotsOutline
-    } from '~/lib/components/icons';
     import RelativeDateTime from '~/lib/components/RelativeDateTime.svelte';
     import { ActivityKind, type Activity } from '~/lib/models/activity';
     import type { UserPreset } from '~/lib/models/user';
@@ -27,21 +24,15 @@
     ></div>
     <div
         data-comment={boolAttr(isCommentedActivity)}
-        class="group flex items-start gap-4 relative not-data-comment:text-sm data-comment:mt-3.5"
+        class="group flex items-start gap-4 relative not-data-comment:text-sm"
     >
-        {#if isCommentedActivity}
-            <div
-                class="size-avatar-xs shrink-0 bg-primary text-primary-fg rounded-full p-px outline-4 outline-primary"
-            >
-                <IconChatDotsOutline class="size-full" />
-            </div>
-        {:else}
+        {#if !isCommentedActivity}
             <a href="/{activity.actor.name}" class="shrink-0 relative">
                 <Avatar user={activity.actor} class="size-avatar-xs" />
             </a>
         {/if}
         <div class="flex-1 flex justify-between items-center gap-4">
-            <div class="flex-1 group-data-comment:-mt-3.5">
+            <div class="flex-1">
                 {@render children()}
             </div>
             {#if !isCommentedActivity}

@@ -9,7 +9,6 @@
     import { guardNull } from '~/lib/utils/guard';
     import ActivityCreated from './ActivityCreated.svelte';
     import ActivityShell from './ActivityShell.svelte';
-    import AddComment from './AddComment.svelte';
     import CommentedActivity from './CommentedActivity.svelte';
     import { useActivityLists, usePageContext, useTask, validators } from './utils.svelte';
 
@@ -64,7 +63,7 @@
     } as const;
 </script>
 
-<section class="max-w-container-lg mx-auto">
+<section>
     <h2 class="text-fg-emph text-body-sm">Activity</h2>
     <div data-stuck={boolAttr(stuck)} class="data-stuck:animate-pulse relative mt-4">
         {#if activities.length > 0}
@@ -107,7 +106,4 @@
             };
         })()}
     ></div>
-    <div class="mt-6">
-        <AddComment />
-    </div>
 </section>

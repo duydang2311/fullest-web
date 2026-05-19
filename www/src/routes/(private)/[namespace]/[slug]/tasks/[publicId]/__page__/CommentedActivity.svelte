@@ -21,7 +21,7 @@
     let isEditing = $state.raw(false);
 </script>
 
-<div class="bg-surface border border-surface-border flex-1 px-3 py-2 overflow-auto rounded-lg">
+<div class="bg-surface border border-surface-border flex-1 px-4 pt-2 pb-4 overflow-auto rounded-lg">
     <div class="flex items-center gap-2 rounded-m mb-2 text-sm">
         <ActivityAvatar user={activity.actor} />
         <span>

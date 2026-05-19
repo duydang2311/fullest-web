@@ -15,7 +15,7 @@
         <a href={namespaceUrl(activity.actor.name)} class="c-link font-medium text-fg">
             {activity.actor.displayName ?? activity.actor.name}
         </a>
-        <span>changed the priority to</span>
+        <span>set priority to</span>
         <span class="px-1 py-0.5 bg-base rounded-sm font-medium text-fg">
             {activity.metadata.priority?.name ?? 'None'}
         </span>

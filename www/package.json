@@ -5,6 +5,7 @@
 		"@dicebear/collection": "^9.4.2",
 		"@dicebear/core": "^9.4.2",
 		"@duydang2311/attempt": "^0.1.12",
+		"@duydang2311/jsbelt": "^0.0.1",
 		"@duydang2311/sveltecraft": "^0.0.6",
 		"@duydang2311/svutils": "^0.0.10",
 		"@eslint/compat": "^2.1.0",

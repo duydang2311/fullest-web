@@ -252,12 +252,6 @@
         font-weight: 600;
     }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
     button,
     .c-button,
     .c-menu-item {
@@ -401,14 +395,15 @@
     }
 }
 
-.tiptap p.is-editor-empty:first-child::before {
+.ProseMirror p.is-editor-empty:first-child::before {
     color: var(--color-fg-muted);
     content: attr(data-placeholder);
     float: left;
     height: 0;
     pointer-events: none;
 }
-.tiptap ul[data-type='taskList'] li,
+
+.ProseMirror ul[data-type='taskList'] li,
 .prose ul[data-type='taskList'] li {
     display: flex;
     align-items: flex-start;

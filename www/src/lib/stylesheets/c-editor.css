@@ -40,6 +40,30 @@
     &:where(:focus-visible) {
         outline: none;
     }
+
+    :where(&[data-lexical-editor] p:only-child:has(br:only-child)) {
+        position: relative;
+        &::before {
+            content: "Press '/' for commands...";
+            pointer-events: none;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            color: var(--color-fg-muted);
+            opacity: 0;
+            transition: opacity 75ms var(--default-transition-timing-function);
+        }
+    }
+
+    :where(&[data-lexical-editor]:focus-visible p:only-child:has(br:only-child)) {
+        &::before {
+            opacity: 1;
+            @starting-style {
+                opacity: 0;
+            }
+        }
+    }
 }
 
 .c-editor-new--outlined {

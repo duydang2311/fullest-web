@@ -91,8 +91,8 @@
     }
 
     &:where(.c-button--ghost) {
-        --_bg-hover: color-mix(in oklch, var(--color-primary-subtle) 10%, transparent);
-        --_bg-active: color-mix(in oklch, var(--color-primary-emph) 15%, transparent);
+        --_bg-hover: color-mix(in oklch, var(--color-primary-subtle) 40%, transparent);
+        --_bg-active: color-mix(in oklch, var(--color-primary-emph) 80%, transparent);
     }
 
     &:where(.c-button--outlined) {
@@ -181,10 +181,10 @@
 
 .c-button {
     padding: --spacing(1.5) --spacing(3);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
 
     &:where(.c-button--sm) {
-        border-radius: var(--radius-md);
+        border-radius: var(--radius-sm);
         padding: --spacing(1) --spacing(2);
         font-size: var(--text-body-sm);
     }
