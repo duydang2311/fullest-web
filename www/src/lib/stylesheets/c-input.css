@@ -2,7 +2,7 @@
     --_text: inherit;
     --_bg: var(--color-surface);
     --_border: var(--color-base-border);
-    --_border-focus: var(--color-base-border-emph);
+    --_border-focus: color-mix(in oklch, var(--color-base-border) 60%, transparent);
     --_border-invalid: color-mix(in oklch, var(--color-negative-border) 60%, transparent);
 }
 
@@ -17,15 +17,14 @@
 
     &:where(:focus-visible) {
         outline: none;
-        border-color: var(--_border-focus);
-        @apply ring ring-(--_border-focus);
+        @apply ring-2 ring-(--_border-focus);
     }
 
     &:where([aria-invalid='true']) {
         border-color: var(--_border-invalid);
         &:where(:focus-visible) {
             outline: none;
-            @apply ring ring-(--_border-invalid);
+            @apply ring-2 ring-(--_border-invalid);
         }
     }
 

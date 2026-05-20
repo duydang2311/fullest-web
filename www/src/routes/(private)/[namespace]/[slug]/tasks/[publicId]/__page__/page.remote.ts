@@ -46,17 +46,20 @@ export const addComment = command(
 );
 
 export const deleteTask = form(
-    v.object({
-        id: v.pipe(v.string(), v.nonEmpty()),
+    type({
+        id: 'string'
     }),
     async (data) => {
         const e = getRequestEvent();
-        const deleted = await e.locals.http.delete(`tasks/${data.id}`);
-        if (!deleted.ok) {
-            return deleted.error;
+        const result = await e.locals.http.delete(`tasks/${data.id}`);
+        if (!result.ok) {
+            return result;
         }
-        if (!deleted.data.ok) {
-            return BadHttpResponse(deleted.data.status);
+
+        const resp = result.data;
+        if (!resp.ok) {
+            const error = await parseHttpError(resp);
+            return attempt.fail(error);
         }
         return redirect(303, `/${e.params.namespace}/${e.params.slug}/tasks`);
     }

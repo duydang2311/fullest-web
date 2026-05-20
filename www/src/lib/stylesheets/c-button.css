@@ -180,8 +180,9 @@
 }
 
 .c-button {
-    padding: --spacing(1.5) --spacing(3);
+    padding: --spacing(1.5) --spacing(2);
     border-radius: var(--radius-md);
+    font-weight: 500;
 
     &:where(.c-button--sm) {
         border-radius: var(--radius-sm);

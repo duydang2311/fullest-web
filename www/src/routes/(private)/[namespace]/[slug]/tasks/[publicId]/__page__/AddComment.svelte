@@ -1,7 +1,11 @@
 <script lang="ts">
-    import { createEditor, SlashCommandsExtension } from '~/lib/components/editor.svelte';
-    import { IconSendOutline } from '~/lib/components/icons';
+    import {
+        createEditor,
+        SlashCommandsExtension,
+        SubmitShortcutExtension,
+    } from '~/lib/components/editor.svelte';
     import EditorSlashCommands from '~/lib/components/EditorSlashCommands.svelte';
+    import { IconSendOutline } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
     import { guardNull } from '~/lib/utils/guard';
     import { usePageData } from '~/lib/utils/kit';
@@ -21,7 +25,10 @@
                 class: 'c-editor--inner prose max-w-none h-full flex-1',
             },
         },
-        extensions: [SlashCommandsExtension],
+        extensions: [
+            SlashCommandsExtension,
+            SubmitShortcutExtension.configure({ onSubmit: handleSubmit }),
+        ],
     });
 
     async function handleSubmit() {

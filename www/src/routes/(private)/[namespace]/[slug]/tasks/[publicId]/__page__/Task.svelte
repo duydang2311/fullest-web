@@ -56,22 +56,6 @@
                                     Edit
                                 </button>
                             </li>
-                            <li>
-                                <form {...deleteTask}>
-                                    <input {...deleteTask.fields.id.as('hidden', task.id)} />
-                                    <button
-                                        type="submit"
-                                        {...menu.api.getItemProps({ value: 'delete' })}
-                                        class="{C.menu({
-                                            part: 'item',
-                                            variant: 'negative',
-                                        })} w-full px-2 flex items-center gap-4"
-                                    >
-                                        <TrashOutline />
-                                        Delete
-                                    </button>
-                                </form>
-                            </li>
                         </ul>
                     </div>
                 </div>

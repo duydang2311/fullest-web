@@ -7,6 +7,7 @@
     import SelectStatus from './__page__/SelectStatus.svelte';
     import Task from './__page__/Task.svelte';
     import { setPageContext, useTask } from './__page__/utils.svelte';
+    import DeleteTask from './__page__/DeleteTask.svelte';
 
     const ctx = setPageContext({
         activityListParams: [],
@@ -31,14 +32,20 @@
             </div>
         </div>
     </div>
-    <div class="hidden lg:block w-72 h-fit sticky top-0">
-        <div class="text-sm text-fg-dim font-medium border-b border-b-surface-border p-4">
-            Properties
+    <div class="hidden lg:block w-72 h-fit sticky top-0 divide-y divide-surface-border">
+        <div class="p-4">
+            <h2 class="text-sm text-fg-emph font-semibold">Properties</h2>
+            <div class="flex flex-col gap-2 mt-2">
+                <SelectStatus />
+                <SelectPriority />
+                <SelectAssignees />
+            </div>
         </div>
-        <div class="flex flex-col gap-2 p-4">
-            <SelectStatus />
-            <SelectPriority />
-            <SelectAssignees />
+        <div class="p-4">
+            <h2 class="text-sm text-fg-emph font-semibold">Actions</h2>
+            <div class="flex flex-col gap-2 mt-2">
+                <DeleteTask />
+            </div>
         </div>
     </div>
 </div>

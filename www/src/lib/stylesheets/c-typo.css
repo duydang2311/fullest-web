@@ -1,16 +1,12 @@
 .c-label {
 	display: block;
 	font-size: var(--text-body-sm);
-	/* color: var(--color-fg-dim); */
+	line-height: var(--text-body-sm--line-height);
 }
 
 .c-help-text {
 	font-size: var(--text-body-sm);
-	color: var(--color-fg-dim);
-}
-
-.c-caption {
-	font-size: var(--text-body-xs);
+	line-height: var(--text-body-sm--line-height);
 	color: var(--color-fg-dim);
 }
 
