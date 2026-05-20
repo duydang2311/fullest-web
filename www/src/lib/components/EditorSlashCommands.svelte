@@ -1,11 +1,21 @@
 <script lang="ts">
     import { combine } from '@duydang2311/jsbelt';
     import { watch } from '@duydang2311/svutils';
+    import {
+        autoUpdate,
+        computePosition,
+        flip,
+        offset,
+        shift,
+        type FloatingElement,
+        type ReferenceElement,
+    } from '@floating-ui/dom';
     import { type Editor, type EditorEvents } from '@tiptap/core';
     import { portal } from '@zag-js/svelte';
     import { boolAttr } from 'runed';
+    import { tick } from 'svelte';
     import { guard, guardNull } from '../utils/guard';
-    import { SlashCommandsExtension } from './editor.svelte';
+    import { SlashCommandsExtension, type SlashCommandsExtensionStorage } from './editor.svelte';
     import {
         IconH1,
         IconH2,
@@ -79,7 +89,7 @@
         },
         {
             title: 'Separator',
-            keywords: ['separator', 'hr', 'horizontal line', 'horizontal rule'],
+            keywords: ['separator', 'hr', 'horizontal line'],
             icon: IconMinus,
             onSelect() {
                 editor.commands.setHorizontalRule();
@@ -95,7 +105,7 @@
         },
         {
             title: 'Numbered List',
-            keywords: ['ul', 'numbered list', 'ordered list', 'list'],
+            keywords: ['ol', 'numbered list', 'ordered list', 'list'],
             icon: IconListOrdered,
             onSelect() {
                 editor.commands.toggleOrderedList();
@@ -104,8 +114,11 @@
     ];
 
     let selectedIndex = $state.raw(0);
-    let query = $state.raw<string | null>(null);
-    let coords = $state.raw<{ [k in 'left' | 'top' | 'right' | 'bottom']: number } | null>(null);
+    let data = $state.raw<ReturnType<SlashCommandsExtensionStorage['manager']['data']> | null>(
+        null
+    );
+    const query = $derived(data ? data.command.slice(1) : null);
+    let coords = $state.raw<{ [k in 'top' | 'left' | 'right' | 'bottom']: number } | null>(null);
     let focused = $state.raw(false);
     let menuEl = $state.raw<HTMLDivElement>();
     const options = $derived(
@@ -120,17 +133,29 @@
                 : BASE_OPTIONS
             : null
     );
+    const virtualElement = $derived(
+        coords
+            ? {
+                  getBoundingClientRect() {
+                      guardNull(coords);
+                      return {
+                          x: coords.left,
+                          y: coords.bottom,
+                          top: coords.top,
+                          left: coords.left,
+                          right: coords.right,
+                          bottom: coords.bottom,
+                          width: coords.right - coords.left,
+                          height: coords.bottom - coords.top,
+                      };
+                  },
+                  contextElement: editor.options.element as Element,
+              }
+            : null
+    );
 
     function handleTransaction(e: EditorEvents['transaction']) {
-        const data = e.editor.storage.slash.manager.data();
-        if (data) {
-            query = data.command.slice(1);
-            coords = editor.view.coordsAtPos(data.pos);
-        } else {
-            selectedIndex = 0;
-            query = null;
-            coords = null;
-        }
+        data = e.editor.storage.slash.manager.data();
     }
 
     function handleFocus() {
@@ -200,22 +225,70 @@
     });
 
     watch(() => options)(() => {
-        if (!options) {
-            return;
-        }
-        if (selectedIndex >= options.length) {
+        if (!options || selectedIndex >= options.length) {
             selectedIndex = 0;
         }
     });
+
+    function updatePosition(refEl: ReferenceElement, floatEl: FloatingElement) {
+        computePosition(refEl, floatEl, {
+            placement: 'bottom-start',
+            middleware: [offset(4), flip(), shift()],
+        }).then(({ x, y }) => {
+            floatEl.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    }
+
+    watch(() => data)(() => {
+        coords = data ? editor.view.coordsAtPos(data.pos) : null;
+    });
+
+    watch(() => [menuEl])(() => {
+        if (!menuEl) {
+            return;
+        }
+        const virtualElement = {
+            getBoundingClientRect() {
+                return {
+                    x: 0,
+                    y: 0,
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: 0,
+                    height: 0,
+                };
+            },
+            contextElement: editor.options.element as Element,
+        };
+        return autoUpdate(virtualElement, menuEl, () => {
+            if (!menuEl || !data) {
+                return;
+            }
+            const c = editor.view.coordsAtPos(data.pos);
+            const virtualElement = {
+                getBoundingClientRect() {
+                    return {
+                        x: c.left,
+                        y: c.bottom,
+                        top: c.top,
+                        left: c.left,
+                        right: c.right,
+                        bottom: c.bottom,
+                        width: c.right - c.left,
+                        height: c.bottom - c.top,
+                    };
+                },
+            };
+            coords = c;
+            updatePosition(virtualElement, menuEl);
+        });
+    });
 </script>
 
-{#if focused && coords && options && options.length}
-    <div
-        use:portal
-        bind:this={menuEl}
-        class="fixed top-0 left-0"
-        style="transform: translate({coords.left}px, calc(0.25rem + {coords.bottom}px));"
-    >
+{#if focused && options && options.length}
+    <div use:portal bind:this={menuEl} class="absolute top-0 left-0">
         <ul class="c-menu-content min-w-40">
             {#each options as option, i (option.title)}
                 <li>
