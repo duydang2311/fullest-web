@@ -2,29 +2,35 @@
     import { page } from '$app/state';
     import AuthenticatedHeader from '~/lib/components/AuthenticatedHeader.svelte';
     import Footer from '~/lib/components/Footer.svelte';
-    import SidebarLayout from '~/lib/components/SidebarLayout.svelte';
-    import { createTabs } from '~/lib/components/builders.svelte';
-    import { indexOf } from '~/lib/utils/string';
-    import Tabs from './Tabs.svelte';
+    import Breadcrumbs from './__page__/Breadcrumbs.svelte';
+    import ProjectActions from './__page__/ProjectActions.svelte';
+    import Tabs from './__page__/Tabs.svelte';
+    import { useProject } from './__page__/utils.svelte';
+    import AuthenticatedHeaderNav from '~/lib/components/AuthenticatedHeaderNav.svelte';
 
     const { data, children } = $props();
     const id = $props.id();
-    const tabs = createTabs({
-        id,
-        get value() {
-            const pathname = page.url.pathname;
-            const idx = indexOf(pathname, '/'.charCodeAt(0), 3);
-            if (idx === -1) {
-                return pathname;
-            }
-            return pathname.substring(0, idx);
-        },
-    });
+    const project = $derived(await useProject());
 </script>
 
-<SidebarLayout>
+<div class="flex flex-col min-h-screen">
+    <header class="border-b border-surface-border p-4 pb-0 text-sm">
+        <AuthenticatedHeaderNav user={data.user} />
+        <nav class="-mx-4 mt-0">
+            <Tabs />
+        </nav>
+    </header>
+    <main class="flex flex-1 flex-col">
+        <div class="p-4 md:px-8 flex-1 flex flex-col">
+            <div class="flex-1 flex flex-col">
+                {@render children()}
+            </div>
+        </div>
+    </main>
+    <Footer />
+</div>
+<!-- <SidebarLayout>
     {#snippet top()}
-        <AuthenticatedHeader user={data.user} />
     {/snippet}
     {#snippet left()}
         <div class="px-4 py-2">
@@ -32,14 +38,5 @@
         </div>
     {/snippet}
     {#snippet main()}
-        <main class="flex flex-1 flex-col">
-            <div
-                {...tabs.getContentProps({ value: tabs.value! })}
-                class="flex w-full flex-1 flex-col"
-            >
-                {@render children()}
-            </div>
-        </main>
-        <Footer />
     {/snippet}
-</SidebarLayout>
+</SidebarLayout> -->

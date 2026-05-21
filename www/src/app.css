@@ -14,29 +14,29 @@
 @custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
 
 @theme {
-    --color-surface-1: oklch(100% 0 240);
-    --color-surface: oklch(100% 0 240);
-    --color-surface-subtle: oklch(99% 0 240);
-    --color-surface-emph: oklch(97% 0 240);
-    --color-surface-border: oklch(94% 0 240);
+    --color-surface-1: oklch(100% 0 80);
+    --color-surface: oklch(100% 0 80);
+    --color-surface-subtle: oklch(99% 0 80);
+    --color-surface-emph: oklch(97% 0 80);
+    --color-surface-border: oklch(94% 0.008 80);
 
-    --color-base: oklch(96% 0 240);
-    --color-base-subtle: oklch(94% 0 240);
-    --color-base-emph: oklch(92% 0 240);
-    --color-base-border: oklch(90% 0 240);
-    --color-base-border-emph: oklch(86% 0 240);
+    --color-base: oklch(96% 0 80);
+    --color-base-subtle: oklch(96% 0.004 80);
+    --color-base-emph: oklch(94% 0.01 80);
+    --color-base-border: oklch(90% 0.012 80);
+    --color-base-border-emph: oklch(86% 0.016 80);
 
-    --color-fg: oklch(32% 0 240);
-    --color-fg-weak: oklch(40% 0 240);
-    --color-fg-emph: oklch(20% 0.01 240);
-    --color-fg-dim: oklch(48% 0 240);
-    --color-fg-muted: oklch(62% 0 240);
+    --color-fg: oklch(32% 0.02 80);
+    --color-fg-weak: oklch(40% 0 80);
+    --color-fg-emph: oklch(20% 0.02 80);
+    --color-fg-dim: oklch(48% 0.016 80);
+    --color-fg-muted: oklch(72% 0.012 80);
 
-    --color-primary: oklch(95% 0.04 240);
-    --color-primary-subtle: oklch(93.5% 0.06 240);
-    --color-primary-emph: oklch(92% 0.08 240);
-    --color-primary-border: oklch(90% 0.04 240);
-    --color-primary-fg: oklch(52.5% 0.17 225);
+    --color-primary: oklch(95% 0.04 80);
+    --color-primary-subtle: oklch(93.5% 0.06 80);
+    --color-primary-emph: oklch(92% 0.08 80);
+    --color-primary-border: oklch(90% 0.04 80);
+    --color-primary-fg: oklch(52.5% 0.17 80);
 
     /* --color-primary: oklch(52.93% 0.2346 261.46);
     --color-primary-subtle: oklch(55.93% 0.2346 261.46);

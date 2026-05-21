@@ -1,5 +1,6 @@
 <script lang="ts">
     import '@fontsource-variable/google-sans-flex';
+    import '@fontsource-variable/plus-jakarta-sans';
     import '../app.css';
 
     import favicon from '$lib/assets/favicon.svg';

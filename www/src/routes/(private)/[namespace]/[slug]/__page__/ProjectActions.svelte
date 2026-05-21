@@ -9,8 +9,9 @@
         class="{button({
             variant: 'base',
             ghost: true,
+            size: 'sm',
             outlined: true,
-        })} flex p-0 text-sm tracking-tight"
+        })} flex p-0 tracking-tight"
     >
         <div class="px-2 py-1 flex items-center gap-1">
             <EyeOutline />
@@ -25,8 +26,9 @@
         class="{button({
             variant: 'base',
             ghost: true,
+            size: 'sm',
             outlined: true,
-        })} flex p-0 text-sm"
+        })} flex p-0"
     >
         <div class="px-2 py-1 flex items-center gap-1">
             <StarOutline />
