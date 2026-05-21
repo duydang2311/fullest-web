@@ -15,22 +15,20 @@
     }
 </script>
 
-<div>
-    {#if tooltip.api.open}
-        <div use:portal {...tooltip.api.getPositionerProps()}>
-            <div
-                {...tooltip.api.getArrowProps()}
-                style:--arrow-size="0.5rem"
-                style:--arrow-background="var(--color-fg-emph)"
-            >
-                <div {...tooltip.api.getArrowTipProps()}></div>
-            </div>
-            <div
-                {...tooltip.api.getContentProps()}
-                class="bg-fg-emph text-surface rounded-md px-2 py-1 text-sm font-medium"
-            >
-                {content}
-            </div>
+{#if tooltip.api.open}
+    <div use:portal {...tooltip.api.getPositionerProps()}>
+        <div
+            {...tooltip.api.getArrowProps()}
+            style:--arrow-size="0.5rem"
+            style:--arrow-background="var(--color-fg-emph)"
+        >
+            <div {...tooltip.api.getArrowTipProps()}></div>
         </div>
-    {/if}
-</div>
+        <div
+            {...tooltip.api.getContentProps()}
+            class="bg-fg-emph text-surface rounded-md px-2 py-1 text-sm font-medium"
+        >
+            {content}
+        </div>
+    </div>
+{/if}
