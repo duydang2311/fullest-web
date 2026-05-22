@@ -54,12 +54,12 @@ public sealed record StatusDefaults(
 
     public static readonly StatusDefaults[] All =
     [
-        Backlog,
+        // Backlog,
         Todo,
         InProgress,
-        Review,
+        // Review,
         Done,
-        Paused,
+        // Paused,
         Cancelled,
     ];
 }
