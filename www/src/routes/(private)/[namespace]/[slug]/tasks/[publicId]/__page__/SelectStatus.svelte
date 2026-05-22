@@ -2,7 +2,6 @@
     import { portal } from '@zag-js/svelte';
     import { untrack } from 'svelte';
     import { createMenu } from '~/lib/components/builders.svelte';
-    import { SettingsOutline } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
     import { guardNull } from '~/lib/utils/guard';
     import { usePageData } from '~/lib/utils/kit';
@@ -74,12 +73,12 @@
         class="{C.button({
             variant: 'base',
             ghost: true,
-        })} text-left font-medium w-full flex items-center max-lg:flex-row-reverse max-lg:justify-end gap-2 lg:justify-between"
+        })} font-medium w-full flex items-center gap-2 justify-between"
     >
-        <span>
-            {task.status?.name ?? 'No status'}
+        <span class="text-fg-muted">Status</span>
+        <span class="text-fg">
+            {task.status?.name ?? 'None'}
         </span>
-        <SettingsOutline />
     </button>
     <div use:portal {...menu.api.getPositionerProps()}>
         <ul

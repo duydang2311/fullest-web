@@ -198,7 +198,7 @@
     transition-timing-function: var(--default-transition-timing-function);
 
     &:where(.c-button--icon) {
-        padding: --spacing(1);
+        padding: --spacing(0.5);
         border-radius: var(--radius-sm);
     }
 

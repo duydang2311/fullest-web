@@ -50,22 +50,13 @@
     >
         <input {...editTaskTitle.fields.taskId.as('text', task.id)} type="hidden" />
         <input {...editTaskTitle.fields.version.as('number', task.version)} type="hidden" />
-        <input
-            {...editTaskTitle.fields.title.as('text', task.title)}
-            class="text-title-sm font-semibold text-fg-emph w-full outline-none"
-            spellcheck="false"
-            {@attach edit}
-        />
-        <div class="flex gap-2 mt-2 flex-wrap">
-            <button
-                type="button"
-                class={C.button({ size: 'sm', ghost: true })}
-                onclick={() => {
-                    edit.enabled = false;
-                }}
-            >
-                Cancel
-            </button>
+        <div class="flex gap-2 flex-wrap">
+            <input
+                {...editTaskTitle.fields.title.as('text', task.title)}
+                class="text-title-xs font-ui font-semibold text-fg-emph w-full outline-none flex-1"
+                spellcheck="false"
+                {@attach edit}
+            />
             <button
                 type="submit"
                 class="{C.button({
@@ -77,6 +68,15 @@
                 <IconSaveOutline />
                 Save
             </button>
+            <button
+                type="button"
+                class={C.button({ size: 'sm', filled: true })}
+                onclick={() => {
+                    edit.enabled = false;
+                }}
+            >
+                Cancel
+            </button>
         </div>
     </form>
 {:else}
@@ -85,7 +85,7 @@
         {@attach edit}
         class="text-left text-fg-emph select-text cursor-text w-full"
     >
-        <h1 class="text-title-sm w-fit">
+        <h1 class="text-title-xs w-fit">
             {task.title}
         </h1>
     </button>

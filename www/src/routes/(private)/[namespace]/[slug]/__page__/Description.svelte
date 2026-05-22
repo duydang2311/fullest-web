@@ -65,9 +65,9 @@
     });
 </script>
 
-<section>
-    <div class="flex items-center gap-2 text-fg-muted">
-        <h2 class="text-xs tracking-wide">DESCRIPTION</h2>
+<section class="border border-base-border rounded-lg">
+    <div class="flex items-center gap-2 border-b border-base-border px-4 py-2 bg-surface-subtle rounded-t-lg">
+        <h2 class="text-sm text-fg-emph">Description</h2>
         <div class="ml-auto" {@attach tooltip('Edit description')}>
             <button
                 type="button"
@@ -81,13 +81,13 @@
             </button>
         </div>
     </div>
-    <div class="mt-4">
+    <div class="p-4 ">
         {#if project.descriptionHtml}
             <article class="prose max-w-none">
                 {@html project.descriptionHtml}
             </article>
         {:else}
-            <div class="text-fg-muted text-sm -mt-2">No description yet.</div>
+            <div class="text-fg-muted text-sm">No description yet.</div>
         {/if}
     </div>
 </section>

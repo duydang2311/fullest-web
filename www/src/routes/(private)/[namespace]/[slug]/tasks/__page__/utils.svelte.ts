@@ -11,15 +11,16 @@ import { fields, jsonify, type Direction } from '~/lib/utils/http';
 export type LocalTask = Pick<Task, 'id' | 'publicId' | 'title'> & {
     author: UserPreset['Avatar'];
     assignees?: UserPreset['Avatar'][];
-    status?: Pick<Status, 'id'>;
+    status?: Pick<Status, 'id' | 'category' | 'color'>;
     priority?: Pick<Priority, 'category' | 'name' | 'color'>;
 };
 
 export function selectLocalTask() {
-    return fields('Id,PublicId,Title,Status.Id', {
+    return fields('Id,PublicId,Title', {
         Author: 'Name,DisplayName,ImageKey,ImageVersion',
         Assignees: 'Name,DisplayName,ImageKey,ImageVersion',
         Priority: 'Category,Name,Color',
+        Status: 'Id,Category,Color'
     });
 }
 

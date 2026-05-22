@@ -5,7 +5,7 @@
     import Avatar from '~/lib/components/Avatar.svelte';
     import { createCollapsible } from '~/lib/components/builders.svelte';
     import {
-        ChevronDownOutline,
+        ChevronRightOutline,
         IconDoubleArrowDownOutline,
         IconUserCircleDashedOutline,
         PlusOutline,
@@ -63,59 +63,54 @@
 
 <div
     {...collapsible.api.getRootProps()}
-    class="group rootEl col-span-full grid grid-cols-subgrid first:rounded-t-md last:rounded-b-md overflow-hidden"
+    class="group col-span-full grid grid-cols-subgrid overflow-hidden"
 >
     <button
         {...collapsible.api.getTriggerProps()}
         type="button"
-        class="relative px-4 py-2 bg-surface-subtle hover:bg-surface-emph transition col-span-full group-not-first:border-t group-not-first:border-t-surface-border group-data-[state=open]:border-b group-last:group-data-[state=closed]:border-b-0 border-b-surface-border tracking-tight flex items-center gap-4"
+        class="rounded-md has-[a:hover]:bg-transparent *:opacity-60 *:group-data-[state=open]:opacity-100 hover:bg-base-subtle active:bg-base-emph relative transition col-span-full grid grid-cols-subgrid tracking-tight items-center"
     >
-        <Icon class="text-fg-muted group-data-[state=open]:text-fg transition duration-200" />
-        <div
-            class="gap-2 items-center text-fg-muted group-data-[state=open]:text-fg transition duration-200 flex"
-        >
-            <span>{status.name}</span>
-            {#if list.totalCount > 0}
-                <span class="bg-base-emph px-1 block text-xs font-bold rounded-sm">
-                    {list.totalCount}
-                </span>
-            {/if}
+        <div class="p-2">
+            <ChevronRightOutline
+                class="transition-transform group-data-[state=open]:rotate-90 duration-200 text-fg-muted"
+            />
         </div>
-        <div class="ml-auto flex gap-2 items-center">
+        <div class="p-2">
+            <div
+                class="size-2 rounded-full"
+                style="background-color: {getStatusColor(status)}"
+            ></div>
+        </div>
+        <div class="p-2 col-span-3 flex items-center gap-4">
+            <Icon class="transition duration-200" style="color: {getStatusColor(status)}" />
+            <div class="gap-2 items-center flex">
+                <span class="transition">
+                    {status.name}
+                </span>
+                {#if list.totalCount > 0}
+                    <span
+                        class="bg-base-emph text-fg-dim group-data-[state=open]:text-fg transition h-5 min-w-5 content-center text-center text-xs rounded-full"
+                    >
+                        {list.totalCount}
+                    </span>
+                {/if}
+            </div>
+        </div>
+        <div class="flex gap-2 items-center p-2">
             <a
                 href="/{page.params.namespace}/{page.params.slug}/tasks/new"
                 class={C.button({ ghost: true, size: 'sm', icon: true })}
-                onclick={(e) => {
-                    e.stopPropagation();
-                }}
                 title="Create task"
             >
                 <PlusOutline />
             </a>
-            <ChevronDownOutline
-                class="transition-transform group-data-[state=open]:-rotate-180 duration-200 text-fg-muted"
-            />
         </div>
-        <div
-            class="absolute h-[calc(100%+2px)] w-1 group-data-[state=closed]:-translate-x-full transition-transform origin-left left-0 -top-px"
-            style="background-color: {getStatusColor(status)}"
-        ></div>
     </button>
     <div {...collapsible.api.getContentProps()} class="col-span-full grid grid-cols-subgrid">
-        <div class="relative col-span-full grid grid-cols-subgrid text-xs text-fg-muted">
-            <div class="px-4 py-2">#</div>
-            <div class="px-4 py-2">Name</div>
-            <div class="px-4 py-2">Assign</div>
-            <div class="px-4 py-2">Priority</div>
-            <div
-                class="absolute h-[calc(100%+2px)] w-1 scale-x-0 group-data-[state=open]:scale-x-100 transition-transform origin-left left-0 -top-px"
-                style="background-color: {getStatusColor(status)}"
-            ></div>
-        </div>
         {#each list.items as item (item.id)}
             {@const PriorityIcon = getPriorityIcon(item.priority)}
             <div
-                class="group/item relative col-span-full grid grid-cols-subgrid hover:bg-surface-subtle items-center"
+                class="group/item relative col-span-full grid grid-cols-subgrid hover:bg-base-subtle active:bg-base-emph items-center first:rounded-t-md last:rounded-b-md transition border-b last:border-none border-surface-border"
             >
                 <a
                     href="/{page.params.namespace}/{page.params.slug}/tasks/{item.publicId}"
@@ -123,15 +118,33 @@
                     aria-label="Go to task"
                 >
                 </a>
-                <div
+                <!-- <div
                     class="absolute h-full w-1 group-hover/item:opacity-100 opacity-40 left-0 top-0 transition hover:duration-0"
                     style="background-color: {getStatusColor(status)}"
-                ></div>
-                <div class="px-4 py-2 text-sm font-medium text-fg-muted content-center">
-                    {item.publicId}
+                ></div> -->
+                <div class="p-2 text-sm text-fg-muted content-center">
+                    <!-- #{item.publicId} -->
                 </div>
-                <div class="px-4 py-2">{item.title}</div>
-                <div class="px-4 py-2 flex gap-1">
+                <div class="p-2">
+                    <div
+                        class="size-2 rounded-[1px]"
+                        style="background-color: {getStatusColor(status)}"
+                    ></div>
+                </div>
+                <div class="p-2">
+                    <Icon
+                        class="text-fg-muted group-data-[state=open]:text-fg transition duration-200"
+                        style="color: {getStatusColor(item?.status)}"
+                    />
+                </div>
+                <div class="p-2">{item.title}</div>
+                <div class="p-2">
+                    <PriorityIcon
+                        data-no-priority={boolAttr(item.priority == null)}
+                        class="data-no-priority:text-fg-muted"
+                    />
+                </div>
+                <div class="p-2">
                     <button
                         type="button"
                         class="{C.button({ ghost: true, icon: true, size: 'sm' })} relative"
@@ -150,12 +163,6 @@
                             <IconUserCircleDashedOutline />
                         {/if}
                     </button>
-                </div>
-                <div class="px-4 py-2 ml-auto">
-                    <PriorityIcon
-                        data-no-priority={boolAttr(item.priority == null)}
-                        class="data-no-priority:text-fg-muted"
-                    />
                 </div>
             </div>
         {/each}

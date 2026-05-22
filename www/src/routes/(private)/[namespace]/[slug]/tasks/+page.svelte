@@ -5,43 +5,38 @@
     import { keysetList } from '~/lib/models/paginated';
     import { StatusCategory } from '~/lib/models/status';
     import { button } from '~/lib/utils/styles';
-    import Breadcrumbs from '../__page__/Breadcrumbs.svelte';
     import StatusGroup from './__page__/StatusGroup.svelte';
     import { setPageContext } from './__page__/utils.svelte';
 
     const { data } = $props();
-
     const ctx = setPageContext({ taskGroups: untrack(() => data.taskList) });
 </script>
 
-<div class="py-4">
-    <div class="px-8 pb-4 border-b border-b-surface-border">
-        <div class="flex gap-4 items-start justify-between">
-            <div>
-                <Breadcrumbs />
-                <h1 class="tracking-tight text-fg-emph mt-1 text-title-xs">Tasks</h1>
-            </div>
-            <a
-                href="/{page.params.namespace}/{page.params.slug}/tasks/new"
-                class="{button({
-                    variant: 'primary',
-                    filled: true,
-                })} ml-auto flex items-center gap-2 text-nowrap"
-            >
-                <PlusOutline />
-                New task
-            </a>
+<div class="mx-auto max-w-container-lg w-full">
+    <div class="flex gap-4 items-start justify-between">
+        <div>
+            <h1 class="text-fg-emph text-title-xs">Tasks</h1>
         </div>
+        <a
+            href="/{page.params.namespace}/{page.params.slug}/tasks/new"
+            class="{button({
+                filled: true,
+                size: 'sm',
+            })} ml-auto flex items-center gap-2 text-nowrap"
+        >
+            <PlusOutline />
+            New task
+        </a>
     </div>
-    <div class="mt-4 px-4">
-        <div class="grid grid-cols-[auto_1fr_auto_auto] border border-surface-border rounded-md">
+    <div class="mt-4">
+        <div class="grid grid-cols-[auto_auto_auto_1fr_auto_auto]">
             {#if ctx.taskGroups['none']}
                 {@const list = ctx.taskGroups['none'] ?? keysetList()}
                 <StatusGroup
                     status={{
                         id: 'none',
                         name: 'None',
-                        color: '',
+                        color: 'var(--color-status-none)',
                         category: StatusCategory.Proposed,
                     }}
                     {list}

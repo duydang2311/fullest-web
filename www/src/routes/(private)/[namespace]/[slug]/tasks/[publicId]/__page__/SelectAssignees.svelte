@@ -2,17 +2,15 @@
     import { liteDebounce } from '@tanstack/pacer-lite';
     import { ListCollection } from '@zag-js/collection';
     import { portal } from '@zag-js/svelte';
-    import invariant from 'tiny-invariant';
     import Avatar from '~/lib/components/Avatar.svelte';
     import { createListbox, createPopover } from '~/lib/components/builders.svelte';
-    import { SettingsOutline } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
+    import { guardNull } from '~/lib/utils/guard';
     import { usePageData } from '~/lib/utils/kit';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
     import { getActivityList, searchUsers, updateTaskAssignees } from './page.remote';
     import { useActivityLists, usePageContext, useTask } from './utils.svelte';
-    import { guardNull } from '~/lib/utils/guard';
 
     const data = usePageData<PageData>();
     const ctx = usePageContext();
@@ -134,17 +132,34 @@
         class="{C.button({
             variant: 'base',
             ghost: true,
-        })} text-left font-medium w-full flex items-center max-lg:flex-row-reverse max-lg:justify-end gap-2 lg:justify-between"
+        })} text-left font-medium w-full flex items-center gap-2 justify-between"
     >
-        <span
+        <!-- <span
             class="lg:hidden ml-auto bg-primary rounded-sm size-5 leading-none text-xs font-bold flex justify-center items-center"
         >
             {task.assignees.length}
-        </span>
-        <span>Assignees</span>
-        <SettingsOutline />
+        </span> -->
+        <span class="text-fg-muted">Assign</span>
+        <!-- <span class="text-fg">
+            {task.assignees.length ?? 0}
+        </span> -->
+        {#if task.assignees.length}
+            <ul class="flex flex-col gap-2">
+                {#each task.assignees as assignee (assignee.id)}
+                    <div class="flex items-center gap-2">
+                        <Avatar
+                            user={assignee}
+                            class="min-w-avatar-xs size-avatar-xs rounded-full border border-surface-border"
+                        />
+                        <div>{assignee.displayName ?? assignee.name}</div>
+                    </div>
+                {/each}
+            </ul>
+        {:else}
+            <span class="text-fg">None</span>
+        {/if}
     </button>
-    {#if task.assignees.length}
+    <!-- {#if task.assignees.length}
         <ul class="mt-2 flex flex-col gap-2 px-2 max-lg:hidden">
             {#each task.assignees as assignee (assignee.id)}
                 <div class="flex items-center gap-2">
@@ -156,7 +171,7 @@
                 </div>
             {/each}
         </ul>
-    {/if}
+    {/if} -->
     <div use:portal {...popover.api.getPositionerProps()}>
         <div
             {...popover.api.getContentProps()}

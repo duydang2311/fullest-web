@@ -64,14 +64,14 @@
 </script>
 
 <section>
-    <h2 class="text-fg-emph text-body-sm">Activity</h2>
+    <h2 class="text-fg-muted font-medium text-body-xs">ACTIVITY</h2>
     <div data-stuck={boolAttr(stuck)} class="data-stuck:animate-pulse relative mt-4">
         {#if activities.length > 0}
             <ActivityFeed
                 {activities}
                 {renderers}
                 shell={ActivityShell}
-                class="flex flex-col gap-6 duration-300 animate-fade-in text-fg-dim"
+                class="flex flex-col gap-4 duration-300 animate-fade-in text-fg-dim"
             />
         {/if}
         {#if stuck}

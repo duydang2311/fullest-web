@@ -27,8 +27,9 @@
     transition-timing-function: var(--default-transition-timing-function);
 
     &:where(:focus-within) {
-        border-color: var(--color-base-border-emph);
-        @apply ring ring-base-border-emph;
+        --_ring-focus: color-mix(in oklch, var(--color-base-border) 60%, transparent);
+        outline: none;
+        @apply ring-2 ring-(--_ring-focus);
     }
 }
 
@@ -71,7 +72,8 @@
     border-radius: var(--radius-lg);
 
     &:where(:focus-visible) {
-        border-color: var(--color-base-border-emph);
-        @apply ring ring-base-border-emph;
+        --_ring-focus: color-mix(in oklch, var(--color-base-border) 60%, transparent);
+        outline: none;
+        @apply ring-2 ring-(--_ring-focus);
     }
 }

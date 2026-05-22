@@ -2,16 +2,14 @@
     import { portal } from '@zag-js/svelte';
     import { untrack } from 'svelte';
     import { createMenu } from '~/lib/components/builders.svelte';
-    import { SettingsOutline } from '~/lib/components/icons';
     import { ActivityKind } from '~/lib/models/activity';
-    import type { Priority } from '~/lib/models/priority';
     import { guardNull } from '~/lib/utils/guard';
     import { usePageData } from '~/lib/utils/kit';
+    import { getPriorityIcon } from '~/lib/utils/priority';
     import { C } from '~/lib/utils/styles';
     import type { PageData } from '../$types';
-    import { getActivityList, getPriorities, patchTaskPriority } from './page.remote';
+    import { getActivityList, patchTaskPriority } from './page.remote';
     import { useActivityLists, usePageContext, usePriorityList, useTask } from './utils.svelte';
-    import { getPriorityIcon } from '~/lib/utils/priority';
 
     const data = usePageData<PageData>();
     const ctx = usePageContext();
@@ -77,12 +75,12 @@
         class="{C.button({
             variant: 'base',
             ghost: true,
-        })} text-left font-medium w-full flex items-center max-lg:flex-row-reverse max-lg:justify-end gap-2 lg:justify-between"
+        })} text-left font-medium w-full flex items-center gap-2 justify-between"
     >
-        <span>
-            {task.priority?.name ?? 'No priority'}
+        <span class="text-fg-muted">Priority</span>
+        <span class="text-fg">
+            {task.priority?.name ?? 'None'}
         </span>
-        <SettingsOutline />
     </button>
     <div use:portal {...menu.api.getPositionerProps()}>
         <ul

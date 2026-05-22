@@ -14,29 +14,29 @@
 @custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
 
 @theme {
-    --color-surface-1: oklch(100% 0 80);
-    --color-surface: oklch(100% 0 80);
-    --color-surface-subtle: oklch(99% 0 80);
-    --color-surface-emph: oklch(97% 0 80);
-    --color-surface-border: oklch(94% 0.008 80);
+    --color-surface-1: oklch(100% 0 75);
+    --color-surface: oklch(100% 0 75);
+    --color-surface-subtle: oklch(99% 0.002 75);
+    --color-surface-emph: oklch(97% 0.004 75);
+    --color-surface-border: oklch(94% 0.004 75);
 
-    --color-base: oklch(96% 0 80);
-    --color-base-subtle: oklch(96% 0.004 80);
-    --color-base-emph: oklch(94% 0.01 80);
-    --color-base-border: oklch(90% 0.012 80);
-    --color-base-border-emph: oklch(86% 0.016 80);
+    --color-base: oklch(96% 0.002 75);
+    --color-base-subtle: oklch(94.5% 0.006 75);
+    --color-base-emph: oklch(92% 0.01 75);
+    --color-base-border: oklch(90% 0.008 75);
+    --color-base-border-emph: oklch(86% 0.012 75);
 
-    --color-fg: oklch(32% 0.02 80);
-    --color-fg-weak: oklch(40% 0 80);
-    --color-fg-emph: oklch(20% 0.02 80);
-    --color-fg-dim: oklch(48% 0.016 80);
-    --color-fg-muted: oklch(72% 0.012 80);
+    --color-fg: oklch(32% 0.02 44);
+    --color-fg-weak: oklch(40% 0 44);
+    --color-fg-emph: oklch(20% 0.02 44);
+    --color-fg-dim: oklch(48% 0.016 44);
+    --color-fg-muted: oklch(62% 0.012 75);
 
-    --color-primary: oklch(95% 0.04 80);
-    --color-primary-subtle: oklch(93.5% 0.06 80);
-    --color-primary-emph: oklch(92% 0.08 80);
-    --color-primary-border: oklch(90% 0.04 80);
-    --color-primary-fg: oklch(52.5% 0.17 80);
+    --color-primary: oklch(95% 0.04 75);
+    --color-primary-subtle: oklch(93.5% 0.05 75);
+    --color-primary-emph: oklch(92% 0.06 75);
+    --color-primary-border: oklch(90% 0.04 75);
+    --color-primary-fg: oklch(52.5% 0.17 44);
 
     /* --color-primary: oklch(52.93% 0.2346 261.46);
     --color-primary-subtle: oklch(55.93% 0.2346 261.46);
@@ -57,18 +57,18 @@
     --color-positive-fg: oklch(96% 0.005 142.5);
     --color-positive-border: oklch(45.49% 0.1717 142.5);
 
-    --color-info: oklch(52.19% 0.1978 258.63);
-    --color-info-hover: oklch(55.19% 0.1978 258.63);
-    --color-info-fg: oklch(98.9% 0.005 258.63);
+    --color-info-fg: oklch(52.5% 0.19 255);
+    --color-info-fg-hover: oklch(56% 0.19 255);
 
-    --color-status-proposed: oklch(90% 0.04 250);
-    --color-status-ready: oklch(80% 0.15 180);
-    --color-status-active: oklch(80% 0.15 230);
-    --color-status-paused: oklch(80% 0.15 80);
-    --color-status-review: oklch(80% 0.18 300);
-    --color-status-completed: oklch(80% 0.18 145);
-    --color-status-canceled: oklch(70% 0.13 20);
-    --color-status-archived: oklch(70% 0 0);
+    --color-status-none: oklch(40% 0.01 75);
+    --color-status-proposed: oklch(52% 0.14 75);
+    --color-status-ready: oklch(52% 0.14 75);
+    --color-status-active: oklch(52% 0.14 245);
+    --color-status-paused: oklch(44% 0.08 100);
+    --color-status-review: oklch(52% 0.14 300);
+    --color-status-completed: oklch(52% 0.14 145);
+    --color-status-canceled: oklch(52% 0.14 20);
+    --color-status-archived: oklch(44% 0 0);
 
     --spacing-container-xl: 1536px;
     --spacing-container-lg: 1024px;
@@ -104,6 +104,7 @@
     --radius-xl: 0.75rem;
 
     --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+    --default-transition-duration: 75ms;
 
     --font-sans:
         'Google Sans Flex Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
@@ -203,34 +204,15 @@
         --color-positive-fg: oklch(96% 0.005 142.5);
         --color-positive-border: oklch(45.49% 0.1717 142.5);
 
-        --color-info: oklch(52.19% 0.1978 258.63);
-        --color-info-hover: oklch(55.19% 0.1978 258.63);
-        --color-info-fg: oklch(98.9% 0.005 258.63);
-    }
-
-    [data-theme='accent'],
-    [data-theme='accent'] * {
-        --color-base: oklch(24% 0.06 261.46);
-        --color-surface: oklch(24% 0.06 261.46);
-        --color-base-subtle: oklch(24% 0.06 261.46);
-        --color-base-subtle: oklch(24% 0.06 261.46);
-        --color-base-emph: oklch(24% 0.06 261.46);
-        --color-base-emph: oklch(24% 0.06 261.46);
-        --color-base-border: oklch(32% 0.06 261.46);
-        --color-base-border-emph: oklch(36% 0.06 261.46);
-        --color-surface-border: oklch(30% 0.06 261.46);
-        --color-fg: oklch(70% 0.02 261.46);
-        --color-fg-emph: oklch(100% 0.02 261.46);
-        --color-fg-weak: oklch(60% 0.02 261.46);
-        --color-fg-dim: oklch(55% 0.02 261.46);
-        --color-fg-muted: oklch(50% 0.02 261.46);
+        --color-info-fg: oklch(52.5% 0.17 210);
+        --color-info-fg-hover: oklch(56% 0.17 210);
     }
 }
 
 @layer base {
     :root {
         font-size: 14px;
-        font-weight: 400;
+        font-weight: 450;
         color: var(--color-fg);
         line-height: 1.5;
         view-transition-name: none;
@@ -331,7 +313,7 @@
     --tw-prose-body: var(--color-fg);
     --tw-prose-headings: var(--color-fg-emph);
     --tw-prose-lead: var(--color-pink-700);
-    --tw-prose-links: var(--color-info);
+    --tw-prose-links: var(--color-info-fg);
     --tw-prose-bold: var(--color-fg-emph);
     --tw-prose-counters: var(--color-fg-muted);
     --tw-prose-bullets: var(--color-fg-muted);
@@ -406,6 +388,12 @@
         margin-block: 0rem;
         padding-block: 0.25rem;
     }
+    :where(u):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        text-decoration: none;
+    }
+    :where(a):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+        text-underline-offset: --spacing(0.5);
+    }
 }
 
 .ProseMirror p.is-editor-empty:first-child::before {
@@ -435,12 +423,12 @@
 }
 
 [data-scope='collapsible'][data-part='content'][data-state='open'] {
-    animation: slideDown 300ms ease;
+    animation: slideDown 120ms ease;
 }
 
-[data-scope='collapsible'][data-part='content'][data-state='closed'] {
-    animation: slideUp 150ms ease;
-}
+/* [data-scope='collapsible'][data-part='content'][data-state='closed'] {
+    animation: slideUp 120ms ease;
+} */
 
 @keyframes slideDown {
     from {

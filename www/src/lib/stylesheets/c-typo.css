@@ -13,7 +13,8 @@
 .c-link {
 	@apply transition duration-75;
 	&:where(:hover) {
-		color: var(--color-info-hover);
+		color: var(--color-info-fg-hover);
 		text-decoration: underline;
+		text-underline-offset: --spacing(0.5);
 	}
 }

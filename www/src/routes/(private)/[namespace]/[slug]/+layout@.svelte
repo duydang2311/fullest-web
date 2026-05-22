@@ -1,22 +1,32 @@
 <script lang="ts">
-    import { page } from '$app/state';
-    import AuthenticatedHeader from '~/lib/components/AuthenticatedHeader.svelte';
+    import AuthenticatedHeaderPfp from '~/lib/components/AuthenticatedHeaderPfp.svelte';
     import Footer from '~/lib/components/Footer.svelte';
+    import { Logo } from '~/lib/components/icons';
+    import { C } from '~/lib/utils/styles';
     import Breadcrumbs from './__page__/Breadcrumbs.svelte';
-    import ProjectActions from './__page__/ProjectActions.svelte';
     import Tabs from './__page__/Tabs.svelte';
-    import { useProject } from './__page__/utils.svelte';
-    import AuthenticatedHeaderNav from '~/lib/components/AuthenticatedHeaderNav.svelte';
 
     const { data, children } = $props();
-    const id = $props.id();
-    const project = $derived(await useProject());
 </script>
 
 <div class="flex flex-col min-h-screen">
     <header class="border-b border-surface-border p-4 pb-0 text-sm">
-        <AuthenticatedHeaderNav user={data.user} />
-        <nav class="-mx-4 mt-0">
+        <nav class="flex items-center justify-between gap-8">
+            <div class="flex items-center gap-2 -ml-2">
+                <a
+                    href="/"
+                    aria-label="Home"
+                    class={C.button({ variant: 'base', ghost: true, size: 'sm' })}
+                >
+                    <Logo />
+                </a>
+                <Breadcrumbs />
+            </div>
+            <div class="flex items-center gap-2">
+                <AuthenticatedHeaderPfp user={data.user} />
+            </div>
+        </nav>
+        <nav class="-ml-4">
             <Tabs />
         </nav>
     </header>
@@ -29,14 +39,3 @@
     </main>
     <Footer />
 </div>
-<!-- <SidebarLayout>
-    {#snippet top()}
-    {/snippet}
-    {#snippet left()}
-        <div class="px-4 py-2">
-            <Tabs {tabs} />
-        </div>
-    {/snippet}
-    {#snippet main()}
-    {/snippet}
-</SidebarLayout> -->

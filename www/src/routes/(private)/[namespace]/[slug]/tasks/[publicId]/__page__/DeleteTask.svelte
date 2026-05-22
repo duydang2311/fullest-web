@@ -8,7 +8,7 @@
 </script>
 
 <form {...deleteTask}>
-    <input {...deleteTask.fields.id.as('text', task.id)} type="hidden" />
+    <input {...deleteTask.fields.id.as('hidden', task.id)} />
     <button
         type="submit"
         class="{C.button({

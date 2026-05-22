@@ -9,12 +9,16 @@ import {
 } from '../components/icons';
 import { StatusCategory, type Status } from '../models/status';
 
-export function getStatusColor(status: Pick<Status, 'color' | 'category'>) {
+export function getStatusColor(status: Pick<Status, 'color' | 'category'> | undefined) {
+    if (!status) {
+        return 'var(--color-status-none)';
+    }
     return status.color || getStatusCategoryColor(status.category);
 }
 
 export function getStatusCategoryColor(category: StatusCategory) {
     // for tailwind to pick up
+    // --color-status-none
     // --color-status-proposed
     // --color-status-ready
     // --color-status-active
