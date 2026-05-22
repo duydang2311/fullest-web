@@ -22,7 +22,7 @@
         defaultHighlightedValue: untrack(() => task.status?.id),
         onOpenChange: async (details) => {
             if (details.open) {
-                statusList ??= await getStatuses(pageData.project.id).run();
+                statusList ??= await getStatuses(pageData.project.id);
                 menu.api.setHighlightedValue(task.status?.id);
             }
         },
