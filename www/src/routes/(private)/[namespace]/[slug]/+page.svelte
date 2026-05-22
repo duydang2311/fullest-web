@@ -17,7 +17,7 @@
     <div>
         <div class="flex items-start justify-between">
             <div>
-                <p class="text-title-xs font-ui font-semibold text-fg-emph">
+                <p class="text-title-xs font-display font-semibold text-fg-emph">
                     {project.name}
                 </p>
             </div>

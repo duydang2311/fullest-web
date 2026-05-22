@@ -53,7 +53,7 @@
         <div class="flex gap-2 flex-wrap">
             <input
                 {...editTaskTitle.fields.title.as('text', task.title)}
-                class="text-title-xs font-ui font-semibold text-fg-emph w-full outline-none flex-1"
+                class="text-title-xs font-display font-semibold text-fg-emph w-full outline-none flex-1"
                 spellcheck="false"
                 {@attach edit}
             />

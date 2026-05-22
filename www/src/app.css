@@ -106,14 +106,11 @@
     --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
     --default-transition-duration: 75ms;
 
-    --font-sans:
-        'Google Sans Flex Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
-        Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
-    --font-ui:
-        'Google Sans Flex Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
-        Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    --font-sans: system-ui, sans-serif;
+    --font-display: system-ui, sans-serif;
     --default-mono-font-family:
-        ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+        ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono',
+        monospace;
 }
 
 @theme inline {
@@ -250,7 +247,7 @@
     button,
     .c-button,
     .c-menu-item {
-        font-family: var(--font-ui);
+        font-family: var(--font-display);
     }
 
     [data-scope='dialog'][data-part='content'] {

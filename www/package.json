@@ -11,7 +11,6 @@
     "@eslint/compat": "^2.1.0",
     "@eslint/js": "^10.0.1",
     "@floating-ui/dom": "^1.7.6",
-    "@fontsource-variable/google-sans-flex": "^5.2.3",
     "@iconify-json/heroicons": "^1.2.3",
     "@iconify-json/lucide": "^1.2.109",
     "@iconify-json/ph": "^1.2.2",
