@@ -22,7 +22,7 @@
         defaultHighlightedValue: untrack(() => task.priority?.id),
         async onOpenChange(details) {
             if (details.open) {
-                priorityList ??= await usePriorityList();
+                priorityList = await usePriorityList();
                 menu.api.setHighlightedValue(task.priority?.id);
             }
         },
