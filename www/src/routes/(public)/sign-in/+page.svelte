@@ -4,11 +4,11 @@
     import { C } from '~/lib/utils/styles';
 </script>
 
-<main class="flex h-full flex-col justify-center gap-8 p-8">
-    <div class="max-w-lg mx-auto w-full">
+<main class="flex h-full flex-col justify-center gap-8">
+    <div class="max-w-lg mx-auto w-full bg-surface p-8 border border-surface-border rounded-xl">
         <LogoType />
-        <h1 class="text-title-md text-fg-emph">Log in to Fullest</h1>
-        <p class="text-sm font-medium text-fg-muted mt-8">Connect to Fullest with:</p>
+        <h1 class="text-title-md text-fg-emph mt-2">Log in to Fullest</h1>
+        <p class="text-sm font-medium text-fg-muted mt-16">Connect to Fullest with:</p>
         <div class="flex gap-2 flex-wrap *:basis-48 *:flex-1 mt-2">
             <a
                 href="/auth/google/start"
@@ -35,7 +35,7 @@
             </a>
         </div>
 
-        <div class="mt-16 flex items-center gap-4">
+        <div class="mt-8 flex items-center gap-4">
             <div class="bg-surface-border h-px flex-1"></div>
             <span class="text-fg-muted text-xs">Or continue with</span>
             <div class="bg-surface-border h-px flex-1"></div>

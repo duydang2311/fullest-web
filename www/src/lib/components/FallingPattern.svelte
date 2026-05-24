@@ -131,7 +131,7 @@
 <div class={cls}>
     <div
         bind:this={patternEl}
-        class="relative w-full h-full z-0"
+        class="relative w-full h-full"
         style="
 			background-color: {backgroundColor};
 			background-image: {generateBackgroundImage()};
@@ -140,7 +140,7 @@
 		"
     ></div>
     <div
-        class="absolute inset-0 z-10"
+        class="absolute inset-0"
         style="
 			backdrop-filter: blur({blurIntensity});
 			background-image: radial-gradient(circle at 50% 50%, transparent 0, transparent 2px, {backgroundColor} 2px);
