@@ -10,6 +10,7 @@
     import type { PageData } from '../$types';
     import { editDescription } from './page.remote';
     import { useProject } from './utils.svelte';
+    import Card from '~/lib/components/Card.svelte';
 
     const pageData = usePageData<PageData>();
     const project = $derived(await useProject());
@@ -65,31 +66,35 @@
     });
 </script>
 
-<section class="border border-base-border rounded-lg">
-    <div class="flex items-center gap-2 border-b border-base-border px-4 py-2 bg-surface-subtle rounded-t-lg">
-        <h2 class="text-sm text-fg-emph">Description</h2>
-        <div class="ml-auto" {@attach tooltip('Edit description')}>
-            <button
-                type="button"
-                class={C.button({ ghost: true, icon: true })}
-                {...dialog.api.getTriggerProps()}
-                style={dialog.api.open
-                    ? 'visibility: hidden;'
-                    : `view-transition-name: edit-desc-${id};`}
-            >
-                <SettingsOutline />
-            </button>
-        </div>
-    </div>
-    <div class="p-4 ">
-        {#if project.descriptionHtml}
-            <article class="prose max-w-none">
-                {@html project.descriptionHtml}
-            </article>
-        {:else}
-            <div class="text-fg-muted text-sm">No description yet.</div>
-        {/if}
-    </div>
+<section>
+    <Card>
+        {#snippet header()}
+            <div class="flex items-center gap-2">
+                <h2 class="text-sm text-fg-emph">Description</h2>
+                <div class="ml-auto" {@attach tooltip('Edit description')}>
+                    <button
+                        type="button"
+                        class={C.button({ ghost: true, icon: true })}
+                        {...dialog.api.getTriggerProps()}
+                        style={dialog.api.open
+                            ? 'visibility: hidden;'
+                            : `view-transition-name: edit-desc-${id};`}
+                    >
+                        <SettingsOutline />
+                    </button>
+                </div>
+            </div>
+        {/snippet}
+        {#snippet body()}
+            {#if project.descriptionHtml}
+                <article class="prose max-w-none">
+                    {@html project.descriptionHtml}
+                </article>
+            {:else}
+                <div class="text-fg-muted text-sm">No description yet.</div>
+            {/if}
+        {/snippet}
+    </Card>
 </section>
 
 {#if dialog.api.open}
