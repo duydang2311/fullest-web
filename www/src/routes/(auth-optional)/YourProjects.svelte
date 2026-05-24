@@ -5,7 +5,6 @@
     import { boolAttr } from 'runed';
     import invariant from 'tiny-invariant';
     import Avatar from '~/lib/components/Avatar.svelte';
-    import { PlusOutline } from '~/lib/components/icons';
     import { keysetList, reverseKeysetList } from '~/lib/models/paginated';
     import { usePageData } from '~/lib/utils/kit';
     import { useRuntime } from '~/lib/utils/runtime';
@@ -63,79 +62,62 @@
     }
 </script>
 
-<aside class="flex flex-col py-4">
-    <div class="flex items-center justify-between px-2 lg:px-4">
-        <div class="flex items-center gap-1">
-            <!-- <div class="h-3 w-2 bg-fg-emph rounded-xs"></div> -->
-            <h2 class="text-fg-muted items-center rounded-sm uppercase text-xs">Projects</h2>
-        </div>
-        <div>
-            <a
-                href="/new"
+<div class="flex-1 flex flex-col gap-2 overflow-hidden -m-4">
+    {#if ctx.projectList}
+        {#if ctx.projectList.hasPrevious}
+            <button
+                type="button"
                 class="{C.button({
-                    variant: 'primary',
+                    variant: 'base',
                     filled: true,
-                })} flex items-center gap-2 text-body-sm px-2 py-1"
+                    size: 'sm',
+                })} w-full"
+                disabled={listBusy.now}
+                onclick={() => {
+                    loadMore('backward');
+                }}
             >
-                <PlusOutline />
-                <span>New</span>
-            </a>
-        </div>
-    </div>
-    <div class="mt-2 px-1 flex-1 flex flex-col gap-2 overflow-hidden">
-        {#if ctx.projectList}
-            {#if ctx.projectList.hasPrevious}
-                <div class="px-1 lg:px-3">
-                    <button
-                        type="button"
-                        class="{C.button({
-                            variant: 'base',
-                            filled: true,
-                            size: 'sm',
-                        })} w-full"
-                        disabled={listBusy.now}
-                        onclick={() => {
-                            loadMore('backward');
-                        }}
-                    >
-                        Load more
-                    </button>
-                </div>
-            {/if}
-            <div
-                data-busy={boolAttr(listBusy.now)}
-                class="flex flex-col data-busy:animate-pulse overflow-auto px-1 max-h-full lg:px-3"
-            >
-                {#each ctx.projectList.items as item (item.id)}
+                Load more
+            </button>
+        {/if}
+        <ol
+            data-busy={boolAttr(listBusy.now)}
+            class="flex flex-col data-busy:animate-pulse overflow-auto max-h-full divide-y divide-surface-border"
+        >
+            {#each ctx.projectList.items as item (item.id)}
+                <li class="group">
                     <a
                         href="/{item.namespace.user.name}/{item.identifier}"
-                        class="{C.button({
-                            ghost: true,
-                        })} flex not-hover:font-normal gap-4 items-center py-1"
+                        class="flex gap-4 items-center px-4 py-2 hover:bg-base-subtle active:bg-base-emph transition group-last:rounded-b-lg hover:duration-0"
                     >
-                        <Avatar user={item.namespace.user} class="size-avatar-xs shrink-0" />
-                        {item.name}
+                        <Avatar user={item.namespace.user} class="size-avatar-sm shrink-0" />
+                        <div>
+                            <div class="font-medium">{item.name}</div>
+                            <div class="text-fg-muted text-body-xs">
+                                <span>{item.identifier}</span>
+                                <span>·</span>
+                                <span>Today</span>
+                            </div>
+                        </div>
                     </a>
-                {/each}
-            </div>
-            {#if ctx.projectList.hasNext}
-                <div class="px-1 lg:px-3">
-                    <button
-                        type="button"
-                        class="{C.button({
-                            variant: 'base',
-                            filled: true,
-                            size: 'sm',
-                        })} w-full"
-                        disabled={listBusy.now}
-                        onclick={() => {
-                            loadMore('forward');
-                        }}
-                    >
-                        Load more
-                    </button>
-                </div>
-            {/if}
+                </li>
+            {/each}
+        </ol>
+        {#if ctx.projectList.hasNext}
+            <button
+                type="button"
+                class="{C.button({
+                    variant: 'base',
+                    filled: true,
+                    size: 'sm',
+                })} w-full"
+                disabled={listBusy.now}
+                onclick={() => {
+                    loadMore('forward');
+                }}
+            >
+                Load more
+            </button>
         {/if}
-    </div>
-</aside>
+    {/if}
+</div>

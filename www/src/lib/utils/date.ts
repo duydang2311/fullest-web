@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, type DateTimeFormatOptions } from 'luxon';
 
 export function formatRelativeDateTime(iso: string | DateTime) {
     if (typeof iso === 'string') {
@@ -11,9 +11,9 @@ export function formatRelativeDateTime(iso: string | DateTime) {
     return iso.toRelative();
 }
 
-export function formatDate(iso: string | DateTime) {
+export function formatDate(iso: string | DateTime, formatOptions?: DateTimeFormatOptions) {
     if (typeof iso === 'string') {
         iso = DateTime.fromISO(iso);
     }
-    return iso.toLocaleString(DateTime.DATE_MED);
+    return iso.toLocaleString(formatOptions ?? DateTime.DATE_MED);
 }

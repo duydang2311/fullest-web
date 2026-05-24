@@ -16,17 +16,15 @@
     const menu = createMenu({ id });
 </script>
 
-<div class="shrink-0 flex items-center py-0.5">
+<div class="shrink-0">
     <button
         {...menu.api.getTriggerProps()}
         class="{button({
-            variant: 'base',
             icon: true,
-            outlined: true,
             ghost: true,
         })} rounded-full p-0"
     >
-        <Avatar {user} class="size-avatar-sm rounded-full" />
+        <Avatar {user} class="size-avatar-sm rounded-full hover:opacity-80" />
     </button>
     <div use:portal {...menu.api.getPositionerProps()}>
         <ul {...menu.api.getContentProps()} class="c-menu-content flex flex-col gap-1">

@@ -180,14 +180,18 @@
 }
 
 .c-button {
-    padding: --spacing(1.5) --spacing(2);
     border-radius: var(--radius-md);
     font-weight: 500;
 
     &:where(.c-button--sm) {
-        /* border-radius: var(--radius-sm); */
-        padding: --spacing(1) --spacing(2);
         font-size: var(--text-body-sm);
+    }
+
+    &:where(.c-button--ghost, .c-button--filled) {
+        padding: --spacing(1.5) --spacing(2);
+        &:where(.c-button--sm) {
+            padding: --spacing(1) --spacing(2);
+        }
     }
 
     border: 1px solid var(--_border);

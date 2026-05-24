@@ -94,7 +94,6 @@
 </script>
 
 <div>
-    <h2 class="text-body-sm text-fg-emph">Feed</h2>
     {#if ctx.activityList && ctx.activityList.items.length}
         {#if ctx.activityList.hasPrevious}
             <button

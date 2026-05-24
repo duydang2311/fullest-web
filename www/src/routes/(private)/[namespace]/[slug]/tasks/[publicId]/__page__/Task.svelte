@@ -1,5 +1,6 @@
 <script lang="ts">
     import Avatar from '~/lib/components/Avatar.svelte';
+    import Card from '~/lib/components/Card.svelte';
     import { IconCalendarOutline, SettingsOutline } from '~/lib/components/icons';
     import { formatDate } from '~/lib/utils/date';
     import { C } from '~/lib/utils/styles';
@@ -9,7 +10,6 @@
     import SelectStatus from './SelectStatus.svelte';
     import TaskTitle from './TaskTitle.svelte';
     import { useTask } from './utils.svelte';
-    import Card from '~/lib/components/Card.svelte';
 
     const task = $derived(await useTask());
 </script>
@@ -54,25 +54,23 @@
         <SelectPriority />
         <SelectAssignees />
     </div>
-    <div class="mt-4 rounded-lg border border-base-border">
-        <Card>
-            {#snippet header()}
-                <div class="flex justify-between gap-4 items-center">
-                    <span class="text-sm text-fg-emph font-semibold">Description</span>
-                    <button type="button" class={C.button({ ghost: true, icon: true })}>
-                        <SettingsOutline />
-                    </button>
-                </div>
-            {/snippet}
-            {#snippet body()}
-                <div class="max-w-none prose wrap-anywhere">
-                    {#if task.descriptionHtml && task.descriptionHtml.length > 0}
-                        {@html task.descriptionHtml}
-                    {:else}
-                        <span class="text-fg-muted text-sm">No description added.</span>
-                    {/if}
-                </div>
-            {/snippet}
-        </Card>
-    </div>
+    <Card class="mt-4">
+        {#snippet header()}
+            <div class="flex justify-between gap-4 items-center">
+                <span class="text-sm text-fg-emph font-semibold">Description</span>
+                <button type="button" class={C.button({ ghost: true, icon: true })}>
+                    <SettingsOutline />
+                </button>
+            </div>
+        {/snippet}
+        {#snippet body()}
+            <div class="max-w-none prose wrap-anywhere">
+                {#if task.descriptionHtml && task.descriptionHtml.length > 0}
+                    {@html task.descriptionHtml}
+                {:else}
+                    <span class="text-fg-muted text-sm">No description added.</span>
+                {/if}
+            </div>
+        {/snippet}
+    </Card>
 </div>

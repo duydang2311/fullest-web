@@ -10,9 +10,9 @@
 </script>
 
 <div class="flex flex-col min-h-screen">
-    <header class="border-b border-surface-border p-4 pb-0 text-sm">
-        <nav class="flex items-center justify-between gap-8">
-            <div class="flex items-center gap-2 -ml-2">
+    <header class="p-4 pb-0 border-b border-surface-border text-sm">
+        <div class="flex justify-between items-center gap-8">
+            <nav class="flex items-center gap-2">
                 <a
                     href="/"
                     aria-label="Home"
@@ -21,14 +21,12 @@
                     <Logo />
                 </a>
                 <Breadcrumbs />
-            </div>
-            <div class="flex items-center gap-2">
-                <AuthenticatedHeaderPfp user={data.user} />
-            </div>
-        </nav>
-        <nav class="-ml-4">
+            </nav>
+            <AuthenticatedHeaderPfp user={data.user} />
+        </div>
+        <div class="-ml-2">
             <Tabs />
-        </nav>
+        </div>
     </header>
     <main class="flex flex-1 flex-col">
         <div class="p-4 md:px-8 flex-1 flex flex-col">
