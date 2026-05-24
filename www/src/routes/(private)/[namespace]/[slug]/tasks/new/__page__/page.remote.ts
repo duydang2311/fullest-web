@@ -3,7 +3,7 @@ import { attempt } from '@duydang2311/attempt';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { type } from 'arktype';
 import type { Task } from '~/lib/models/task';
-import { Err, traced } from '~/lib/utils/errors';
+import { traced } from '~/lib/utils/errors';
 import { jsonify, parseHttpError } from '~/lib/utils/http';
 
 export const createTask = form(
@@ -13,7 +13,6 @@ export const createTask = form(
         'descriptionJson?': 'string',
     }),
     async (data) => {
-        console.log('data', data);
         const e = getRequestEvent();
         const result = await e.locals.http.post('tasks', {
             body: {
