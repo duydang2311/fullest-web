@@ -132,14 +132,14 @@
         class="{C.button({
             variant: 'base',
             ghost: true,
-        })} text-left font-medium w-full flex items-center gap-2 justify-between"
+        })} text-left w-full flex items-center gap-2 justify-between"
     >
         <!-- <span
             class="lg:hidden ml-auto bg-primary rounded-sm size-5 leading-none text-xs font-bold flex justify-center items-center"
         >
             {task.assignees.length}
         </span> -->
-        <span class="text-fg-muted">Assign</span>
+        <span class="text-fg-muted font-normal">Assign</span>
         <!-- <span class="text-fg">
             {task.assignees.length ?? 0}
         </span> -->

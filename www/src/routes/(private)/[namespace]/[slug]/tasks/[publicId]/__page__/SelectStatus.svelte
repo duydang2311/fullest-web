@@ -73,9 +73,9 @@
         class="{C.button({
             variant: 'base',
             ghost: true,
-        })} font-medium w-full flex items-center gap-2 justify-between"
+        })} w-full flex items-center gap-2 justify-between"
     >
-        <span class="text-fg-muted">Status</span>
+        <span class="text-fg-muted font-normal">Status</span>
         <span class="text-fg">
             {task.status?.name ?? 'None'}
         </span>

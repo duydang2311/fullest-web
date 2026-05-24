@@ -75,9 +75,9 @@
         class="{C.button({
             variant: 'base',
             ghost: true,
-        })} text-left font-medium w-full flex items-center gap-2 justify-between"
+        })} text-left w-full flex items-center gap-2 justify-between"
     >
-        <span class="text-fg-muted">Priority</span>
+        <span class="text-fg-muted font-normal">Priority</span>
         <span class="text-fg">
             {task.priority?.name ?? 'None'}
         </span>
