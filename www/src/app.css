@@ -14,7 +14,7 @@
 @custom-variant accent (&:where([data-theme=accent], [data-theme=accent] *));
 
 @theme {
-    --color-surface-1: oklch(100% 0 75);
+    --color-surface-var: oklch(100% 0 75);
     --color-surface: oklch(100% 0 75);
     --color-surface-subtle: oklch(99% 0.002 75);
     --color-surface-emph: oklch(97% 0.004 75);
@@ -27,7 +27,6 @@
     --color-base-border-emph: oklch(86% 0.012 75);
 
     --color-fg: oklch(32% 0.02 44);
-    --color-fg-weak: oklch(40% 0 44);
     --color-fg-emph: oklch(20% 0.02 44);
     --color-fg-dim: oklch(48% 0.016 44);
     --color-fg-muted: oklch(72% 0.012 75);
@@ -160,28 +159,28 @@
 @layer base {
     [data-theme='dark'],
     [data-theme='dark'] * {
-        --color-surface-1: oklch(19% 0 240);
-        --color-surface: oklch(20% 0 240);
-        --color-surface-subtle: oklch(22% 0 240);
-        --color-surface-emph: oklch(24% 0 240);
-        --color-surface-border: oklch(28% 0 240);
+        --color-surface-var: oklch(16% 0 44);
+        --color-surface: oklch(18% 0 44);
+        --color-surface-subtle: oklch(20% 0.002 44);
+        --color-surface-emph: oklch(22% 0.004 44);
+        --color-surface-border: oklch(24% 0.002 44);
 
-        --color-base: oklch(26% 0 240);
-        --color-base-subtle: oklch(28% 0 240);
-        --color-base-emph: oklch(30% 0 240);
-        --color-base-border: oklch(32% 0 240);
-        --color-base-border-emph: oklch(36% 0 240);
+        --color-base: oklch(22% 0.002 44);
+        --color-base-subtle: oklch(23% 0.004 44);
+        --color-base-emph: oklch(24% 0.006 44);
+        --color-base-border: oklch(26% 0.006 44);
+        --color-base-border-emph: oklch(30% 0.008 44);
 
-        --color-fg: oklch(82% 0 240);
-        --color-fg-emph: oklch(94% 0 240);
-        --color-fg-dim: oklch(65% 0 240);
-        --color-fg-muted: oklch(50% 0 240);
+        --color-fg: oklch(86% 0.02 44);
+        --color-fg-emph: oklch(94% 0.02 44);
+        --color-fg-dim: oklch(65% 0.016 44);
+        --color-fg-muted: oklch(50% 0.012 44);
 
-        --color-primary: oklch(46% 0.1 240);
-        --color-primary-subtle: oklch(48% 0.1 240);
-        --color-primary-emph: oklch(50% 0.11 240);
-        --color-primary-border: oklch(52% 0.1 240);
-        --color-primary-fg: oklch(59% 0.117 240);
+        --color-primary: oklch(32% 0.04 75);
+        --color-primary-subtle: oklch(34% 0.05 75);
+        --color-primary-emph: oklch(36% 0.06 75);
+        --color-primary-border: oklch(38% 0.04 75);
+        --color-primary-fg: oklch(52.5% 0.17 75);
 
         /* --color-primary: oklch(52.93% 0.2346 261.46);
     --color-primary-subtle: oklch(55.93% 0.2346 261.46);

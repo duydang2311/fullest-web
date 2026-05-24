@@ -4,7 +4,7 @@
     import { C } from '~/lib/utils/styles';
 </script>
 
-<main class="flex h-full flex-col justify-center gap-8">
+<main class="flex h-full flex-col justify-center gap-8 bg-surface-var">
     <div class="max-w-lg mx-auto w-full bg-surface p-8 border border-surface-border rounded-xl">
         <LogoType />
         <h1 class="text-title-md text-fg-emph mt-2">Log in to Fullest</h1>

@@ -30,7 +30,7 @@
     </nav>
     <AuthenticatedHeaderPfp {user} />
 </header>
-<main class="p-4">
+<main class="p-4 bg-surface-var">
     <div class="max-w-container-lg mx-auto">
         <h1 class="text-fg-emph text-title-sm">Good morning, {user.displayName ?? user.name} ☀️</h1>
         <p class="text-fg-dim text-sm">
